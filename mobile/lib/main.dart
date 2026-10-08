@@ -65,7 +65,8 @@ class _AcademyShellState extends State<AcademyShell> {
     final prefs = await SharedPreferences.getInstance();
     if (!mounted) return;
     setState(() {
-      completed = prefs.getStringList('completed_lessons')?.toSet() ?? {};
+      final key = CloudService.user == null ? 'completed_lessons' : 'completed_${CloudService.user!.id}';
+      completed = prefs.getStringList(key)?.toSet() ?? {};
       english = prefs.getBool('english_ui') ?? false;
     });
     await _refreshCloud();
@@ -76,13 +77,11 @@ class _AcademyShellState extends State<AcademyShell> {
     try {
       final serverProgress = await CloudService.loadProgress();
       if (serverProgress == null) return;
-      final merged = {...completed, ...serverProgress};
+      // Cloud users do not inherit progress from guest or other accounts.
       final prefs = await SharedPreferences.getInstance();
-      for (final id in merged.difference(serverProgress)) {
-        await CloudService.saveProgress(id);
-      }
-      await prefs.setStringList('completed_lessons', merged.toList());
-      if (mounted) setState(() => completed = merged);
+      final key = 'completed_${CloudService.user!.id}';
+      await prefs.setStringList(key, serverProgress.toList());
+      if (mounted) setState(() => completed = serverProgress);
     } catch (error) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Cloud sync unavailable: $error')),
@@ -93,7 +92,8 @@ class _AcademyShellState extends State<AcademyShell> {
   Future<void> _complete(Lesson lesson) async {
     final next = {...completed, lesson.id};
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('completed_lessons', next.toList());
+    final key = CloudService.user == null ? 'completed_lessons' : 'completed_${CloudService.user!.id}';
+    await prefs.setStringList(key, next.toList());
     if (mounted) setState(() => completed = next);
     if (CloudService.user != null && CloudService.apiConfigured) {
       try {
@@ -268,9 +268,15 @@ class _AcademyShellState extends State<AcademyShell> {
                 final signedIn = await Navigator.of(context).push<bool>(
                   MaterialPageRoute(builder: (_) => const AuthPage()),
                 );
-                if (signedIn == true) await _refreshCloud();
+                if (signedIn == true) {
+                  final prefs = await SharedPreferences.getInstance();
+                  if (mounted) setState(() => completed = prefs.getStringList('completed_${CloudService.user!.id}')?.toSet() ?? {});
+                  await _refreshCloud();
+                }
               } else {
                 await CloudService.signOut();
+                final prefs = await SharedPreferences.getInstance();
+                if (mounted) setState(() => completed = prefs.getStringList('completed_lessons')?.toSet() ?? {});
               }
               if (mounted) setState(() {});
             },
