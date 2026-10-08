@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'lessons.dart';
+import 'cloud_service.dart';
+import 'auth_page.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CloudService.initialize();
   runApp(const CodingAcademyApp());
 }
 
@@ -65,6 +68,26 @@ class _AcademyShellState extends State<AcademyShell> {
       completed = prefs.getStringList('completed_lessons')?.toSet() ?? {};
       english = prefs.getBool('english_ui') ?? false;
     });
+    await _refreshCloud();
+  }
+
+  Future<void> _refreshCloud() async {
+    if (CloudService.user == null || !CloudService.apiConfigured) return;
+    try {
+      final serverProgress = await CloudService.loadProgress();
+      if (serverProgress == null) return;
+      final merged = {...completed, ...serverProgress};
+      final prefs = await SharedPreferences.getInstance();
+      for (final id in merged.difference(serverProgress)) {
+        await CloudService.saveProgress(id);
+      }
+      await prefs.setStringList('completed_lessons', merged.toList());
+      if (mounted) setState(() => completed = merged);
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cloud sync unavailable: $error')),
+      );
+    }
   }
 
   Future<void> _complete(Lesson lesson) async {
@@ -72,6 +95,15 @@ class _AcademyShellState extends State<AcademyShell> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('completed_lessons', next.toList());
     if (mounted) setState(() => completed = next);
+    if (CloudService.user != null && CloudService.apiConfigured) {
+      try {
+        await CloudService.saveProgress(lesson.id);
+      } catch (error) {
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Saved locally; cloud sync failed: $error')),
+        );
+      }
+    }
   }
 
   Future<void> _setLanguage(bool value) async {
@@ -220,13 +252,29 @@ class _AcademyShellState extends State<AcademyShell> {
           const CircleAvatar(radius: 42, backgroundColor: _purple,
               child: Icon(Icons.person, size: 42)),
           const SizedBox(height: 20),
-          Text(tr('ဧည့်သည်အဖြစ် အသုံးပြုနေသည်', 'Using guest mode'),
+          Text(CloudService.user?.email ?? tr('ဧည့်သည်အဖြစ် အသုံးပြုနေသည်', 'Using guest mode'),
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           Text(tr('Login နှင့် Cloud Sync ကို Phase 1 backend ချိတ်ဆက်သည့်အခါ ထည့်သွင်းမည်။',
               'Login and cloud sync are not connected yet.'),
               textAlign: TextAlign.center),
+          const SizedBox(height: 20),
+          if (CloudService.configured) FilledButton.icon(
+            icon: Icon(CloudService.user == null ? Icons.login : Icons.logout),
+            label: Text(CloudService.user == null ? 'Sign in / Sign up' : 'Sign out'),
+            onPressed: () async {
+              if (CloudService.user == null) {
+                final signedIn = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(builder: (_) => const AuthPage()),
+                );
+                if (signedIn == true) await _refreshCloud();
+              } else {
+                await CloudService.signOut();
+              }
+              if (mounted) setState(() {});
+            },
+          ),
           const SizedBox(height: 24),
           _infoCard(Icons.check_circle_outline, tr('ပြီးဆုံးသင်ခန်းစာ', 'Lessons completed'),
               '${completed.length} / ${pythonLessons.length}'),
