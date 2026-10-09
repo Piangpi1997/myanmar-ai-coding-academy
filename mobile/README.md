@@ -1,76 +1,64 @@
-# Myanmar AI Coding Academy — Flutter starter
+# Myanmar AI Coding Academy — Android development
 
-This directory contains the first **working-source starter**, not a complete Android app or APK.
+Flutter 3.35.7 / Dart 3.9.2. The existing ten introductory Myanmar lessons are preserved. The app supports guest reading, separate account progress, Supabase email authentication, a Python editor/remote runner and a BYOK AI Tutor. See [milestone scope](../docs/BYOK_MILESTONE.md) and [actual validation](../docs/VALIDATION_REPORT.md).
 
-## Included
+## Setup
 
-- Material 3 premium-style dark interface
-- Five navigation screens: Home, Learn, Code Lab, AI Tutor, Profile
-- 10 original short Myanmar beginner Python lessons with examples and exercises
-- Lesson completion saved locally using shared_preferences
-- Basic Myanmar/English interface labels (lesson content remains Myanmar-first)
-- Explicit "planned" notices for unimplemented remote coding and AI chat
-
-## Prerequisites
-
-- Flutter stable SDK installed and accessible on PATH
-- Android SDK, Android Studio or a compatible device/emulator
-- A correctly configured Android toolchain (`flutter doctor`)
-
-## First-time setup
-
-The generated GitHub source deliberately omits Flutter-generated Android platform boilerplate. Generate it locally with the Flutter CLI:
+Android platform files were generated with the official Flutter CLI. Do not regenerate over the configured application ID: `com.piangpi.myanmaracademy` (minimum Android API 23).
 
 ```bash
 cd mobile
-flutter create . --project-name myanmar_ai_coding_academy --platforms android
 flutter pub get
+flutter gen-l10n
+flutter analyze
 flutter test
 flutter run
 ```
 
-Run on an Android device or emulator. `flutter create` will generate the `android/` folder and platform metadata; commit them after verifying the generated application identifier and signing setup.
-
-## Important implementation status
-
-| Feature | Current status |
-|---|---|
-| Navigation / dark UI | Source implemented; device validation pending |
-| Myanmar lessons | 10 original introductory lessons included |
-| Progress persistence | Local shared_preferences implementation |
-| English UI | Partial label translation |
-| Login / Supabase | Not implemented |
-| AI API chat | Not implemented |
-| Code execution and live preview | Not implemented |
-| Quiz auto-grading | Not implemented |
-| Push reminders | Not implemented |
-| Admin CMS | Not implemented |
-| Android APK | Not built |
-
-This starter does not pretend to execute Python or produce AI-generated responses. Do not place API secrets in Flutter code.
-
-## Next steps
-
-1. Verify `flutter analyze`, `flutter test`, and `flutter run` on a configured Flutter SDK.
-2. Build FastAPI backend and database migrations.
-3. Connect Supabase Auth and persisted course progress.
-4. Implement secured sandbox runner, then AI chat proxy.
-5. Add exercises, accessibility improvements, notifications, and admin CMS.
-
-See [development roadmap](../docs/DEVELOPMENT_ROADMAP.md) and [master prompt](../prompts/FINAL_MASTER_PROMPT.md).
-
-## Supabase Auth + cloud sync configuration (Phase 1 extension)
-
-Backend and SQL migration now exist in `../backend/` and `../database/migrations/`. Execute the SQL migration and configure the backend before using cloud sync.
-
-To run on an Android emulator (host machine FastAPI on port 8000), supply public Supabase configuration and backend origin:
+Without configuration the app provides guest lessons and local drafts; remote features require a signed-in account and a configured backend. Apply the SQL migrations and follow [backend setup](../backend/README.md), then run with **public** build configuration:
 
 ```bash
-flutter run --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co --dart-define=SUPABASE_ANON_KEY=YOUR_PUBLISHABLE_KEY --dart-define=BACKEND_URL=http://10.0.2.2:8000
+flutter run \
+  --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=YOUR_PUBLIC_PUBLISHABLE_KEY \
+  --dart-define=BACKEND_URL=https://YOUR_BACKEND_HOST
 ```
 
-For physical Android devices use your machine's reachable LAN IP and allow development traffic only as needed. **Production must use HTTPS**, and Android network-security policy must explicitly control allowed origins. Supabase publishable keys are public identifiers, **not** secret service-role keys; never ship secret keys in mobile binaries.
+All API origins must use HTTPS. Do not put service-role, AI or Judge0 secrets in Dart defines. Add `com.piangpi.myanmaracademy://auth-callback` to Supabase's allowed redirect URLs. Use an asymmetric Supabase JWT signing key (RS256/ES256); legacy HS256 is unsupported by this backend.
 
-When Supabase is configured, Profile displays Sign in / Sign up. Signed-in user progress syncs with the backend; guest completion is kept separate. This is an early proof-of-architecture, **not yet an offline conflict-resolution engine**. Email verification may be required depending on your Supabase Auth settings.
+## BYOK
 
-At present the starter has no complete automated end-to-end auth verification and no pre-generated APK. Run `flutter analyze`, `flutter test`, device smoke tests, and the backend's `pytest` suite in your configured development environment.
+Sign in, open Profile → BYOK settings, select OpenRouter, DeepSeek, Groq or OpenAI, enter an available Chat Completions model ID and your own key, review the sharing/billing notice and save. Each account has encrypted credentials and chat history. Keys are sent only when explicitly asking AI, through your HTTPS backend to the selected fixed provider endpoint. Removing a key prevents subsequent requests; it does not revoke it at the provider. Chat history can be cleared in the tutor.
+
+The tutor supports Ask, Explain, Debug, Practice, Review, Mentor and Project modes. Output is Markdown with copy and Python insertion. Responses are non-streaming and are predictions unless code is separately run in the Code Lab. No automatic paid retry occurs.
+
+## Builds and signing
+
+Install Android SDK/platforms and JDK 17; confirm the Android toolchain with `flutter doctor -v`.
+
+```bash
+flutter build apk --debug
+```
+
+Use the same public Dart defines above to connect the APK to deployed services. CI's default debug APK is a guest-mode build.
+
+Release builds require your own keystore and ignored `android/key.properties`:
+
+```properties
+storeFile=/absolute/path/to/your-release.keystore
+storePassword=YOUR_LOCAL_PASSWORD
+keyAlias=YOUR_ALIAS
+keyPassword=YOUR_LOCAL_PASSWORD
+```
+
+```bash
+flutter build apk --release
+```
+
+Missing release signing configuration fails the build; release does not silently use debug signing. Never commit this file or the keystore. No release signing credentials are included.
+
+## Scope and device checks
+
+Generated ARB localization covers auth, tutor, BYOK, editor and errors; the existing home/catalog retain bilingual labels and lesson bodies remain Myanmar-first. Noto Sans Myanmar regular font is bundled under OFL in `assets/fonts/`.
+
+Before release, validate two-account sync, verification/recovery links, session restoration, Unicode, keyboard/editor behavior, secure storage and layouts on physical Android devices. Web preview, grading, reminders, expanded curriculum and administration are still pending. See the [roadmap](../docs/DEVELOPMENT_ROADMAP.md).

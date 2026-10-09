@@ -117,3 +117,17 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+# Application secrets / local tools
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+*.keystore
+!mobile/pubspec.lock
+
+# Commit the generated Android wrapper for reproducible builds.
+!mobile/android/gradlew
+!mobile/android/gradlew.bat
+!mobile/android/gradle/wrapper/gradle-wrapper.jar
