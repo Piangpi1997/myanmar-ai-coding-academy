@@ -1,59 +1,132 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/secure_store.dart';
 
-/// Credentials are supplied at build time; do not hardcode private secrets.
+class ApiException implements Exception {
+  const ApiException(this.status);
+  final int status;
+}
+
 class CloudService {
   static const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
   static const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
   static const apiUrl = String.fromEnvironment('BACKEND_URL');
-  static bool get configured => supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
-  static bool get apiConfigured => apiUrl.isNotEmpty;
+  static const redirectUrl = 'com.piangpi.myanmaracademy://auth-callback';
+  static bool _ready = false;
+  static bool get configured => _ready;
+  static bool get apiConfigured => Uri.tryParse(apiUrl)?.scheme == 'https';
   static SupabaseClient get client => Supabase.instance.client;
   static User? get user => configured ? client.auth.currentUser : null;
+  static Stream<AuthState> get authChanges => client.auth.onAuthStateChange;
+  static bool initializationFailed = false;
 
   static Future<void> initialize() async {
-    if (!configured) return;
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+    if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) return;
+    try {
+      final uri = Uri.parse(supabaseUrl);
+      if (uri.scheme != 'https' || uri.host.isEmpty) {
+        throw const FormatException();
+      }
+      await Supabase.initialize(
+        url: supabaseUrl,
+        publishableKey: supabaseAnonKey,
+        authOptions: FlutterAuthClientOptions(
+          localStorage: SecureSessionStorage(uri.host),
+          pkceAsyncStorage: SecurePkceStorage(uri.host),
+          detectSessionInUriPredicate: (callback) =>
+              callback.scheme == 'com.piangpi.myanmaracademy' &&
+              callback.host == 'auth-callback',
+        ),
+      );
+      _ready = true;
+    } catch (_) {
+      initializationFailed =
+          true; // Guest lessons remain usable; never show raw configuration errors.
+    }
   }
 
   static Future<void> signIn(String email, String password) async {
-    if (!configured) throw StateError('Supabase not configured');
     await client.auth.signInWithPassword(email: email, password: password);
   }
 
   static Future<void> signUp(String email, String password) async {
-    if (!configured) throw StateError('Supabase not configured');
-    await client.auth.signUp(email: email, password: password);
+    await client.auth.signUp(
+      email: email,
+      password: password,
+      emailRedirectTo: redirectUrl,
+    );
+  }
+
+  static Future<void> resetPassword(String email) =>
+      client.auth.resetPasswordForEmail(email, redirectTo: redirectUrl);
+  static Future<void> updatePassword(String password) async {
+    await client.auth.updateUser(UserAttributes(password: password));
   }
 
   static Future<void> signOut() async {
-    if (configured) await client.auth.signOut();
+    if (configured) await client.auth.signOut(scope: SignOutScope.local);
   }
 
-  static Future<Map<String, dynamic>?> _request(String method, String path) async {
-    final token = client.auth.currentSession?.accessToken;
-    if (!configured || !apiConfigured || token == null) return null;
-    final uri = Uri.parse(apiUrl).resolve(path);
-    final headers = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'};
-    final response = method == 'GET'
-        ? await http.get(uri, headers: headers).timeout(const Duration(seconds: 12))
-        : await http.put(uri, headers: headers).timeout(const Duration(seconds: 12));
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw StateError('Sync failed (HTTP ${response.statusCode})');
+  // Both the request and result belong to expectedUser. Never retry a POST automatically.
+  static Future<dynamic> request(
+    String method,
+    String path, {
+    required String expectedUser,
+    Map<String, dynamic>? body,
+    String? aiKey,
+  }) async {
+    if (!configured || user?.id != expectedUser) throw const ApiException(401);
+    if (!apiConfigured) throw const ApiException(503);
+    var session = client.auth.currentSession;
+    if (session == null) throw const ApiException(401);
+    if (session.isExpired) {
+      session = (await client.auth.refreshSession()).session;
     }
-    return {'data': jsonDecode(response.body)};
+    if (session == null || user?.id != expectedUser) {
+      throw const ApiException(401);
+    }
+    final uri = Uri.parse(apiUrl).resolve(path);
+    if (uri.scheme != 'https' || uri.userInfo.isNotEmpty) {
+      throw const ApiException(503);
+    }
+    final request = http.Request(method, uri)
+      ..followRedirects = false
+      ..headers.addAll({
+        'Authorization': 'Bearer ${session.accessToken}',
+        'Content-Type': 'application/json',
+      });
+    if (aiKey != null) request.headers['X-AI-Key'] = aiKey;
+    if (body != null) request.body = jsonEncode(body);
+    final transport = http.Client();
+    try {
+      final response = await (() async => http.Response.fromStream(
+        await transport.send(request),
+      ))().timeout(const Duration(seconds: 35));
+      if (user?.id != expectedUser) throw const ApiException(401);
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw ApiException(response.statusCode);
+      }
+      return jsonDecode(response.body);
+    } finally {
+      transport.close();
+    }
   }
 
-  static Future<Set<String>?> loadProgress() async {
-    final response = await _request('GET', '/api/v1/progress');
-    if (response == null) return null;
-    final items = response['data'] as List<dynamic>;
-    return items.where((e) => e['completed'] == true).map((e) => e['lesson_id'] as String).toSet();
+  static Future<Set<String>> loadProgress(String userId) async {
+    final items =
+        await request('GET', '/api/v1/progress', expectedUser: userId) as List;
+    return items
+        .where((e) => e['completed'] == true)
+        .map((e) => e['lesson_id'] as String)
+        .toSet();
   }
 
-  static Future<bool> saveProgress(String lessonId) async {
-    final response = await _request('PUT', '/api/v1/progress/$lessonId');
-    return response != null;
+  static Future<void> saveProgress(String userId, String lessonId) async {
+    await request(
+      'PUT',
+      '/api/v1/progress/${Uri.encodeComponent(lessonId)}',
+      expectedUser: userId,
+    );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'cloud_service.dart';
+import 'l10n/generated/app_localizations.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+  const AuthPage({super.key, this.recovery = false});
+  final bool recovery;
   @override
   State<AuthPage> createState() => _AuthPageState();
 }
@@ -13,7 +15,6 @@ class _AuthPageState extends State<AuthPage> {
   bool loading = false;
   bool isSignUp = false;
   String? message;
-
   @override
   void dispose() {
     email.dispose();
@@ -21,53 +22,104 @@ class _AuthPageState extends State<AuthPage> {
     super.dispose();
   }
 
-  Future<void> submit() async {
-    if (email.text.trim().isEmpty || password.text.length < 6) {
-      setState(() => message = 'Enter a valid email and a password of at least 6 characters.');
+  Future<void> submit({bool reset = false}) async {
+    final l = AppLocalizations.of(context)!;
+    final validEmail = RegExp(
+      r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+    ).hasMatch(email.text.trim());
+    if ((!widget.recovery && !validEmail) ||
+        (!reset && password.text.length < 8)) {
+      setState(() => message = l.authInvalid);
       return;
     }
-    setState(() { loading = true; message = null; });
+    setState(() {
+      loading = true;
+      message = null;
+    });
     try {
-      if (isSignUp) {
+      if (widget.recovery) {
+        await CloudService.updatePassword(password.text);
+      } else if (reset) {
+        await CloudService.resetPassword(email.text.trim());
+      } else if (isSignUp) {
         await CloudService.signUp(email.text.trim(), password.text);
       } else {
         await CloudService.signIn(email.text.trim(), password.text);
       }
+      password.clear();
       if (!mounted) return;
-      if (CloudService.user != null) {
+      if (!reset && CloudService.user != null) {
         Navigator.of(context).pop(true);
       } else {
-        setState(() => message = 'Check your email for the confirmation link, then sign in.');
+        setState(() => message = l.checkEmail);
       }
-    } catch (error) {
-      if (mounted) setState(() => message = 'Authentication failed: $error');
+    } catch (_) {
+      if (mounted) setState(() => message = l.authFailed);
     } finally {
       if (mounted) setState(() => loading = false);
     }
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(isSignUp ? 'Create account' : 'Sign in')),
-    body: ListView(padding: const EdgeInsets.all(24), children: [
-      const Icon(Icons.school, size: 70, color: Color(0xFF00D9E8)),
-      const SizedBox(height: 12),
-      const Text('Myanmar AI Coding Academy', textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-      const SizedBox(height: 24),
-      TextField(controller: email, keyboardType: TextInputType.emailAddress,
-        autocorrect: false, decoration: const InputDecoration(labelText: 'Email')),
-      const SizedBox(height: 16),
-      TextField(controller: password, obscureText: true,
-        decoration: const InputDecoration(labelText: 'Password')),
-      if (message != null) Padding(padding: const EdgeInsets.symmetric(vertical: 14),
-        child: Text(message!, style: const TextStyle(color: Colors.amber))),
-      const SizedBox(height: 16),
-      FilledButton(onPressed: loading ? null : submit,
-        child: Text(loading ? 'Please wait...' : (isSignUp ? 'Create account' : 'Sign in'))),
-      TextButton(onPressed: loading ? null : () => setState(() {
-        isSignUp = !isSignUp; message = null;
-      }), child: Text(isSignUp ? 'Already have an account? Sign in' : 'Need an account? Sign up')),
-    ]),
-  );
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final title = widget.recovery
+        ? l.updatePassword
+        : isSignUp
+        ? l.signUp
+        : l.signIn;
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          const Icon(Icons.school, size: 70, color: Color(0xFF00D9E8)),
+          const SizedBox(height: 24),
+          if (!widget.recovery)
+            TextField(
+              controller: email,
+              keyboardType: TextInputType.emailAddress,
+              autocorrect: false,
+              enabled: !loading,
+              decoration: InputDecoration(labelText: l.email),
+            ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: password,
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+            enableIMEPersonalizedLearning: false,
+            enabled: !loading,
+            decoration: InputDecoration(labelText: l.password),
+          ),
+          if (message != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Text(message!),
+            ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: loading ? null : submit,
+            child: Text(loading ? l.wait : title),
+          ),
+          if (!widget.recovery) ...[
+            TextButton(
+              onPressed: loading
+                  ? null
+                  : () => setState(() {
+                      isSignUp = !isSignUp;
+                      message = null;
+                    }),
+              child: Text(l.switchAuth),
+            ),
+            TextButton(
+              onPressed: loading ? null : () => submit(reset: true),
+              child: Text(l.forgotPassword),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }

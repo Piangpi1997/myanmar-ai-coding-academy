@@ -1,6 +1,6 @@
 # Myanmar AI Coding Academy — Development Roadmap
 
-Status: Planning / Prompt package only. This is not yet an APK or functional app.
+Status: Flutter/FastAPI starter extended with a BYOK foundation milestone. Live integrations and release validation remain pending. See [BYOK milestone](BYOK_MILESTONE.md) and its validation report.
 
 ## Product goal
 Build a Myanmar-first Android app that teaches programming from zero to practical professional skills, with bilingual lessons, hands-on coding, AI assistance, practice, and progress tracking.
@@ -80,6 +80,6 @@ prompts/                # Existing master prompts
 - Prefer reliable working vertical slices over a giant scaffold with nonfunctional buttons.
 
 ## Recommended next development task
-**Build Milestone 1 as a real Flutter + FastAPI + Supabase foundation.** Deliver tested code and instructions. Do not attempt the full curriculum and all AI features in one implementation step.
+**Validate the implemented authentication/progress/BYOK/code-runner slice against a real Supabase project, compatible AI model and isolated runner on an Android device.** Then add web preview and graded exercises. Existing checkboxes describe original acceptance targets; they are not evidence of completed live integrations.
 
 Original full product specification: [Master Prompt](../prompts/FINAL_MASTER_PROMPT.md).
