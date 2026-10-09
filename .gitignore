@@ -131,3 +131,6 @@ __pycache__/
 !mobile/android/gradlew
 !mobile/android/gradlew.bat
 !mobile/android/gradle/wrapper/gradle-wrapper.jar
+
+# IDE-local project metadata
+*.iml
