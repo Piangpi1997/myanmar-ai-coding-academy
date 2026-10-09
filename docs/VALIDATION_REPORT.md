@@ -14,7 +14,7 @@ Branch: `development/byok-foundation`. This report describes local checks, not p
 | `flutter pub get --offline` | Passed using official package archives with SHA256 verification; committed mobile dependency lock |
 | `flutter gen-l10n` | Passed |
 | `flutter analyze` | Passed: **no issues found** |
-| `flutter test --reporter expanded` | Passed: **8 tests** |
+| `flutter test --reporter expanded` | Passed: **10 tests** |
 | `git diff --check` | Passed |
 | `flutter build apk --debug` | Attempted; failed: **No Android SDK found** |
 | Release APK | Not attempted: no Android SDK or private release signing configuration |
@@ -25,7 +25,7 @@ Flutter 3.35.7 / Dart 3.9.2 were used. Commands ran with `CI=true`, `FLUTTER_SUP
 
 Backend checks cover signed JWT claims/expiry/audience/issuer/role, authorization isolation, validation/error redaction, body bounds, per-user quotas, fixed provider routing/key forwarding, upstream failures/redirects, runner resource requests, actual-result decoding and invalid runner tokens. Upstream services and PostgREST are substituted in these tests. These results do **not** verify a real provider account, real Supabase RLS, runner kernel isolation or billing.
 
-Mobile checks cover the existing lesson catalog, Home/Learn navigation, instant language switching with preference persistence, Python indentation, account-scoped BYOK storage behavior, guest/account progress separation, offline retry, delayed responses after an account switch and concurrent completion persistence. Storage tests use plugin mocks; Android keystore/device behavior still needs a physical-device test.
+Mobile checks cover the existing lesson catalog, Home/Learn navigation, instant language switching with preference persistence, legacy plaintext-session removal without deleting learning history, project-scoped PKCE storage, Python indentation, account-scoped BYOK storage behavior, guest/account progress separation, offline retry, delayed responses after an account switch and concurrent completion persistence. Storage tests use plugin mocks; Android keystore/device behavior still needs a physical-device test.
 
 No Supabase credentials, provider keys, Judge0 deployment or signing keystore were supplied. Migration 002 was written but not applied to a live database. No actual user code or paid AI request was executed against a remote service. No APK was generated locally. No physical-device/manual end-to-end workflow or vulnerability/database-policy scan was completed. The CI workflow is provided to repeat analysis/tests and build a guest-mode debug APK on an Android-equipped runner; its remote outcome must be checked separately.
 

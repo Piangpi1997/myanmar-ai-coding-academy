@@ -33,6 +33,10 @@ class CloudService {
         publishableKey: supabaseAnonKey,
         authOptions: FlutterAuthClientOptions(
           localStorage: SecureSessionStorage(uri.host),
+          pkceAsyncStorage: SecurePkceStorage(uri.host),
+          detectSessionInUriPredicate: (callback) =>
+              callback.scheme == 'com.piangpi.myanmaracademy' &&
+              callback.host == 'auth-callback',
         ),
       );
       _ready = true;

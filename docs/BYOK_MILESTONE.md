@@ -7,7 +7,7 @@ This milestone continues the existing Flutter, FastAPI and SQL foundation. It pr
 
 ## Implemented source
 
-- Supabase email sign-in/registration, confirmation handling, password recovery callback, session restoration in encrypted local storage and local sign-out.
+- Supabase email sign-in/registration, confirmation handling, password recovery callback, session restoration and PKCE verifiers in encrypted local storage, removal of this project's legacy plaintext session, restricted recovery callback and local sign-out.
 - Authentication-state listener updates the active account; guest and every account use separate progress, code draft, BYOK settings and chat-history namespaces.
 - Serialized progress persistence merges only the same user's local/cloud completions. Offline completions remain local and retry on explicit sync or app resume. A generation guard discards results from a previous account. Guest data is never silently imported into an account.
 - BYOK settings with four fixed providers, editable model ID, obscured key, explicit data-sharing notice, encrypted storage and removal. No key is embedded at build time.
