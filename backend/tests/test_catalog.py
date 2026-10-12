@@ -1,4 +1,5 @@
 import ast
+import json
 from pathlib import Path
 from fastapi.testclient import TestClient
 from app.catalog import catalog
@@ -16,7 +17,7 @@ def test_catalog_has_original_bilingual_content_and_no_private_cases():
     project_ids = {p.id for p in catalog.projects}
     for path in catalog.paths:
         assert set(path.exercise_ids) <= EXERCISE_IDS and set(path.project_ids) <= project_ids
-        assert set(path.lesson_ids) <= {f'py-{n:02}' for n in range(1,13)}
+        assert set(path.lesson_ids) <= ({f'py-{n:02}' for n in range(1,13)} | {lesson['id'] for lesson in json.loads((Path(__file__).resolve().parents[2] / 'content/python_course.json').read_text())['lessons']})
     for project in catalog.projects:
         assert len({s.id for s in project.steps}) == len(project.steps)
         assert all(s.text.my and s.text.en for s in project.steps)

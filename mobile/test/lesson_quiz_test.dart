@@ -42,7 +42,11 @@ void main() {
         }
         expect(guide.correct, inInclusiveRange(0, guide.enOptions.length - 1));
         expect(guide.myOptions.length, guide.enOptions.length);
-        expect(guide.reference, startsWith('https://docs.python.org/3/'));
+        expect(
+          guide.reference.startsWith('https://docs.python.org/3/') ||
+              guide.reference.startsWith('https://git-scm.com/docs/'),
+          isTrue,
+        );
       }
     },
   );

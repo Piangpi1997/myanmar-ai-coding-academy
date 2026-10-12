@@ -6,9 +6,9 @@ import 'package:myanmar_ai_coding_academy/lessons.dart';
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
-  test('Starter lesson library contains twelve unique lessons', () {
-    expect(pythonLessons.length, 12);
-    expect(pythonLessons.map((e) => e.id).toSet().length, 12);
+  test('Course preserves starter IDs and ships 36 unique lessons', () {
+    expect(pythonLessons.length, 36);
+    expect(pythonLessons.map((e) => e.id).toSet().length, 36);
     expect(pythonLessons.every((e) => e.code.isNotEmpty), isTrue);
   });
 

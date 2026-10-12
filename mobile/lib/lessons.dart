@@ -1,28 +1,11 @@
-class Lesson {
-  const Lesson({
-    required this.id,
-    required this.titleMy,
-    required this.titleEn,
-    required this.summaryMy,
-    required this.bodyMy,
-    required this.code,
-    required this.challengeMy,
-    required this.answer,
-  });
+import 'lesson_models.dart';
+import 'generated/python_course.dart';
+export 'lesson_models.dart' show Lesson;
 
-  final String id;
-  final String titleMy;
-  final String titleEn;
-  final String summaryMy;
-  final String bodyMy;
-  final String code;
-  final String challengeMy;
-  final String answer;
-}
-
-const pythonLessons = <Lesson>[
+const foundationLessons = <Lesson>[
   Lesson(
     id: 'py-01',
+    flow: ["Source / Code", "Interpreter / လုပ်ဆောင်", "Output / ရလဒ်"],
     titleMy: 'Python ကို စတင်လေ့လာခြင်း',
     titleEn: 'Introduction to Python',
     summaryMy: 'Python ဆိုတာ ဘာလဲ၊ ဘယ်နေရာတွေမှာ သုံးလဲ။',
@@ -34,6 +17,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-02',
+    flow: ["Expression / တွက်ချက်", "Binding / နာမည်ချည်", "Read / ပြန်ဖတ်"],
     titleMy: 'Variable နှင့် Data',
     titleEn: 'Variables and Data',
     summaryMy: 'တန်ဖိုးတွေကို နာမည်ပေးပြီး သိမ်းဆည်းခြင်း။',
@@ -46,6 +30,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-03',
+    flow: ["String / စာသား", "Convert / ပြောင်း", "Number / ကိန်း"],
     titleMy: 'String နှင့် Number',
     titleEn: 'Strings and Numbers',
     summaryMy: 'စာသားနှင့် ကိန်းဂဏန်းများ၏ ကွာခြားချက်။',
@@ -58,6 +43,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-04',
+    flow: ["Input / လက်ခံ", "Convert / ပြောင်း", "Output / ပြ"],
     titleMy: 'User Input',
     titleEn: 'User Input',
     summaryMy: 'အသုံးပြုသူဆီက အချက်အလက် လက်ခံခြင်း။',
@@ -69,6 +55,11 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-05',
+    flow: [
+      "Operands / တန်ဖိုးများ",
+      "Operator / လုပ်ဆောင်ချက်",
+      "Result / ရလဒ်",
+    ],
     titleMy: 'Operators',
     titleEn: 'Operators',
     summaryMy: 'ပေါင်း၊ နှုတ်၊ မြှောက်၊ စားနှင့် နှိုင်းယှဉ်ခြင်း။',
@@ -80,6 +71,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-06',
+    flow: ["Condition / စစ်", "Branch / ရွေး", "Action / လုပ်"],
     titleMy: 'If / Else',
     titleEn: 'Conditions',
     summaryMy: 'အခြေအနေပေါ်မူတည်၍ ဆုံးဖြတ်ခြင်း။',
@@ -93,6 +85,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-07',
+    flow: ["Sequence / စာရင်း", "Next item / နောက်အရာ", "Body / လုပ်ဆောင်"],
     titleMy: 'For Loop',
     titleEn: 'For Loops',
     summaryMy: 'အလုပ်တစ်ခုကို ထပ်ခါတလဲလဲ လုပ်ဆောင်ခြင်း။',
@@ -105,6 +98,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-08',
+    flow: ["Condition / စစ်", "Body / လုပ်ဆောင်", "Update / ပြောင်း"],
     titleMy: 'While Loop',
     titleEn: 'While Loops',
     summaryMy: 'Condition မှန်နေသရွေ့ ထပ်မံလုပ်ဆောင်ခြင်း။',
@@ -116,6 +110,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-09',
+    flow: ["List / စာရင်း", "Index / ရွေး", "Item / တန်ဖိုး"],
     titleMy: 'List နှင့် Collection',
     titleEn: 'Lists',
     summaryMy: 'တန်ဖိုးအများကြီးကို စုစည်းထားခြင်း။',
@@ -129,6 +124,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-10',
+    flow: ["Arguments / ပို့", "Function / လုပ်", "Return / ပြန်"],
     titleMy: 'Function တည်ဆောက်ခြင်း',
     titleEn: 'Functions',
     summaryMy: 'ပြန်လည်အသုံးပြုနိုင်သော Code အစုများ။',
@@ -143,6 +139,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-11',
+    flow: ["Key / နာမည်", "Lookup / ရှာ", "Value / တန်ဖိုး"],
     titleMy: 'Dictionary နှင့် Key / Value',
     titleEn: 'Dictionaries',
     summaryMy: 'Key ဖြင့် အချက်အလက် ရှာဖတ်၊ ပြင်ဆင်ခြင်း။',
@@ -156,6 +153,7 @@ const pythonLessons = <Lesson>[
   ),
   Lesson(
     id: 'py-12',
+    flow: ["Try / လုပ်", "Exception / အမှား", "Recover / ဖြေရှင်း"],
     titleMy: 'အမှားများကို ကိုင်တွယ်ခြင်း',
     titleEn: 'Error Handling',
     summaryMy:
@@ -169,3 +167,5 @@ const pythonLessons = <Lesson>[
         'try:\n    age = int(input("Age: "))\n    if age < 0:\n        print("Age cannot be negative.")\n    else:\n        print(age + 1)\nexcept ValueError:\n    print("Please enter a valid integer.")',
   ),
 ];
+
+const pythonLessons = <Lesson>[...foundationLessons, ...extendedLessons];

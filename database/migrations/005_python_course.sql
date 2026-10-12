@@ -1,0 +1,27 @@
+-- Original course expansion; apply after 004. Preserve existing IDs and progress.
+insert into public.lessons(id,course_id,title_my,title_en,sort_order) values
+('py-13','python-zero','Tuple နှင့် unpacking','Tuples and unpacking',13),
+('py-14','python-zero','Set ဖြင့် ထပ်နေသော data ဖယ်ရှားခြင်း','Sets and membership',14),
+('py-15','python-zero','String သန့်စင်ခြင်းနှင့် format','String cleaning and formatting',15),
+('py-16','python-zero','List comprehension ဖြင့် ပြောင်းလဲခြင်း','List comprehensions',16),
+('py-17','python-zero','Module နှင့် import ကို စနစ်တကျ သုံးခြင်း','Modules and imports',17),
+('py-18','python-zero','JSON ကို encode၊ decode လုပ်ခြင်း','JSON serialization',18),
+('py-19','python-zero','Pathlib နှင့် ဖိုင်လမ်းကြောင်း','Paths with pathlib',19),
+('py-20','python-zero','ဖိုင်ဖတ်ရေးနှင့် encoding','Text files and encoding',20),
+('py-21','python-zero','CSV ဇယားဖတ်ခြင်း','CSV records',21),
+('py-22','python-zero','Exception အမျိုးအစားနှင့် raise','Exception boundaries',22),
+('py-23','python-zero','Class နှင့် instance','Classes and instances',23),
+('py-24','python-zero','Composition နှင့် တာဝန်ခွဲခြင်း','Composition over tangled state',24),
+('py-25','python-zero','Virtual environment နှင့် dependency','Virtual environments and dependencies',25),
+('py-26','python-zero','Regex ဖြင့် ရှာခြင်းနှင့် စစ်ခြင်း','Regular expressions',26),
+('py-27','python-zero','SQLite နှင့် parameterized query','SQLite and parameter binding',27),
+('py-28','python-zero','Unit test နှင့် boundary cases','Unit tests and boundaries',28),
+('py-29','python-zero','Decorator နှင့် function wrapper','Decorators',29),
+('py-30','python-zero','Generator နှင့် lazy iteration','Generators',30),
+('py-31','python-zero','Context manager ဖြင့် cleanup','Context managers',31),
+('py-32','python-zero','Type hints နှင့် runtime validation','Type hints and validation',32),
+('py-33','python-zero','Git နှင့် စစ်ဆေးနိုင်သော commits','Git and reviewable commits',33),
+('py-34','python-zero','Clean code နှင့် တန်ဖိုးစမ်းနိုင်သော functions','Clean functions and contracts',34),
+('py-35','python-zero','Secret configuration နှင့် log privacy','Secrets and configuration boundaries',35),
+('py-36','python-zero','Interview လေ့ကျင့်ရန် binary search','Binary search and interview reasoning',36)
+on conflict(id) do nothing;

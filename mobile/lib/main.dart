@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'lessons.dart';
 import 'lesson_guides.dart';
 import 'features/learning/lesson_quiz.dart';
+import 'features/learning/course_browser.dart';
 import 'features/learning/learning_hub_page.dart';
 import 'features/learning/attempt_history_page.dart';
 import 'cloud_service.dart';
@@ -434,90 +435,51 @@ class _AcademyShellState extends State<AcademyShell>
     ),
   );
 
-  Widget _courses() => ListView(
-    padding: const EdgeInsets.all(16),
-    children: [
-      Text(
-        tr('Python သင်ခန်းစာများ', 'Python Lessons'),
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        tr(
-          'Starter Course — အခြေခံ သင်ခန်းစာ ${pythonLessons.length} ခု',
-          'Starter course — ${pythonLessons.length} beginner lessons',
+  Widget _courses() => CourseBrowser(
+    english: english,
+    completed: completed,
+    actions: Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        OutlinedButton.icon(
+          onPressed: () => _openLearning(0),
+          icon: const Icon(Icons.route_outlined),
+          label: Text(AppLocalizations.of(context)!.learningPaths),
         ),
-      ),
-      const SizedBox(height: 14),
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          OutlinedButton.icon(
-            onPressed: () => _openLearning(0),
-            icon: const Icon(Icons.route_outlined),
-            label: Text(AppLocalizations.of(context)!.learningPaths),
-          ),
-          OutlinedButton.icon(
-            onPressed: () => _openLearning(1),
-            icon: const Icon(Icons.terminal),
-            label: Text(AppLocalizations.of(context)!.codingChallenges),
-          ),
-          OutlinedButton.icon(
-            onPressed: () => _openLearning(2),
-            icon: const Icon(Icons.construction),
-            label: Text(AppLocalizations.of(context)!.guidedProjects),
-          ),
-        ],
-      ),
-      const SizedBox(height: 14),
-      for (var i = 0; i < pythonLessons.length; i++)
-        Card(
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: completed.contains(pythonLessons[i].id)
-                  ? Colors.green
-                  : _purple,
-              child: completed.contains(pythonLessons[i].id)
-                  ? const Icon(Icons.check)
-                  : Text('${i + 1}'),
-            ),
-            title: Text(
-              english ? pythonLessons[i].titleEn : pythonLessons[i].titleMy,
-            ),
-            subtitle: Text(
-              english
-                  ? lessonGuides[pythonLessons[i].id]!.en['objectives']!
-                  : pythonLessons[i].summaryMy,
-              maxLines: 2,
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context)
-                .push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => LessonPage(
-                      lesson: pythonLessons[i],
-                      english: english,
-                      completed: completed.contains(pythonLessons[i].id),
-                      onComplete: _completionFor(pythonLessons[i], account),
-                      onCode: _openCode,
-                      onTutor: () => setState(() {
-                        lessonContext = lessonGuides[pythonLessons[i].id]!.text(
-                          english,
-                        )['body']!;
-                        codeContext = pythonLessons[i].code;
-                        tab = 3;
-                        visitedTabs.add(3);
-                      }),
-                    ),
-                  ),
-                )
-                .then((_) {
-                  if (mounted) setState(() {});
-                }),
-          ),
+        OutlinedButton.icon(
+          onPressed: () => _openLearning(1),
+          icon: const Icon(Icons.terminal),
+          label: Text(AppLocalizations.of(context)!.codingChallenges),
         ),
-    ],
+        OutlinedButton.icon(
+          onPressed: () => _openLearning(2),
+          icon: const Icon(Icons.construction),
+          label: Text(AppLocalizations.of(context)!.guidedProjects),
+        ),
+      ],
+    ),
+    onLesson: (lesson) => Navigator.of(context)
+        .push(
+          MaterialPageRoute<void>(
+            builder: (_) => LessonPage(
+              lesson: lesson,
+              english: english,
+              completed: completed.contains(lesson.id),
+              onComplete: _completionFor(lesson, account),
+              onCode: _openCode,
+              onTutor: () => setState(() {
+                lessonContext = lessonGuides[lesson.id]!.text(english)['body']!;
+                codeContext = lesson.code;
+                tab = 3;
+                visitedTabs.add(3);
+              }),
+            ),
+          ),
+        )
+        .then((_) {
+          if (mounted) setState(() {});
+        }),
   );
 
   Future<void> Function() _completionFor(Lesson lesson, String? owner) =>
@@ -667,7 +629,40 @@ class _LessonPageState extends State<LessonPage> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Text(lesson.titleEn, style: const TextStyle(color: _cyan)),
+          Text(
+            '${lesson.titleEn} · ${courseLevel(lesson.level, widget.english)}',
+            style: const TextStyle(color: _cyan),
+          ),
+          if (lesson.prerequisites.isNotEmpty)
+            Text(
+              '${widget.english ? 'Recommended first' : 'အရင်လေ့လာရန်'}: ${lesson.prerequisites.join(', ')}',
+            ),
+          if (lesson.environment == 'computer')
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  widget.english
+                      ? 'Run this example in your own computer development environment. It needs files or installed tools that the restricted mobile Python sandbox may not provide.'
+                      : 'ဒီနမူနာကို computer ပေါ်ရှိ development environment တွင် run ပါ။ Mobile sandbox တွင် ကန့်သတ်ထားသော ဖိုင် သို့မဟုတ် tools လိုအပ်နိုင်သည်။',
+                ),
+              ),
+            ),
+          if (lesson.flow.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                for (var i = 0; i < lesson.flow.length; i++) ...[
+                  Chip(label: Text(lesson.flow[i])),
+                  if (i < lesson.flow.length - 1)
+                    const Icon(Icons.arrow_forward, size: 18),
+                ],
+              ],
+            ),
+          ],
           const SizedBox(height: 18),
           Text(l.objectives, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),

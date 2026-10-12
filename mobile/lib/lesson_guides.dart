@@ -1,22 +1,8 @@
-// Original bilingual beginner guides. References explain concepts; text is authored for this app.
-class LessonGuide {
-  const LessonGuide({
-    required this.my,
-    required this.en,
-    required this.myOptions,
-    required this.enOptions,
-    required this.correct,
-    required this.reference,
-  });
-  final Map<String, String> my, en;
-  final List<String> myOptions, enOptions;
-  final int correct;
-  final String reference;
-  Map<String, String> text(bool english) => english ? en : my;
-  List<String> options(bool english) => english ? enOptions : myOptions;
-}
+import 'lesson_models.dart';
+import 'generated/python_course.dart';
+export 'lesson_models.dart' show LessonGuide;
 
-const lessonGuides = <String, LessonGuide>{
+const foundationGuides = <String, LessonGuide>{
   "py-01": LessonGuide(
     my: {
       "objectives":
@@ -488,4 +474,9 @@ const lessonGuides = <String, LessonGuide>{
     correct: 1,
     reference: "https://docs.python.org/3/tutorial/errors.html",
   ),
+};
+
+const lessonGuides = <String, LessonGuide>{
+  ...foundationGuides,
+  ...extendedGuides,
 };

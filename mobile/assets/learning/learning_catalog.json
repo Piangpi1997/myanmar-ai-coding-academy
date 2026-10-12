@@ -653,7 +653,10 @@
         "py-03",
         "py-09",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-21",
+        "py-27",
+        "py-34"
       ],
       "reference": "https://docs.python.org/3/library/decimal.html"
     },
@@ -807,7 +810,9 @@
       "lesson_ids": [
         "py-09",
         "py-10",
-        "py-12"
+        "py-12",
+        "py-19",
+        "py-20"
       ],
       "reference": "https://docs.python.org/3/library/pathlib.html"
     },
@@ -961,7 +966,9 @@
       "lesson_ids": [
         "py-10",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-27",
+        "py-28"
       ],
       "reference": "https://docs.python.org/3/library/sqlite3.html"
     },
@@ -1115,7 +1122,10 @@
       "lesson_ids": [
         "py-10",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-22",
+        "py-28",
+        "py-35"
       ],
       "reference": "https://supabase.com/docs/guides/auth"
     },
@@ -1453,7 +1463,11 @@
         "py-09",
         "py-10",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-13",
+        "py-14",
+        "py-15",
+        "py-16"
       ],
       "exercise_ids": [
         "sum-two",
@@ -1491,7 +1505,31 @@
         "py-09",
         "py-10",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-13",
+        "py-14",
+        "py-15",
+        "py-16",
+        "py-17",
+        "py-18",
+        "py-19",
+        "py-20",
+        "py-21",
+        "py-22",
+        "py-23",
+        "py-24",
+        "py-25",
+        "py-26",
+        "py-27",
+        "py-28",
+        "py-29",
+        "py-30",
+        "py-31",
+        "py-32",
+        "py-33",
+        "py-34",
+        "py-35",
+        "py-36"
       ],
       "exercise_ids": [
         "sum-list",
@@ -1546,7 +1584,16 @@
         "py-06",
         "py-10",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-17",
+        "py-18",
+        "py-22",
+        "py-23",
+        "py-24",
+        "py-27",
+        "py-28",
+        "py-32",
+        "py-35"
       ],
       "exercise_ids": [
         "sum-two",
@@ -1599,7 +1646,12 @@
         "py-09",
         "py-10",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-17",
+        "py-18",
+        "py-25",
+        "py-28",
+        "py-35"
       ],
       "exercise_ids": [
         "count-vowels",
@@ -1632,7 +1684,13 @@
         "py-09",
         "py-10",
         "py-11",
-        "py-12"
+        "py-12",
+        "py-17",
+        "py-18",
+        "py-27",
+        "py-28",
+        "py-33",
+        "py-35"
       ],
       "exercise_ids": [
         "sum-list",
