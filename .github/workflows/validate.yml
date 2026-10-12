@@ -22,6 +22,7 @@ jobs:
           cache-dependency-path: backend/requirements.lock.txt
       - run: pip install -r backend/requirements.lock.txt
       - run: pip check
+      - run: python scripts/sync-learning-catalog.py --check
       - run: pytest -q
         working-directory: backend
   mobile:

@@ -3,6 +3,35 @@
 Base commit: `3b31c82a3c35dc10fb15109c2b119c2efa6d7767`.
 Branch: `development/byok-foundation`. This report describes local checks, not production certification.
 
+## Learning workspace update — 2026-10-12 (0.4.0+4)
+
+Base: `5eff9f2c9cd8e9e9a61fd01ec7b59b71f3b8e1b9`. Branch: `development/byok-foundation`.
+
+| Command actually executed | Result |
+|---|---|
+| `pip install -r backend/requirements.lock.txt` in a fresh Python 3.12 venv | Installed successfully |
+| `python -m pip check` | Passed |
+| `python -m pytest -q backend` | **62 passed**, one Starlette/httpx test-client deprecation warning |
+| `python -m compileall -q backend/app` | Passed |
+| `python scripts/sync-learning-catalog.py --check` | Passed; canonical/public runtime copies match |
+| `flutter pub get --offline` | Passed; no new packages added |
+| `flutter gen-l10n` | Passed |
+| `dart format lib test` | Passed |
+| `flutter analyze --no-pub` | Passed: **no issues found** |
+| `flutter test --no-pub --reporter expanded` | **37 passed** |
+| `git diff --check` | Passed |
+| `flutter build apk --debug --no-pub` | Attempted locally; blocked by **No Android SDK found** |
+| Windows PowerShell / Android Studio / physical-device run | Not executed here |
+| Release APK | Not attempted; production signing/integration remains pending |
+
+Checks caught and repaired an asset/font YAML indentation error, style lints, a test loader's fake-clock asset I/O issue, a lazy finder issue, and an actual checkbox cascade bug that removed newly added checkpoint IDs. The final passing suite verifies checkpoint persistence and stale-account/corrupt-data preservation. New mobile tests also cover actual offline catalog structure, path choice, navigation, draft editing without fabricated run output, UUID receipts and invalid grade rejection.
+
+New backend tests cover authenticated grading, server-only credential handling, fresh conformance-case contracts, actual-result comparison, error handling, source-digest/owner persistence, idempotency, pending receipts, quotas, internal runner faults, strict output comparisons and public catalog consistency. API/database/runner transports are mocked. **Trusted authored sample solutions** are additionally executed in isolated child test processes with empty inherited environments and checked against public/generated cases. No submitted learner code runs in the API/test main process, and these checks do not certify a live Judge0 host.
+
+No live Supabase secret, database-policy environment, runner or Android device was supplied. Migration 004 is source-only and was not applied to a live database. No real provider request or remote learner execution occurred. The new commit's CI APK outcome is recorded on its PR/Actions page after publication; previous 0.3.0 artifacts do not include this workspace.
+
+See [learning workspace](LEARNING_WORKSPACE.md) for implemented files, backend-only variables, endpoint contracts, deployment steps, honest feature limitations and the next curriculum milestone.
+
 ## Current update (0.3.0+3)
 
 Base of this update: `5e2c31113f088197fa3f4466657af3b59762ef73`.

@@ -121,7 +121,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Secure storage unavailable. Please retry; nothing was sent.';
 
   @override
-  String get signInRequired => 'Sign in to use cloud AI and code execution.';
+  String get signInRequired =>
+      'Sign in with a configured backend to execute Python and submit assessments. Guest BYOK AI works without login.';
 
   @override
   String get byokRequired => 'Add your provider and key in AI settings first.';
@@ -312,4 +313,157 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startExercise => 'Practice in Code Lab';
+
+  @override
+  String get learningHub => 'Learning workspace';
+
+  @override
+  String get learningPaths => 'Learning paths';
+
+  @override
+  String get codingChallenges => 'Coding challenges';
+
+  @override
+  String get guidedProjects => 'Guided projects';
+
+  @override
+  String get searchLearning => 'Search paths, challenges and projects';
+
+  @override
+  String get catalogError =>
+      'Local learning material could not be read. Try again.';
+
+  @override
+  String get pathNotice =>
+      'Paths organize the currently shipped lessons and project guides. A guide is not a complete advanced course.';
+
+  @override
+  String get choosePath => 'Choose this path';
+
+  @override
+  String get foundationLessons => 'Foundation lessons';
+
+  @override
+  String get projectLevel => 'Project level';
+
+  @override
+  String get allLevels => 'All levels';
+
+  @override
+  String get beginnerLevel => 'Beginner';
+
+  @override
+  String get intermediateLevel => 'Intermediate';
+
+  @override
+  String get advancedLevel => 'Advanced';
+
+  @override
+  String get projectRequirements => 'Requirements';
+
+  @override
+  String get projectArchitecture => 'Architecture';
+
+  @override
+  String get projectWorkflow => 'Step-by-step workflow';
+
+  @override
+  String get projectTests => 'Tests to perform';
+
+  @override
+  String get projectTroubleshooting => 'Troubleshooting';
+
+  @override
+  String get projectCompletion => 'Completion requirements';
+
+  @override
+  String get projectNotes => 'Your project notes';
+
+  @override
+  String get projectProgressNotice =>
+      'Mark steps you have completed. Progress is local and separated by account/guest. It is not certification or server verification.';
+
+  @override
+  String get starterCode => 'Starter snippet';
+
+  @override
+  String get starterNotice =>
+      'This snippet is a starting component. Build the guide’s requirements and complete its tests before marking the project finished.';
+
+  @override
+  String get publicExamples => 'Public worked examples';
+
+  @override
+  String get expectedOutput => 'Expected output';
+
+  @override
+  String get selectExample => 'Select example';
+
+  @override
+  String get runExample => 'Run example';
+
+  @override
+  String get assessmentNotice =>
+      'Edit code and read hints/examples offline. Actual execution and server grading require an account, HTTPS backend, verified sandbox and configured assessment storage.';
+
+  @override
+  String get submitAssessment => 'Submit for server grading';
+
+  @override
+  String get checkResult => 'Check existing result';
+
+  @override
+  String get newAttempt => 'Start a new attempt';
+
+  @override
+  String get newAttemptWarning =>
+      'The earlier execution may still finish. A new attempt starts separate execution and uses quota. The previous request is never automatically run again.';
+
+  @override
+  String get pendingAttempt =>
+      'An earlier attempt is unresolved. Check its result or explicitly start a new attempt.';
+
+  @override
+  String get gradePassed => 'All server checks passed for the submitted code.';
+
+  @override
+  String get gradeWrong =>
+      'Output does not match. Check varied inputs, boundaries and extra prints.';
+
+  @override
+  String get gradeRuntime =>
+      'Execution/compilation failed. Run a public example to inspect the error.';
+
+  @override
+  String get gradeTimeout =>
+      'The time limit was reached. Check loop termination.';
+
+  @override
+  String get gradeOutput =>
+      'Output exceeded the limit. Check unnecessary prints and loops.';
+
+  @override
+  String get gradeService =>
+      'Server/sandbox grading did not complete. Check quotas, configuration and connectivity; this is not a passing result.';
+
+  @override
+  String get sampleSolution => 'View a sample solution';
+
+  @override
+  String get attemptNotFound =>
+      'The attempt was not found. It may never have reached the server; explicitly start a new attempt only when ready.';
+
+  @override
+  String get assessmentHistory => 'Server assessment history';
+
+  @override
+  String get historyNotice =>
+      'These are your latest 30 server-recorded code attempts. Viewing a sample solution does not automatically award a passing grade.';
+
+  @override
+  String get noAttempts => 'No server attempts yet.';
+
+  @override
+  String get gradeNotPassed =>
+      'The assessment has not passed. Review the challenge before starting a new attempt.';
 }

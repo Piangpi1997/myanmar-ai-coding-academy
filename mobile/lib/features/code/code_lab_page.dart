@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../cloud_service.dart';
 import '../../core/messages.dart';
 import '../../core/secure_store.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'python_controller.dart';
+import 'python_editor.dart';
 
 class CodeLabPage extends StatefulWidget {
   const CodeLabPage({
@@ -156,7 +155,6 @@ class _CodeLabPageState extends State<CodeLabPage> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     if (loading) return const Center(child: CircularProgressIndicator());
-    final lines = code.text.split('\n');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -199,84 +197,16 @@ class _CodeLabPageState extends State<CodeLabPage> {
             ),
           ],
         ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final longest = lines.fold<int>(
-              0,
-              (n, line) => math.max(n, line.length),
-            );
-            final width = math.max(
-              constraints.maxWidth - 52,
-              longest * fontSize * 0.65 + 40,
-            );
-            return Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).dividerColor),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 16,
-                      ),
-                      child: Text(
-                        List.generate(
-                          lines.length,
-                          (i) => '${i + 1}',
-                        ).join('\n'),
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: fontSize,
-                          height: 1.5,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: width,
-                      child: TextField(
-                        controller: code,
-                        onChanged: changed,
-                        minLines: 10,
-                        maxLines: null,
-                        maxLength: 16000,
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        enableIMEPersonalizedLearning: false,
-                        inputFormatters: [
-                          PythonIndentFormatter(),
-                          LengthLimitingTextInputFormatter(16000),
-                        ],
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: fontSize,
-                          height: 1.5,
-                        ),
-                        decoration: InputDecoration(
-                          semanticCounterText: l.code,
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 8,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
+        PythonEditor(
+          controller: code,
+          onChanged: changed,
+          fontSize: fontSize,
+          enabled: !running,
         ),
         const SizedBox(height: 16),
         TextField(
           controller: stdin,
+          enabled: !running,
           maxLines: 3,
           maxLength: 4000,
           onChanged: changed,

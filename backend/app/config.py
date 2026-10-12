@@ -4,6 +4,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     supabase_url: str = ''
     supabase_anon_key: str = ''
+    # Server-only secret/service_role key for verified assessment writes. Never in APK.
+    supabase_secret_key: str = ''
     supabase_jwt_audience: str = 'authenticated'
     allowed_origins: str = ''
     judge0_url: str = ''

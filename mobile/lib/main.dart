@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'lessons.dart';
 import 'lesson_guides.dart';
 import 'features/learning/lesson_quiz.dart';
+import 'features/learning/learning_hub_page.dart';
+import 'features/learning/attempt_history_page.dart';
 import 'cloud_service.dart';
 import 'auth_page.dart';
 
@@ -240,6 +242,49 @@ class _AcademyShellState extends State<AcademyShell>
     visitedTabs.add(3);
   });
 
+  void _openLearning(int initialTab) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => LearningHubPage(
+          account: account,
+          completed: {...completed},
+          initialTab: initialTab,
+          onCode: (code) async {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            await _openCode(code);
+          },
+          onTutor: (code) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            _askCode(code);
+          },
+          onLesson: (id) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            final lesson = pythonLessons.firstWhere(
+              (lesson) => lesson.id == id,
+            );
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => LessonPage(
+                  lesson: lesson,
+                  english: english,
+                  completed: completed.contains(id),
+                  onComplete: _completionFor(lesson, account),
+                  onCode: _openCode,
+                  onTutor: () => setState(() {
+                    lessonContext = lessonGuides[id]!.text(english)['body']!;
+                    codeContext = lesson.code;
+                    tab = 3;
+                    visitedTabs.add(3);
+                  }),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   String tr(String my, String en) => english ? en : my;
 
   @override
@@ -404,6 +449,28 @@ class _AcademyShellState extends State<AcademyShell>
         ),
       ),
       const SizedBox(height: 14),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          OutlinedButton.icon(
+            onPressed: () => _openLearning(0),
+            icon: const Icon(Icons.route_outlined),
+            label: Text(AppLocalizations.of(context)!.learningPaths),
+          ),
+          OutlinedButton.icon(
+            onPressed: () => _openLearning(1),
+            icon: const Icon(Icons.terminal),
+            label: Text(AppLocalizations.of(context)!.codingChallenges),
+          ),
+          OutlinedButton.icon(
+            onPressed: () => _openLearning(2),
+            icon: const Icon(Icons.construction),
+            label: Text(AppLocalizations.of(context)!.guidedProjects),
+          ),
+        ],
+      ),
+      const SizedBox(height: 14),
       for (var i = 0; i < pythonLessons.length; i++)
         Card(
           child: ListTile(
@@ -521,6 +588,16 @@ class _AcademyShellState extends State<AcademyShell>
           ),
         ),
         if (account != null) ...[
+          ListTile(
+            leading: const Icon(Icons.fact_check_outlined),
+            title: Text(l.assessmentHistory),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => AttemptHistoryPage(account: account!),
+              ),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.sync),
             title: Text(

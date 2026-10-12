@@ -26,6 +26,10 @@ flutter run \
 
 All API origins must use HTTPS. Do not put service-role, AI or Judge0 secrets in Dart defines. Add `com.piangpi.myanmaracademy://auth-callback` to Supabase's allowed redirect URLs. Use an asymmetric Supabase JWT signing key (RS256/ES256); legacy HS256 is unsupported by this backend.
 
+## Learning workspace
+
+Learn now links to seven pathways, six Python challenges and sixteen project guides. Drafts, selected paths, project checkpoints and notes are account/guest scoped; guest use is local/offline. Account users can read server assessment history. See [learning workspace](../docs/LEARNING_WORKSPACE.md) for actual scope, privacy, assessment setup and limitations. Project checkboxes are self-reported, not server certificates. Actual Python running/grading still requires configured services.
+
 ## Run from Android Studio on Windows
 
 1. Fetch and switch to `development/byok-foundation`; preserve or commit your own local edits before switching.

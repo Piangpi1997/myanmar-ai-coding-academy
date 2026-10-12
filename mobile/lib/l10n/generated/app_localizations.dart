@@ -305,7 +305,7 @@ abstract class AppLocalizations {
   /// No description provided for @signInRequired.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to use cloud AI and code execution.'**
+  /// **'Sign in with a configured backend to execute Python and submit assessments. Guest BYOK AI works without login.'**
   String get signInRequired;
 
   /// No description provided for @byokRequired.
@@ -661,6 +661,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Practice in Code Lab'**
   String get startExercise;
+
+  /// No description provided for @learningHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning workspace'**
+  String get learningHub;
+
+  /// No description provided for @learningPaths.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning paths'**
+  String get learningPaths;
+
+  /// No description provided for @codingChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'Coding challenges'**
+  String get codingChallenges;
+
+  /// No description provided for @guidedProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Guided projects'**
+  String get guidedProjects;
+
+  /// No description provided for @searchLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Search paths, challenges and projects'**
+  String get searchLearning;
+
+  /// No description provided for @catalogError.
+  ///
+  /// In en, this message translates to:
+  /// **'Local learning material could not be read. Try again.'**
+  String get catalogError;
+
+  /// No description provided for @pathNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Paths organize the currently shipped lessons and project guides. A guide is not a complete advanced course.'**
+  String get pathNotice;
+
+  /// No description provided for @choosePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose this path'**
+  String get choosePath;
+
+  /// No description provided for @foundationLessons.
+  ///
+  /// In en, this message translates to:
+  /// **'Foundation lessons'**
+  String get foundationLessons;
+
+  /// No description provided for @projectLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Project level'**
+  String get projectLevel;
+
+  /// No description provided for @allLevels.
+  ///
+  /// In en, this message translates to:
+  /// **'All levels'**
+  String get allLevels;
+
+  /// No description provided for @beginnerLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get beginnerLevel;
+
+  /// No description provided for @intermediateLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get intermediateLevel;
+
+  /// No description provided for @advancedLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advancedLevel;
+
+  /// No description provided for @projectRequirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirements'**
+  String get projectRequirements;
+
+  /// No description provided for @projectArchitecture.
+  ///
+  /// In en, this message translates to:
+  /// **'Architecture'**
+  String get projectArchitecture;
+
+  /// No description provided for @projectWorkflow.
+  ///
+  /// In en, this message translates to:
+  /// **'Step-by-step workflow'**
+  String get projectWorkflow;
+
+  /// No description provided for @projectTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests to perform'**
+  String get projectTests;
+
+  /// No description provided for @projectTroubleshooting.
+  ///
+  /// In en, this message translates to:
+  /// **'Troubleshooting'**
+  String get projectTroubleshooting;
+
+  /// No description provided for @projectCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Completion requirements'**
+  String get projectCompletion;
+
+  /// No description provided for @projectNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Your project notes'**
+  String get projectNotes;
+
+  /// No description provided for @projectProgressNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark steps you have completed. Progress is local and separated by account/guest. It is not certification or server verification.'**
+  String get projectProgressNotice;
+
+  /// No description provided for @starterCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Starter snippet'**
+  String get starterCode;
+
+  /// No description provided for @starterNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This snippet is a starting component. Build the guide’s requirements and complete its tests before marking the project finished.'**
+  String get starterNotice;
+
+  /// No description provided for @publicExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Public worked examples'**
+  String get publicExamples;
+
+  /// No description provided for @expectedOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected output'**
+  String get expectedOutput;
+
+  /// No description provided for @selectExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Select example'**
+  String get selectExample;
+
+  /// No description provided for @runExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Run example'**
+  String get runExample;
+
+  /// No description provided for @assessmentNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit code and read hints/examples offline. Actual execution and server grading require an account, HTTPS backend, verified sandbox and configured assessment storage.'**
+  String get assessmentNotice;
+
+  /// No description provided for @submitAssessment.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for server grading'**
+  String get submitAssessment;
+
+  /// No description provided for @checkResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Check existing result'**
+  String get checkResult;
+
+  /// No description provided for @newAttempt.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a new attempt'**
+  String get newAttempt;
+
+  /// No description provided for @newAttemptWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'The earlier execution may still finish. A new attempt starts separate execution and uses quota. The previous request is never automatically run again.'**
+  String get newAttemptWarning;
+
+  /// No description provided for @pendingAttempt.
+  ///
+  /// In en, this message translates to:
+  /// **'An earlier attempt is unresolved. Check its result or explicitly start a new attempt.'**
+  String get pendingAttempt;
+
+  /// No description provided for @gradePassed.
+  ///
+  /// In en, this message translates to:
+  /// **'All server checks passed for the submitted code.'**
+  String get gradePassed;
+
+  /// No description provided for @gradeWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Output does not match. Check varied inputs, boundaries and extra prints.'**
+  String get gradeWrong;
+
+  /// No description provided for @gradeRuntime.
+  ///
+  /// In en, this message translates to:
+  /// **'Execution/compilation failed. Run a public example to inspect the error.'**
+  String get gradeRuntime;
+
+  /// No description provided for @gradeTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The time limit was reached. Check loop termination.'**
+  String get gradeTimeout;
+
+  /// No description provided for @gradeOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'Output exceeded the limit. Check unnecessary prints and loops.'**
+  String get gradeOutput;
+
+  /// No description provided for @gradeService.
+  ///
+  /// In en, this message translates to:
+  /// **'Server/sandbox grading did not complete. Check quotas, configuration and connectivity; this is not a passing result.'**
+  String get gradeService;
+
+  /// No description provided for @sampleSolution.
+  ///
+  /// In en, this message translates to:
+  /// **'View a sample solution'**
+  String get sampleSolution;
+
+  /// No description provided for @attemptNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The attempt was not found. It may never have reached the server; explicitly start a new attempt only when ready.'**
+  String get attemptNotFound;
+
+  /// No description provided for @assessmentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Server assessment history'**
+  String get assessmentHistory;
+
+  /// No description provided for @historyNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'These are your latest 30 server-recorded code attempts. Viewing a sample solution does not automatically award a passing grade.'**
+  String get historyNotice;
+
+  /// No description provided for @noAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'No server attempts yet.'**
+  String get noAttempts;
+
+  /// No description provided for @gradeNotPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'The assessment has not passed. Review the challenge before starting a new attempt.'**
+  String get gradeNotPassed;
 }
 
 class _AppLocalizationsDelegate

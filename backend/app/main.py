@@ -11,6 +11,8 @@ from .auth import current_user
 from .config import settings
 from .ai import router as ai_router
 from .runner import router as runner_router
+from .assessments import router as assessment_router
+from .catalog import router as catalog_router
 
 
 class BodyLimit:
@@ -49,13 +51,15 @@ class ProgressRecord(ProgressInput):
     updated_at: str | None = None
 
 
-app = FastAPI(title='Myanmar AI Coding Academy API', version='0.2.0')
+app = FastAPI(title='Myanmar AI Coding Academy API', version='0.4.0')
 app.add_middleware(BodyLimit)
 if settings.allowed_origins:
     app.add_middleware(CORSMiddleware, allow_origins=settings.allowed_origins.split(','),
                        allow_methods=['GET', 'PUT', 'POST'], allow_headers=['Authorization', 'Content-Type', 'X-AI-Key'])
 app.include_router(ai_router)
 app.include_router(runner_router)
+app.include_router(assessment_router)
+app.include_router(catalog_router)
 
 
 @app.middleware('http')

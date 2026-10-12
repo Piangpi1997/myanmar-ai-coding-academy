@@ -75,6 +75,7 @@ class CloudService {
     required String expectedUser,
     Map<String, dynamic>? body,
     String? aiKey,
+    Duration timeout = const Duration(seconds: 35),
   }) async {
     if (!configured || user?.id != expectedUser) throw const ApiException(401);
     if (!apiConfigured) throw const ApiException(503);
@@ -102,7 +103,7 @@ class CloudService {
     try {
       final response = await (() async => http.Response.fromStream(
         await transport.send(request),
-      ))().timeout(const Duration(seconds: 35));
+      ))().timeout(timeout);
       if (user?.id != expectedUser) throw const ApiException(401);
       if (response.statusCode < 200 || response.statusCode >= 300) {
         throw ApiException(response.statusCode);

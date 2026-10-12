@@ -122,7 +122,7 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get signInRequired =>
-      'Cloud AI နှင့် code run အသုံးပြုရန် အကောင့်ဝင်ပါ။';
+      'Python အမှန်တကယ် Run နှင့် server စစ်ဆေးရန် account နှင့် configured backend လိုသည်။ Guest BYOK AI အတွက် login မလိုပါ။';
 
   @override
   String get byokRequired =>
@@ -315,4 +315,158 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get startExercise => 'Code Lab တွင် လေ့ကျင့်မည်';
+
+  @override
+  String get learningHub => 'လေ့လာရေး အစီအစဉ်';
+
+  @override
+  String get learningPaths => 'လေ့လာရေး လမ်းကြောင်း';
+
+  @override
+  String get codingChallenges => 'Coding လေ့ကျင့်ခန်း';
+
+  @override
+  String get guidedProjects => 'Project လမ်းညွှန်များ';
+
+  @override
+  String get searchLearning => 'လမ်းကြောင်း၊ လေ့ကျင့်ခန်း၊ project ရှာရန်';
+
+  @override
+  String get catalogError =>
+      'စက်တွင်းသင်ယူရေးအချက်အလက်ကို မဖတ်နိုင်ပါ။ ပြန်ကြိုးစားပါ။';
+
+  @override
+  String get pathNotice =>
+      'ယခုပါသော သင်ခန်းစာနှင့် project guide များကို လမ်းကြောင်းအလိုက် စုထားသည်။ Project guide သည် advanced course အပြည့်ကို အစားမထိုးပါ။';
+
+  @override
+  String get choosePath => 'ဒီလမ်းကြောင်းကို ရွေးမည်';
+
+  @override
+  String get foundationLessons => 'အခြေခံ သင်ခန်းစာများ';
+
+  @override
+  String get projectLevel => 'Project အဆင့်';
+
+  @override
+  String get allLevels => 'အဆင့်အားလုံး';
+
+  @override
+  String get beginnerLevel => 'အစပြုအဆင့်';
+
+  @override
+  String get intermediateLevel => 'အလယ်အလတ်အဆင့်';
+
+  @override
+  String get advancedLevel => 'အဆင့်မြင့်';
+
+  @override
+  String get projectRequirements => 'လိုအပ်ချက်များ';
+
+  @override
+  String get projectArchitecture => 'တည်ဆောက်ပုံ';
+
+  @override
+  String get projectWorkflow => 'အဆင့်လိုက် လုပ်ဆောင်ရန်';
+
+  @override
+  String get projectTests => 'စမ်းသပ်ရမည့်အချက်များ';
+
+  @override
+  String get projectTroubleshooting => 'အမှားရှာဖွေခြင်း';
+
+  @override
+  String get projectCompletion => 'ပြီးဆုံးရန် သတ်မှတ်ချက်များ';
+
+  @override
+  String get projectNotes => 'ကိုယ်ပိုင် project မှတ်စု';
+
+  @override
+  String get projectProgressNotice =>
+      'လုပ်ပြီးသောအဆင့်ကို ကိုယ်တိုင် မှတ်သားပါ။ စက်တွင် account/guest သီးခြား သိမ်းသည်။ Certification သို့ server အတည်ပြုချက် မဟုတ်ပါ။';
+
+  @override
+  String get starterCode => 'စတင်လေ့ကျင့်ရန် နမူနာ';
+
+  @override
+  String get starterNotice =>
+      'ဒီနမူနာသည် စတင်ရန် အပိုင်းတစ်ခုဖြစ်သည်။ Guide ၏ လိုအပ်ချက်၊ tests နှင့် completion များကို ကိုယ်တိုင် ဆက်တည်ဆောက်ပါ။';
+
+  @override
+  String get publicExamples => 'လေ့လာရန် နမူနာ input/output';
+
+  @override
+  String get expectedOutput => 'မျှော်မှန်း output';
+
+  @override
+  String get selectExample => 'နမူနာရွေးရန်';
+
+  @override
+  String get runExample => 'နမူနာကို အမှန်တကယ် run မည်';
+
+  @override
+  String get assessmentNotice =>
+      'Code ရေး၊ hint နှင့် နမူနာများကို offline ဖတ်နိုင်သည်။ အမှန်တကယ် Run နှင့် server စစ်ဆေးရန် account၊ HTTPS backend၊ verified sandbox နှင့် assessment database configuration လိုသည်။';
+
+  @override
+  String get submitAssessment => 'Server ဖြင့် စစ်ဆေးမည်';
+
+  @override
+  String get checkResult => 'အရင်ဖြေဆိုမှု ရလဒ် စစ်မည်';
+
+  @override
+  String get newAttempt => 'ဖြေဆိုမှုအသစ် စမည်';
+
+  @override
+  String get newAttemptWarning =>
+      'အရင် execution သည် အလုပ်လုပ်နေဆဲ ဖြစ်နိုင်သည်။ အသစ်စလျှင် သီးခြား execution နှင့် quota အသုံးပြုမှု ဖြစ်မည်။ အရင်ရလဒ်ကို အလိုအလျောက် ပြန် run မလုပ်ပါ။';
+
+  @override
+  String get pendingAttempt =>
+      'အရင်ဖြေဆိုမှု မပြီးသေးပါ။ ရလဒ်စစ်ပါ၊ သို့မဟုတ် ဖြေဆိုမှုအသစ်ကို ရည်ရွယ်ချက်ရှိရှိ စပါ။';
+
+  @override
+  String get gradePassed =>
+      'Server စမ်းသပ်ချက်များ အောင်မြင်သည်။ ပို့ထားသော code ၏ ရလဒ်ဖြစ်သည်။';
+
+  @override
+  String get gradeWrong =>
+      'ရလဒ် မကိုက်ပါ။ Input ပြောင်းလဲမှု၊ boundary နှင့် အပို print များကို စစ်ပါ။';
+
+  @override
+  String get gradeRuntime =>
+      'Runtime/compile အမှား ရှိသည်။ Public example ကို run၍ error ကို ဖတ်ပါ။';
+
+  @override
+  String get gradeTimeout =>
+      'အချိန်ကန့်သတ်ချက် ပြည့်သွားသည်။ Loop ရပ်နိုင်မှုကို စစ်ပါ။';
+
+  @override
+  String get gradeOutput =>
+      'Output ကန့်သတ်ချက် ကျော်သည်။ မလိုအပ်သော print နှင့် loop ကို စစ်ပါ။';
+
+  @override
+  String get gradeService =>
+      'Server/sandbox စစ်ဆေးမှု မပြီးပါ။ Quota၊ service configuration နှင့် connection ကို စစ်ပါ။ အဖြေမှန်ဟု မသတ်မှတ်ပါ။';
+
+  @override
+  String get sampleSolution => 'နမူနာ အဖြေကြည့်ရန်';
+
+  @override
+  String get attemptNotFound =>
+      'ဖြေဆိုမှုမှတ်တမ်း မတွေ့ပါ။ Request သည် server သို့ မရောက်ခဲ့ခြင်း ဖြစ်နိုင်သည်။ အဆင်သင့်ဖြစ်မှ ဖြေဆိုမှုအသစ်ကို ရည်ရွယ်ချက်ရှိရှိ စပါ။';
+
+  @override
+  String get assessmentHistory => 'Server ဖြေဆိုမှုမှတ်တမ်း';
+
+  @override
+  String get historyNotice =>
+      'သင်ပို့ထားသော code ၏ server မှတ်တမ်း နောက်ဆုံး ၃၀ ခု ဖြစ်သည်။ နမူနာ solution ကြည့်ခြင်းသည် အလိုအလျောက် passing grade မရစေပါ။';
+
+  @override
+  String get noAttempts => 'Server ဖြေဆိုမှုမှတ်တမ်း မရှိသေးပါ။';
+
+  @override
+  String get gradeNotPassed =>
+      'စစ်ဆေးမှု မအောင်မြင်သေးပါ။ လေ့ကျင့်ခန်းကို ပြန်လေ့လာပြီး ဖြေဆိုမှုအသစ်ကို စမ်းပါ။';
 }

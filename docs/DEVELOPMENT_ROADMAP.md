@@ -1,6 +1,6 @@
 # Myanmar AI Coding Academy — Development Roadmap
 
-Status: Flutter/FastAPI starter extended with a BYOK foundation milestone. Live integrations and release validation remain pending. See [BYOK milestone](BYOK_MILESTONE.md), [guest BYOK and beginner update](GUEST_BYOK_UPDATE.md), and the validation report.
+Status: Flutter/FastAPI starter extended with a BYOK foundation milestone. Live integrations and release validation remain pending. See [BYOK milestone](BYOK_MILESTONE.md), [guest BYOK and beginner update](GUEST_BYOK_UPDATE.md), [learning workspace](LEARNING_WORKSPACE.md), and the validation report.
 
 ## Product goal
 Build a Myanmar-first Android app that teaches programming from zero to practical professional skills, with bilingual lessons, hands-on coding, AI assistance, practice, and progress tracking.
@@ -47,7 +47,7 @@ Build a Myanmar-first Android app that teaches programming from zero to practica
 **Acceptance:** Authenticated learner asks about the current lesson and receives Myanmar explanation without exposing credentials in the app.
 
 ## Milestone 4 — Quizzes, reminders, admin and personalization
-- [ ] Quiz bank, auto grading, attempt history, and progress dashboard.
+- [ ] Complete academy assessments/dashboard: public beginner self-checks, six sandbox grading contracts, private attempt-history source and local project checkpoints are implemented; live validation and wider exercise types remain.
 - [ ] Daily learning reminders with user-selected schedule and permission handling.
 - [ ] Admin CMS with create/edit/review/publish lesson workflows.
 - [ ] Personalized learning tracks, project tasks and achievements.

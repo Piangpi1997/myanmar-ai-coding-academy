@@ -1,7 +1,7 @@
 name: myanmar_ai_coding_academy
 description: Myanmar-first coding education Android application.
 publish_to: none
-version: 0.3.0+3
+version: 0.4.0+4
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
@@ -26,6 +26,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/learning/learning_catalog.json
 
   fonts:
     - family: NotoSansMyanmar

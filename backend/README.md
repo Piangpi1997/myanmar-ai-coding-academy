@@ -45,6 +45,14 @@ Set `JUDGE0_URL` to your dedicated, patched HTTPS Judge0 service, configure `JUD
 
 The backend cannot execute learner code itself: it submits base64 code/stdin to Judge0 and polls the returned UUID. Limits request 2 seconds CPU, 5 seconds wall time, 64 MiB memory, one process/thread, 64 KiB generated files and no network. Returned stdout, stderr and compiler output are decoded and capped at 16,000 bytes per field. A not-ready response is a real timeout, never simulated success. A timed-out request may still complete on the runner; no automatic resubmission occurs. Missing or unverified runner configuration returns 503.
 
+## Assessments and public catalog
+
+Apply migration 004 after 001–003. Set backend-only `SUPABASE_SECRET_KEY` for result storage; never expose it to the APK. New `sb_secret_` keys are passed as `apikey` and legacy service-role JWTs also use Authorization. The user JWT is independently verified; every private storage query explicitly filters that subject. Students cannot write result records directly.
+
+Grading sends unchanged learner code to the verified runner, compares three fresh server-generated stdin/stdout cases outside the learner interpreter, and persists only a source digest and aggregate outcome. UUID receipts prevent reconnect resubmission; no automatic retry occurs. New grading is limited to 3/minute and 50/day; every case also uses the normal execution quota. The total execution deadline is 28 seconds. Missing storage/sandbox config returns 503. An interrupted process may leave a pending receipt, so use the GET result route or explicitly start another attempt.
+
+`GET /api/v1/learning/catalog` exposes typed original public material without grading oracles. The canonical JSON and runtime copies are checked in CI. See [learning workspace](../docs/LEARNING_WORKSPACE.md) for endpoint contracts, privacy, deployment and the required live policy tests.
+
 ## Validation limits
 
 Automated tests use cryptographically signed test JWTs and mocked provider, database and runner responses. They verify ownership contracts, validation, quotas, key redaction, response caps and sandbox request limits. They do not prove live Supabase RLS, actual sandbox isolation, provider availability, model quality or production hosting. Complete the live integration checklist in `docs/BYOK_MILESTONE.md` before release.
