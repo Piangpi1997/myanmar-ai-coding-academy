@@ -1,6 +1,6 @@
 # Myanmar AI Coding Academy — Development Roadmap
 
-Status: Flutter/FastAPI starter extended with a BYOK foundation milestone. Live integrations and release validation remain pending. See [BYOK milestone](BYOK_MILESTONE.md) and its validation report.
+Status: Flutter/FastAPI starter extended with a BYOK foundation milestone. Live integrations and release validation remain pending. See [BYOK milestone](BYOK_MILESTONE.md), [guest BYOK and beginner update](GUEST_BYOK_UPDATE.md), and the validation report.
 
 ## Product goal
 Build a Myanmar-first Android app that teaches programming from zero to practical professional skills, with bilingual lessons, hands-on coding, AI assistance, practice, and progress tracking.
@@ -9,7 +9,7 @@ Build a Myanmar-first Android app that teaches programming from zero to practica
 - **Android:** Flutter / Dart, Material 3, Riverpod, GoRouter, Noto Sans Myanmar.
 - **Backend:** Python FastAPI with typed Pydantic request and response models.
 - **Database and authentication:** Supabase (PostgreSQL, Auth, Storage) with Row Level Security.
-- **AI tutor:** Backend proxy to an OpenAI-compatible provider; never ship API keys in an APK.
+- **AI tutor:** User-selected direct BYOK to fixed HTTPS compatible providers for guest/account use, or authenticated backend proxy for configured accounts. User-owned keys are encrypted at runtime; no keys are embedded in the APK. Direct mode is the requested BYOK exception to the original backend-only design.
 - **Code runner:** Dedicated Judge0-compatible service with sandboxing, quotas and strict execution limits; do not execute learner code inside the primary backend.
 - **Web preview:** Isolated HTML/CSS/JS WebView with restricted origin and no privileged bridges.
 - **Admin CMS:** Next.js / React, with role-based lesson approval and publishing.

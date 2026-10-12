@@ -64,7 +64,7 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get cloudNotice =>
-      'Cloud အသုံးပြုရန် အကောင့်နှင့် HTTPS backend ချိတ်ဆက်ထားရန် လိုသည်။ ဧည့်သည်သင်ခန်းစာများကို offline ဖတ်နိုင်သည်။';
+      'Guest သင်ခန်းစာနှင့် direct BYOK အတွက် login မလိုပါ။ Cloud progress နှင့် secure code execution အတွက် account/backend ချိတ်ဆက်ထားရန် လိုပါသည်။';
 
   @override
   String get sync => 'တိုးတက်မှုကို ချိတ်ဆက်သိမ်းရန်';
@@ -250,4 +250,69 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get lessonContext => 'လက်ရှိသင်ခန်းစာ အချက်အလက်';
+
+  @override
+  String get aiConnection => 'AI ချိတ်ဆက်နည်း';
+
+  @override
+  String get directConnection => 'Provider သို့ တိုက်ရိုက်';
+
+  @override
+  String get backendConnection => 'Academy backend မှတစ်ဆင့်';
+
+  @override
+  String get directPrivacy =>
+      'ကိုယ်ပိုင် key ကို guest နှင့် account တစ်ခုချင်းစီအတွက် သီးခြား encrypted storage တွင် သိမ်းပါမည်။ Direct mode တွင် မေးခွန်းနှင့် code ကို ရွေးထားသော provider သို့ HTTPS ဖြင့် တိုက်ရိုက်ပို့ပါမည်။ Cloud login မလိုပါ။';
+
+  @override
+  String get directConsent =>
+      'ကိုယ်ပိုင် key၊ မေးခွန်းနှင့် code ကို ရွေးထားသော provider သို့ ပို့ရန် သဘောတူပါသည်။ Provider ၏ data policy နှင့် အသုံးပြုခ အကျုံးဝင်ပါသည်။';
+
+  @override
+  String get loadModels => 'သုံးနိုင်သော model များ ရယူမည်';
+
+  @override
+  String get searchModels => 'Model ID ရှာရန်';
+
+  @override
+  String get noModels =>
+      'Model မရရှိပါ။ ကိုက်ညီသော model ID ကို ကိုယ်တိုင်ထည့်ပါ။';
+
+  @override
+  String get tutorWelcome =>
+      '၁။ AI Provider settings ကို ဖွင့်ပါ။\n၂။ ကိုယ်ပိုင် API key ထည့်ပြီး model ရွေးပါ။ Data-sharing ကို သဘောတူ၍ Save နှိပ်ပါ။\n၃။ အောက်တွင် မေးခွန်းရေးပြီး Send နှိပ်ပါ။ Guest BYOK အတွက် Supabase setup မလိုပါ။';
+
+  @override
+  String get explainPrompt =>
+      'ဒီ code ကို တစ်ကြောင်းချင်း မြန်မာလို ရှင်းပြပြီး လေ့ကျင့်ခန်းငယ်တစ်ခု ပေးပါ။';
+
+  @override
+  String get objectives => 'သင်ယူရမည့်အချက်များ';
+
+  @override
+  String get lineByLine => 'Code တစ်ကြောင်းချင်း ရှင်းလင်းချက်';
+
+  @override
+  String get commonMistakes => 'ဖြစ်တတ်သော အမှားများ';
+
+  @override
+  String get hints => 'လေ့ကျင့်ခန်းအတွက် အကြံပြုချက်';
+
+  @override
+  String get quickQuiz => 'နားလည်မှု စစ်ဆေးမည်';
+
+  @override
+  String get checkAnswer => 'အဖြေ စစ်မည်';
+
+  @override
+  String get correctAnswer => 'မှန်ပါသည်။ အောက်ပါ ရှင်းလင်းချက်ကို ဖတ်ပါ။';
+
+  @override
+  String get tryAgain => 'ထပ်စမ်းပါ။ အောက်ပါ ရှင်းလင်းချက်ကို ကြည့်ပါ။';
+
+  @override
+  String get references => 'မူရင်း documentation';
+
+  @override
+  String get startExercise => 'Code Lab တွင် လေ့ကျင့်မည်';
 }

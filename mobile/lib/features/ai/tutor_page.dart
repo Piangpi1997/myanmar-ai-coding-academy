@@ -8,6 +8,7 @@ import '../../core/secure_store.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'byok_store.dart';
 import 'provider_page.dart';
+import 'direct_tutor_client.dart';
 
 class TutorPage extends StatefulWidget {
   const TutorPage({
@@ -16,8 +17,15 @@ class TutorPage extends StatefulWidget {
     required this.onCode,
     this.lessonContext = '',
     this.codeContext = '',
+    this.request = sendTutorRequest,
   });
   final String? account;
+  final Future<Map<String, dynamic>> Function(
+    ByokConfig,
+    Map<String, dynamic>,
+    String?,
+  )
+  request;
   final String lessonContext;
   final String codeContext;
   final void Function(String) onCode;
@@ -36,16 +44,41 @@ class _TutorPageState extends State<TutorPage> {
   bool retryable = false;
   int revision = 0;
   Future<void> writes = Future.value();
-  String get historyKey => 'chat.v1.${widget.account}';
+  String get scope => widget.account ?? 'guest';
+  String get historyKey => 'chat.v1.$scope';
   @override
   void initState() {
     super.initState();
     load();
   }
 
+  @override
+  void didUpdateWidget(covariant TutorPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!sending &&
+        widget.codeContext.isNotEmpty &&
+        widget.codeContext != oldWidget.codeContext) {
+      mode = 'explain';
+      if (question.text.trim().isEmpty) {
+        question.text = AppLocalizations.of(context)!.explainPrompt;
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.codeContext.isNotEmpty &&
+        question.text.isEmpty &&
+        messages.isEmpty) {
+      mode = 'explain';
+      question.text = AppLocalizations.of(context)!.explainPrompt;
+    }
+  }
+
   Future<void> load() async {
     try {
-      if (widget.account != null) {
+      {
         final raw = await secureStorage.read(key: historyKey);
         if (mounted && raw != null) {
           messages = (jsonDecode(raw) as List)
@@ -88,8 +121,8 @@ class _TutorPageState extends State<TutorPage> {
   Future<void> send({bool retry = false}) async {
     final l = AppLocalizations.of(context)!;
     final account = widget.account;
-    if (account == null) {
-      setState(() => error = l.signInRequired);
+    if (CloudService.user?.id != account) {
+      setState(() => error = l.sessionExpired);
       return;
     }
     if (!retry && question.text.trim().isEmpty) return;
@@ -101,7 +134,7 @@ class _TutorPageState extends State<TutorPage> {
       retryable = false;
     });
     try {
-      final config = await ByokStore.read(account);
+      final config = await ByokStore.read(scope);
       if (!mounted || revision != currentRevision) return;
       if (config == null) {
         setState(() => error = l.byokRequired);
@@ -113,26 +146,20 @@ class _TutorPageState extends State<TutorPage> {
         await persist();
       }
       if (!mounted || revision != currentRevision) return;
-      final response = await CloudService.request(
-        'POST',
-        '/api/v1/ai/chat',
-        expectedUser: account,
-        aiKey: config.key,
-        body: {
-          'provider': config.provider,
-          'model': config.model,
-          'mode': mode,
-          'language': Localizations.localeOf(context).languageCode,
-          'lesson_context': widget.lessonContext.length > 2000
-              ? widget.lessonContext.substring(0, 2000)
-              : widget.lessonContext,
-          'code': widget.codeContext.length > 12000
-              ? widget.codeContext.substring(0, 12000)
-              : widget.codeContext,
-          'messages': contextMessages(),
-          'max_tokens': 1024,
-        },
-      );
+      final response = await widget.request(config, {
+        'provider': config.provider,
+        'model': config.model,
+        'mode': mode,
+        'language': Localizations.localeOf(context).languageCode,
+        'lesson_context': widget.lessonContext.length > 2000
+            ? widget.lessonContext.substring(0, 2000)
+            : widget.lessonContext,
+        'code': widget.codeContext.length > 12000
+            ? widget.codeContext.substring(0, 12000)
+            : widget.codeContext,
+        'messages': contextMessages(),
+        'max_tokens': 1024,
+      }, account);
       if (!mounted || revision != currentRevision) return;
       messages.add({
         'role': 'assistant',
@@ -190,7 +217,7 @@ class _TutorPageState extends State<TutorPage> {
       sending = false;
     });
     try {
-      if (widget.account != null) await persist();
+      await persist();
     } catch (_) {
       if (mounted) setState(() => error = l.storageError);
     }
@@ -215,160 +242,178 @@ class _TutorPageState extends State<TutorPage> {
       'mentor': l.mentor,
       'project': l.project,
     };
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
-          child: Row(
-            children: [
-              Expanded(
-                child: DropdownButton<String>(
-                  value: mode,
-                  isExpanded: true,
-                  items: modes.entries
-                      .map(
-                        (e) => DropdownMenuItem(
-                          value: e.key,
-                          child: Text(e.value),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: sending ? null : (v) => setState(() => mode = v!),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxHeight < 380;
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: DropdownButton<String>(
+                      value: mode,
+                      isExpanded: true,
+                      items: modes.entries
+                          .map(
+                            (e) => DropdownMenuItem(
+                              value: e.key,
+                              child: Text(e.value),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: sending
+                          ? null
+                          : (v) => setState(() => mode = v!),
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: sending
+                        ? null
+                        : () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (_) =>
+                                  ProviderPage(account: widget.account),
+                            ),
+                          ),
+                    icon: const Icon(Icons.tune),
+                    label: Text(l.provider),
+                  ),
+                  IconButton(
+                    tooltip: l.clearChat,
+                    onPressed: sending || loading ? null : clear,
+                    icon: const Icon(Icons.delete_outline),
+                  ),
+                ],
+              ),
+            ),
+            if (!compact)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  l.aiDisclaimer,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
-              IconButton(
-                tooltip: l.byokSettings,
-                onPressed: widget.account == null
-                    ? null
-                    : () => Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (_) =>
-                              ProviderPage(account: widget.account!),
-                        ),
-                      ),
-                icon: const Icon(Icons.tune),
-              ),
-              IconButton(
-                tooltip: l.clearChat,
-                onPressed: sending || loading ? null : clear,
-                icon: const Icon(Icons.delete_outline),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            l.aiDisclaimer,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
-        if (widget.lessonContext.isNotEmpty) Chip(label: Text(l.lessonContext)),
-        if (widget.account == null)
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.signInRequired),
-          ),
-        Expanded(
-          child: loading
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  controller: scroll,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final item = messages[index];
-                    final content = item['content']!;
-                    final blocks = RegExp(
-                      r'```(?:python|py)?\s*\n([\s\S]*?)```',
-                    ).allMatches(content).toList();
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item['role'] == 'user' ? l.question : 'AI Tutor',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+            if (!compact &&
+                (widget.lessonContext.isNotEmpty ||
+                    widget.codeContext.isNotEmpty))
+              Chip(label: Text(l.lessonContext)),
+
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      controller: scroll,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: messages.isEmpty ? 1 : messages.length,
+                      itemBuilder: (context, index) {
+                        if (messages.isEmpty) {
+                          return Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(l.tutorWelcome),
                             ),
-                            const SizedBox(height: 8),
-                            MarkdownBody(
-                              data: content,
-                              selectable: true,
-                              sizedImageBuilder: (config) =>
-                                  Text(config.alt ?? '[Image]'),
-                            ),
-                            Wrap(
-                              spacing: 8,
+                          );
+                        }
+                        final item = messages[index];
+                        final content = item['content']!;
+                        final blocks = RegExp(
+                          r'```(?:python|py)?\s*\n([\s\S]*?)```',
+                        ).allMatches(content).toList();
+                        return Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextButton.icon(
-                                  onPressed: () => Clipboard.setData(
-                                    ClipboardData(text: content),
+                                Text(
+                                  item['role'] == 'user'
+                                      ? l.question
+                                      : 'AI Tutor',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  icon: const Icon(Icons.copy, size: 16),
-                                  label: Text(l.copy),
                                 ),
-                                for (final block in blocks)
-                                  TextButton.icon(
-                                    onPressed: () =>
-                                        widget.onCode(block.group(1)!),
-                                    icon: const Icon(Icons.code, size: 16),
-                                    label: Text(l.insertCode),
-                                  ),
+                                const SizedBox(height: 8),
+                                MarkdownBody(
+                                  data: content,
+                                  selectable: true,
+                                  sizedImageBuilder: (config) =>
+                                      Text(config.alt ?? '[Image]'),
+                                ),
+                                Wrap(
+                                  spacing: 8,
+                                  children: [
+                                    TextButton.icon(
+                                      onPressed: () => Clipboard.setData(
+                                        ClipboardData(text: content),
+                                      ),
+                                      icon: const Icon(Icons.copy, size: 16),
+                                      label: Text(l.copy),
+                                    ),
+                                    for (final block in blocks)
+                                      TextButton.icon(
+                                        onPressed: () =>
+                                            widget.onCode(block.group(1)!),
+                                        icon: const Icon(Icons.code, size: 16),
+                                        label: Text(l.insertCode),
+                                      ),
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-        ),
-        if (sending) const LinearProgressIndicator(),
-        if (error != null)
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                Expanded(child: Text(error!)),
-                if (retryable)
-                  TextButton(
-                    onPressed: sending ? null : () => send(retry: true),
-                    child: Text(l.retry),
-                  ),
-              ],
+                          ),
+                        );
+                      },
+                    ),
             ),
-          ),
-        Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: question,
-                  minLines: 1,
-                  maxLines: 4,
-                  maxLength: 4000,
-                  enabled: !sending && widget.account != null,
-                  decoration: InputDecoration(hintText: l.question),
+            if (sending) const LinearProgressIndicator(),
+            if (error != null)
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    Expanded(child: Text(error!)),
+                    if (retryable)
+                      TextButton(
+                        onPressed: sending ? null : () => send(retry: true),
+                        child: Text(l.retry),
+                      ),
+                  ],
                 ),
               ),
-              IconButton.filled(
-                tooltip: l.send,
-                onPressed: sending || loading || widget.account == null
-                    ? null
-                    : send,
-                icon: const Icon(Icons.arrow_upward),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: question,
+                      minLines: 1,
+                      maxLines: compact ? 1 : 4,
+                      maxLength: 4000,
+                      enabled: !sending && !loading,
+                      decoration: InputDecoration(
+                        hintText: l.question,
+                        counterText: '',
+                      ),
+                    ),
+                  ),
+                  IconButton.filled(
+                    tooltip: l.send,
+                    onPressed: sending || loading ? null : send,
+                    icon: const Icon(Icons.arrow_upward),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -64,7 +64,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cloudNotice =>
-      'Cloud features need a configured account and HTTPS backend. Guest lessons work offline.';
+      'Guest lessons and direct BYOK work without login. Cloud progress and secure code execution need a configured account/backend.';
 
   @override
   String get sync => 'Sync progress';
@@ -247,4 +247,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lessonContext => 'Current lesson context';
+
+  @override
+  String get aiConnection => 'AI connection';
+
+  @override
+  String get directConnection => 'Direct to provider';
+
+  @override
+  String get backendConnection => 'Academy backend';
+
+  @override
+  String get directPrivacy =>
+      'Your key stays in encrypted storage, separately for guests and each account. Direct mode sends your prompts and code straight to the selected provider over HTTPS. Cloud login is optional.';
+
+  @override
+  String get directConsent =>
+      'I agree to share my key, prompts and code with the selected provider. Its data policies and usage charges apply.';
+
+  @override
+  String get loadModels => 'Load available models';
+
+  @override
+  String get searchModels => 'Search model IDs';
+
+  @override
+  String get noModels =>
+      'No models returned. Enter a compatible model ID manually.';
+
+  @override
+  String get tutorWelcome =>
+      '1. Open AI provider settings.\n2. Enter your own API key and select a model; accept the sharing notice and save.\n3. Type a question below and tap Send. Guest BYOK works without Supabase setup.';
+
+  @override
+  String get explainPrompt =>
+      'Explain this code line by line and suggest a small practice exercise.';
+
+  @override
+  String get objectives => 'Learning objectives';
+
+  @override
+  String get lineByLine => 'Line-by-line explanation';
+
+  @override
+  String get commonMistakes => 'Common mistakes';
+
+  @override
+  String get hints => 'Practice hint';
+
+  @override
+  String get quickQuiz => 'Quick check';
+
+  @override
+  String get checkAnswer => 'Check answer';
+
+  @override
+  String get correctAnswer => 'Correct — read the explanation below.';
+
+  @override
+  String get tryAgain => 'Try again — use the explanation below.';
+
+  @override
+  String get references => 'Official references';
+
+  @override
+  String get startExercise => 'Practice in Code Lab';
 }

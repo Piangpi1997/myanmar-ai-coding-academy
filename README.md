@@ -4,10 +4,11 @@ Myanmar-first coding education built on the existing Flutter Android app, FastAP
 
 ## Current development milestone
 
-The source now includes guest lessons, account-separated progress synchronization, email authentication and recovery, encrypted session storage, a Python editor with a Judge0 execution adapter, and a BYOK AI Tutor. Learners choose OpenRouter, DeepSeek, Groq or OpenAI and supply their own key through account-scoped settings. Keys are never embedded in the APK or stored in the backend database.
+The source now includes guest lessons, account-separated progress synchronization, email authentication and recovery, encrypted session storage, a Python editor with a Judge0 execution adapter, and a BYOK AI Tutor. Learners choose OpenRouter, DeepSeek, Groq or OpenAI and supply their own key through encrypted guest/account settings. Direct BYOK tutoring works without Supabase login. Keys are never embedded in the APK or stored in the backend database.
 
-This is a tested development milestone, not the completed academy or a production release. Live Supabase/provider/runner configuration and Android device verification remain required. The ten existing short lessons are preserved; the 100-lesson curriculum, web preview, grading, reminders and admin CMS are future work.
+This is a tested development milestone, not the completed academy or a production release. Live Supabase/provider/runner configuration and Android device verification remain required. The ten existing IDs are preserved and expanded into twelve bilingual beginner lessons with hints, solutions and local self-check quizzes. The 100-lesson curriculum, web preview, hidden-test grading, reminders and admin CMS remain future work.
 
+- [Guest BYOK fixes and expanded beginner module](docs/GUEST_BYOK_UPDATE.md)
 - [Implemented scope and limitations](docs/BYOK_MILESTONE.md)
 - [Tests actually executed and APK status](docs/VALIDATION_REPORT.md)
 - [Android setup and signing](mobile/README.md)

@@ -8,14 +8,17 @@ class ByokConfig {
     required this.provider,
     required this.model,
     required this.key,
+    this.transport = 'direct',
   });
   final String provider;
   final String model;
   final String key;
+  final String transport;
   Map<String, String> toJson() => {
     'provider': provider,
     'model': model,
     'key': key,
+    'transport': transport,
   };
 }
 
@@ -30,6 +33,7 @@ class ByokStore {
       provider: data['provider'] as String,
       model: data['model'] as String,
       key: data['key'] as String,
+      transport: data['transport'] == 'direct' ? 'direct' : 'backend',
     );
   }
 

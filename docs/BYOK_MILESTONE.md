@@ -1,5 +1,7 @@
 # BYOK foundation milestone
 
+Historical foundation scope (0.2.0). The current 0.3.0 guest/provider/lesson changes are documented in [Guest BYOK update](GUEST_BYOK_UPDATE.md); use that document for current usage.
+
 Base: `main` commit `3b31c82a3c35dc10fb15109c2b119c2efa6d7767`.
 Development branch: `development/byok-foundation`.
 

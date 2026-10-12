@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import '../../cloud_service.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'byok_store.dart';
+import 'direct_tutor_client.dart';
+import '../../core/messages.dart';
 
 class ProviderPage extends StatefulWidget {
   const ProviderPage({super.key, required this.account});
-  final String account;
+  final String? account;
   @override
   State<ProviderPage> createState() => _ProviderPageState();
 }
@@ -14,6 +16,8 @@ class _ProviderPageState extends State<ProviderPage> {
   final model = TextEditingController();
   final apiKey = TextEditingController();
   String provider = 'openrouter';
+  String transport = 'direct';
+  String get scope => widget.account ?? 'guest';
   ByokConfig? saved;
   bool consent = false;
   bool busy = true;
@@ -27,11 +31,12 @@ class _ProviderPageState extends State<ProviderPage> {
 
   Future<void> load() async {
     try {
-      final config = await ByokStore.read(widget.account);
+      final config = await ByokStore.read(scope);
       if (!mounted) return;
       saved = config;
       if (config != null) {
         provider = config.provider;
+        transport = config.transport;
         model.text = config.model;
         consent = true;
       }
@@ -64,8 +69,9 @@ class _ProviderPageState extends State<ProviderPage> {
         provider: provider,
         model: model.text.trim(),
         key: key,
+        transport: transport,
       );
-      await ByokStore.save(widget.account, config);
+      await ByokStore.save(scope, config);
       apiKey.clear();
       if (mounted) {
         setState(() {
@@ -88,7 +94,7 @@ class _ProviderPageState extends State<ProviderPage> {
     }
     setState(() => busy = true);
     try {
-      await ByokStore.remove(widget.account);
+      await ByokStore.remove(scope);
       apiKey.clear();
       if (mounted) {
         setState(() {
@@ -99,6 +105,78 @@ class _ProviderPageState extends State<ProviderPage> {
       }
     } catch (_) {
       if (mounted) setState(() => message = l.storageError);
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  Future<void> loadModels() async {
+    final l = AppLocalizations.of(context)!;
+    final key = apiKey.text.trim().isNotEmpty
+        ? apiKey.text.trim()
+        : saved?.key ?? '';
+    if (!consent || key.length < 8) {
+      setState(() => message = l.byokInvalid);
+      return;
+    }
+    if (CloudService.user?.id != widget.account) {
+      setState(() => message = l.sessionExpired);
+      return;
+    }
+    setState(() => busy = true);
+    try {
+      final ids = await DirectTutorClient.shared.models(
+        ByokConfig(provider: provider, model: '', key: key),
+      );
+      if (!mounted || CloudService.user?.id != widget.account) return;
+      if (ids.isEmpty) {
+        setState(() => message = l.noModels);
+        return;
+      }
+      var search = '';
+      final selected = await showDialog<String>(
+        context: context,
+        builder: (context) => StatefulBuilder(
+          builder: (context, update) {
+            final visible = ids
+                .where((id) => id.toLowerCase().contains(search.toLowerCase()))
+                .toList();
+            return AlertDialog(
+              title: Text(l.model),
+              content: SizedBox(
+                width: 400,
+                height: 400,
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(hintText: l.searchModels),
+                      onChanged: (v) => update(() => search = v),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: visible.length,
+                        itemBuilder: (context, i) => ListTile(
+                          title: Text(visible[i]),
+                          onTap: () => Navigator.pop(context, visible[i]),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l.cancel),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+      if (mounted && selected != null) setState(() => model.text = selected);
+    } catch (e) {
+      if (mounted) setState(() => message = errorMessage(e, l));
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -121,8 +199,37 @@ class _ProviderPageState extends State<ProviderPage> {
         children: [
           const Icon(Icons.key, size: 52, color: Color(0xFF00D9E8)),
           const SizedBox(height: 16),
-          Text(l.byokPrivacy),
+          Text(transport == 'direct' ? l.directPrivacy : l.byokPrivacy),
           const SizedBox(height: 20),
+          DropdownButtonFormField<String>(
+            key: ValueKey('transport.$transport'),
+            initialValue: transport,
+            decoration: InputDecoration(labelText: l.aiConnection),
+            items: [
+              DropdownMenuItem(
+                value: 'direct',
+                child: Text(l.directConnection),
+              ),
+              if (widget.account != null && CloudService.apiConfigured)
+                DropdownMenuItem(
+                  value: 'backend',
+                  child: Text(l.backendConnection),
+                ),
+              if (transport == 'backend' &&
+                  !(widget.account != null && CloudService.apiConfigured))
+                DropdownMenuItem(
+                  value: 'backend',
+                  child: Text(l.backendConnection),
+                ),
+            ],
+            onChanged: busy
+                ? null
+                : (v) => setState(() {
+                    transport = v!;
+                    consent = false;
+                  }),
+          ),
+          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             key: ValueKey(provider),
             initialValue: provider,
@@ -164,9 +271,17 @@ class _ProviderPageState extends State<ProviderPage> {
           ),
           CheckboxListTile(
             value: consent,
-            title: Text(l.byokConsent),
+            title: Text(
+              transport == 'direct' ? l.directConsent : l.byokConsent,
+            ),
             onChanged: busy ? null : (v) => setState(() => consent = v!),
           ),
+          if (transport == 'direct')
+            OutlinedButton.icon(
+              onPressed: busy ? null : loadModels,
+              icon: const Icon(Icons.cloud_download_outlined),
+              label: Text(l.loadModels),
+            ),
           if (loadFailed) Text(l.storageError),
           if (message != null)
             Padding(padding: const EdgeInsets.all(8), child: Text(message!)),

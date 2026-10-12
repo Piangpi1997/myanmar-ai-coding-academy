@@ -3,7 +3,33 @@
 Base commit: `3b31c82a3c35dc10fb15109c2b119c2efa6d7767`.
 Branch: `development/byok-foundation`. This report describes local checks, not production certification.
 
-## Executed checks
+## Current update (0.3.0+3)
+
+Base of this update: `5e2c31113f088197fa3f4466657af3b59762ef73`.
+
+| Command actually executed | Result |
+|---|---|
+| `flutter pub get --offline` | Passed after restoring official SHA256-verified package archives in the local SDK/package cache |
+| `flutter gen-l10n` | Passed |
+| `dart format mobile/lib mobile/test` | Passed; affected files formatted |
+| `flutter analyze --no-pub` | Passed, **no issues found** |
+| `flutter test --no-pub --reporter expanded` | Passed, **28 tests** |
+| `python -m pytest -q` from `backend` | **36 passed**, one Starlette test-client deprecation warning |
+| `python -m pip check` | Passed, no broken requirements |
+| `git diff --check` | Passed |
+| `flutter build apk --debug --no-pub` | Attempted, blocked locally: **No Android SDK found** |
+| PowerShell helper / Android Studio Run | Documented and source-reviewed; not executed on Windows here |
+| Release APK | Not attempted, no private release signing configuration |
+
+Initial checks found seven style lints and widget-test finder/scrolling mismatches; these were fixed before the passing final runs. A command accidentally run at repository root found no `test` directory; the actual successful suite ran from `mobile/`.
+
+New tests exercise fixed HTTPS BYOK routes and headers, model catalog parsing, invalid input, UTF-8 request/output size bounds, provider failures/redirects, credential redaction, token-field adaptation, throttling, guest typing/provider navigation/save, conversation persistence with an injected test transport, keyboard layout, bilingual lesson coverage and quiz feedback/persistence. All provider transports in tests are mocked; no real paid AI call occurred. Secure-storage tests use plugin mocks. No physical-device test, live Supabase/RLS check or runner isolation audit was performed. Migration 003 has not been applied to a live project.
+
+The previous published commit `5e2c311` **did** build a debug APK successfully in GitHub Actions: [run 37901972814](https://github.com/Piangpi1997/myanmar-ai-coding-academy/actions/runs/37901972814). That artifact predates the guest AI fixes and should not be used to verify this update. The new commit's CI outcome/artifact is reported on the PR and Actions page after push; a previous successful build is not evidence for the new source.
+
+Current usage and limitations: [Guest BYOK update](GUEST_BYOK_UPDATE.md). Next milestone: real provider + Android secure-storage/keyboard testing, then live Supabase progress and audited sandbox execution.
+
+## Historical foundation checks (0.2.0)
 
 | Command | Actual result |
 |---|---|

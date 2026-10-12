@@ -8,6 +8,8 @@ import 'features/code/code_lab_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'lessons.dart';
+import 'lesson_guides.dart';
+import 'features/learning/lesson_quiz.dart';
 import 'cloud_service.dart';
 import 'auth_page.dart';
 
@@ -243,22 +245,28 @@ class _AcademyShellState extends State<AcademyShell>
   @override
   Widget build(BuildContext context) {
     final screens = [_home(), _courses(), _codeLab(), _aiTutor(), _profile()];
+    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          tr('မြန်မာ AI Coding Academy', 'Myanmar AI Coding Academy'),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => _setLanguage(!english),
-            child: Text(
-              english ? 'မြန်မာ' : 'EN',
-              style: const TextStyle(color: _cyan),
+      appBar: keyboardOpen
+          ? null
+          : AppBar(
+              title: Text(
+                tr('မြန်မာ AI Coding Academy', 'Myanmar AI Coding Academy'),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => _setLanguage(!english),
+                  child: Text(
+                    english ? 'မြန်မာ' : 'EN',
+                    style: const TextStyle(color: _cyan),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: IndexedStack(
           index: tab,
@@ -268,36 +276,38 @@ class _AcademyShellState extends State<AcademyShell>
           ],
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: tab,
-        onDestinationSelected: (value) => setState(() {
-          if (tab == 2) initialCode = null;
-          tab = value;
-          visitedTabs.add(value);
-        }),
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined),
-            label: tr('မူလ', 'Home'),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.school_outlined),
-            label: tr('သင်ခန်းစာ', 'Learn'),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.code),
-            label: 'Code Lab',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.smart_toy_outlined),
-            label: 'AI Tutor',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.person_outline),
-            label: tr('ပရိုဖိုင်', 'Profile'),
-          ),
-        ],
-      ),
+      bottomNavigationBar: keyboardOpen
+          ? null
+          : NavigationBar(
+              selectedIndex: tab,
+              onDestinationSelected: (value) => setState(() {
+                if (tab == 2) initialCode = null;
+                tab = value;
+                visitedTabs.add(value);
+              }),
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.home_outlined),
+                  label: tr('မူလ', 'Home'),
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.school_outlined),
+                  label: tr('သင်ခန်းစာ', 'Learn'),
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.code),
+                  label: 'Code Lab',
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.smart_toy_outlined),
+                  label: 'AI Tutor',
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.person_outline),
+                  label: tr('ပရိုဖိုင်', 'Profile'),
+                ),
+              ],
+            ),
     );
   }
 
@@ -389,8 +399,8 @@ class _AcademyShellState extends State<AcademyShell>
       const SizedBox(height: 8),
       Text(
         tr(
-          'Starter Course — အခြေခံ သင်ခန်းစာ ၁၀ ခု',
-          'Starter course — 10 introductory lessons',
+          'Starter Course — အခြေခံ သင်ခန်းစာ ${pythonLessons.length} ခု',
+          'Starter course — ${pythonLessons.length} beginner lessons',
         ),
       ),
       const SizedBox(height: 14),
@@ -408,7 +418,12 @@ class _AcademyShellState extends State<AcademyShell>
             title: Text(
               english ? pythonLessons[i].titleEn : pythonLessons[i].titleMy,
             ),
-            subtitle: Text(pythonLessons[i].summaryMy, maxLines: 2),
+            subtitle: Text(
+              english
+                  ? lessonGuides[pythonLessons[i].id]!.en['objectives']!
+                  : pythonLessons[i].summaryMy,
+              maxLines: 2,
+            ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(context)
                 .push(
@@ -420,7 +435,9 @@ class _AcademyShellState extends State<AcademyShell>
                       onComplete: _completionFor(pythonLessons[i], account),
                       onCode: _openCode,
                       onTutor: () => setState(() {
-                        lessonContext = pythonLessons[i].bodyMy;
+                        lessonContext = lessonGuides[pythonLessons[i].id]!.text(
+                          english,
+                        )['body']!;
                         codeContext = pythonLessons[i].code;
                         tab = 3;
                         visitedTabs.add(3);
@@ -493,17 +510,17 @@ class _AcademyShellState extends State<AcademyShell>
               }
             },
           ),
-        if (account != null) ...[
-          ListTile(
-            leading: const Icon(Icons.key),
-            title: Text(l.byokSettings),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (_) => ProviderPage(account: account!),
-              ),
+        ListTile(
+          leading: const Icon(Icons.key),
+          title: Text(l.byokSettings),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) => ProviderPage(account: account),
             ),
           ),
+        ),
+        if (account != null) ...[
           ListTile(
             leading: const Icon(Icons.sync),
             title: Text(
@@ -563,6 +580,9 @@ class _LessonPageState extends State<LessonPage> {
   @override
   Widget build(BuildContext context) {
     final lesson = widget.lesson;
+    final l = AppLocalizations.of(context)!;
+    final guide = lessonGuides[lesson.id]!;
+    final text = guide.text(widget.english);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.english ? lesson.titleEn : lesson.titleMy),
@@ -572,20 +592,24 @@ class _LessonPageState extends State<LessonPage> {
         children: [
           Text(lesson.titleEn, style: const TextStyle(color: _cyan)),
           const SizedBox(height: 18),
+          Text(l.objectives, style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          Text(text['objectives']!),
+          const SizedBox(height: 18),
           Text(
-            lesson.bodyMy,
+            text['body']!,
             style: const TextStyle(fontSize: 17, height: 1.8),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'CODE EXAMPLE',
+          Text(
+            widget.english ? 'Code example' : 'Code နမူနာ',
             style: TextStyle(color: _cyan, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: _panel,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
             ),
             child: SelectableText(
@@ -593,6 +617,12 @@ class _LessonPageState extends State<LessonPage> {
               style: const TextStyle(fontFamily: 'monospace', height: 1.6),
             ),
           ),
+          const SizedBox(height: 16),
+          Text(l.lineByLine, style: Theme.of(context).textTheme.titleLarge),
+          Text(text['lines']!, style: const TextStyle(height: 1.7)),
+          const SizedBox(height: 16),
+          Text(l.commonMistakes, style: Theme.of(context).textTheme.titleLarge),
+          Text(text['mistake']!, style: const TextStyle(height: 1.7)),
           TextButton.icon(
             onPressed: () {
               Navigator.pop(context);
@@ -615,7 +645,24 @@ class _LessonPageState extends State<LessonPage> {
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text(lesson.challengeMy, style: const TextStyle(height: 1.7)),
+          Text(text['challenge']!, style: const TextStyle(height: 1.7)),
+          ExpansionTile(
+            title: Text(l.hints),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(text['hint']!),
+              ),
+            ],
+          ),
+          OutlinedButton.icon(
+            onPressed: () {
+              Navigator.pop(context);
+              widget.onCode(lesson.code);
+            },
+            icon: const Icon(Icons.edit_note),
+            label: Text(l.startExercise),
+          ),
           const SizedBox(height: 12),
           ExpansionTile(
             title: Text(
@@ -631,6 +678,16 @@ class _LessonPageState extends State<LessonPage> {
               ),
             ],
           ),
+          const SizedBox(height: 20),
+          LessonQuiz(
+            key: ValueKey(lesson.id),
+            lessonId: lesson.id,
+            guide: guide,
+            english: widget.english,
+          ),
+          const SizedBox(height: 16),
+          Text(l.references, style: Theme.of(context).textTheme.titleMedium),
+          SelectableText(guide.reference),
           const SizedBox(height: 20),
           FilledButton.icon(
             onPressed: completed

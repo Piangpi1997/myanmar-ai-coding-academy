@@ -203,7 +203,7 @@ abstract class AppLocalizations {
   /// No description provided for @cloudNotice.
   ///
   /// In en, this message translates to:
-  /// **'Cloud features need a configured account and HTTPS backend. Guest lessons work offline.'**
+  /// **'Guest lessons and direct BYOK work without login. Cloud progress and secure code execution need a configured account/backend.'**
   String get cloudNotice;
 
   /// No description provided for @sync.
@@ -541,6 +541,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Current lesson context'**
   String get lessonContext;
+
+  /// No description provided for @aiConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'AI connection'**
+  String get aiConnection;
+
+  /// No description provided for @directConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct to provider'**
+  String get directConnection;
+
+  /// No description provided for @backendConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Academy backend'**
+  String get backendConnection;
+
+  /// No description provided for @directPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Your key stays in encrypted storage, separately for guests and each account. Direct mode sends your prompts and code straight to the selected provider over HTTPS. Cloud login is optional.'**
+  String get directPrivacy;
+
+  /// No description provided for @directConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to share my key, prompts and code with the selected provider. Its data policies and usage charges apply.'**
+  String get directConsent;
+
+  /// No description provided for @loadModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Load available models'**
+  String get loadModels;
+
+  /// No description provided for @searchModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Search model IDs'**
+  String get searchModels;
+
+  /// No description provided for @noModels.
+  ///
+  /// In en, this message translates to:
+  /// **'No models returned. Enter a compatible model ID manually.'**
+  String get noModels;
+
+  /// No description provided for @tutorWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Open AI provider settings.\n2. Enter your own API key and select a model; accept the sharing notice and save.\n3. Type a question below and tap Send. Guest BYOK works without Supabase setup.'**
+  String get tutorWelcome;
+
+  /// No description provided for @explainPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain this code line by line and suggest a small practice exercise.'**
+  String get explainPrompt;
+
+  /// No description provided for @objectives.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning objectives'**
+  String get objectives;
+
+  /// No description provided for @lineByLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Line-by-line explanation'**
+  String get lineByLine;
+
+  /// No description provided for @commonMistakes.
+  ///
+  /// In en, this message translates to:
+  /// **'Common mistakes'**
+  String get commonMistakes;
+
+  /// No description provided for @hints.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice hint'**
+  String get hints;
+
+  /// No description provided for @quickQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick check'**
+  String get quickQuiz;
+
+  /// No description provided for @checkAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Check answer'**
+  String get checkAnswer;
+
+  /// No description provided for @correctAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct — read the explanation below.'**
+  String get correctAnswer;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again — use the explanation below.'**
+  String get tryAgain;
+
+  /// No description provided for @references.
+  ///
+  /// In en, this message translates to:
+  /// **'Official references'**
+  String get references;
+
+  /// No description provided for @startExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice in Code Lab'**
+  String get startExercise;
 }
 
 class _AppLocalizationsDelegate
