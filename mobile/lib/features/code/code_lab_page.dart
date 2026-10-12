@@ -7,6 +7,7 @@ import '../../core/secure_store.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'python_controller.dart';
 import 'python_editor.dart';
+import 'web_lab_page.dart';
 
 class CodeLabPage extends StatefulWidget {
   const CodeLabPage({
@@ -161,6 +162,21 @@ class _CodeLabPageState extends State<CodeLabPage> {
         Text(
           'Python Code Lab',
           style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        OutlinedButton.icon(
+          onPressed: running
+              ? null
+              : () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => WebLabPage(account: widget.account),
+                  ),
+                ),
+          icon: const Icon(Icons.web),
+          label: Text(
+            Localizations.localeOf(context).languageCode == 'en'
+                ? 'HTML / CSS / JavaScript lab'
+                : 'HTML / CSS / JavaScript လေ့ကျင့်ရန်',
+          ),
         ),
         if (widget.account == null) Text(l.signInRequired),
         Wrap(

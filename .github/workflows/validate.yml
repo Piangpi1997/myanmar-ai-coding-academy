@@ -23,6 +23,7 @@ jobs:
       - run: pip install -r backend/requirements.lock.txt
       - run: pip check
       - run: python scripts/sync-learning-catalog.py --check
+      - run: python scripts/build-python-course.py --check
       - run: pytest -q
         working-directory: backend
   mobile:
@@ -49,6 +50,17 @@ jobs:
         working-directory: mobile
       - run: flutter test
         working-directory: mobile
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated preview test tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/academy-preview-tests" playwright@1.56.1 --ignore-scripts
+          node "$RUNNER_TEMP/academy-preview-tests/node_modules/playwright/cli.js" install --with-deps chromium --only-shell
+      - name: Validate web preview document in Chromium
+        run: |
+          dart run scripts/export-web-preview-fixtures.dart "$RUNNER_TEMP/academy-preview-fixtures"
+          NODE_PATH="$RUNNER_TEMP/academy-preview-tests/node_modules" node scripts/test-web-preview.cjs "$RUNNER_TEMP/academy-preview-fixtures"
       - run: flutter build apk --debug
         working-directory: mobile
       - uses: actions/upload-artifact@v4

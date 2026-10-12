@@ -1,6 +1,6 @@
 # Myanmar AI Coding Academy — Android development
 
-Flutter 3.35.7 / Dart 3.9.2. The original ten IDs are preserved and expanded; twelve beginner lessons now have Myanmar/English instruction, hints, solutions and local quizzes. The app supports guest reading, separate account progress, Supabase email authentication, a Python editor/remote runner and a BYOK AI Tutor. See [milestone scope](../docs/BYOK_MILESTONE.md) and [actual validation](../docs/VALIDATION_REPORT.md).
+Flutter 3.35.7 / Dart 3.9.2. The original ten IDs are preserved and expanded; 36 original lessons now have Myanmar/English instruction, examples, hints, solutions and local quizzes. Search and filter by level or completion. Code Lab also links to an offline Android HTML/CSS/JavaScript preview with encrypted local drafts. The app supports guest reading, separate account progress, Supabase email authentication, a Python editor/remote runner and a BYOK AI Tutor. See [milestone scope](../docs/BYOK_MILESTONE.md) and [actual validation](../docs/VALIDATION_REPORT.md).
 
 ## Setup
 
@@ -25,6 +25,8 @@ flutter run \
 ```
 
 All API origins must use HTTPS. Do not put service-role, AI or Judge0 secrets in Dart defines. Add `com.piangpi.myanmaracademy://auth-callback` to Supabase's allowed redirect URLs. Use an asymmetric Supabase JWT signing key (RS256/ES256); legacy HS256 is unsupported by this backend.
+
+See [course and web lab](../docs/COURSE_AND_WEB_LAB.md) for source, security boundaries and current limitations.
 
 ## Learning workspace
 

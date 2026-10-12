@@ -3,6 +3,35 @@
 Base commit: `3b31c82a3c35dc10fb15109c2b119c2efa6d7767`.
 Branch: `development/byok-foundation`. This report describes local checks, not production certification.
 
+## Curriculum and restricted web preview — 2026-10-12 (0.5.0+5)
+
+Base: `aa3c783e5be768f4c253892f1e0f850f56a35a2d`. Branch: `development/byok-foundation`.
+
+| Command actually executed | Result |
+|---|---|
+| `python -m pip check` | No broken requirements |
+| `python -m pytest -q backend` | **112 passed**, one Starlette/httpx test-client deprecation warning |
+| `python -m compileall -q backend/app` | Passed |
+| `python scripts/sync-learning-catalog.py --check` | Passed |
+| `python scripts/build-python-course.py --check` | Passed; authored JSON, offline Dart and SQL match |
+| `flutter pub get --offline` | Passed; runtime package dependencies unchanged |
+| `flutter gen-l10n` | Passed |
+| `dart format` on changed handwritten Dart and tests | Passed; deterministic generated course source excluded |
+| `flutter analyze --no-pub` | **No issues found** |
+| `flutter test --no-pub --reporter expanded` | **42 passed** |
+| `dart run scripts/export-web-preview-fixtures.dart <temporary-directory>` | Exported the three actual preview documents successfully |
+| `node --check scripts/test-web-preview.cjs` | Passed |
+| Local Playwright Chromium installation | Failed: browser download returned an invalid/truncated archive; no local browser assertions claimed |
+| `flutter build apk --debug --no-pub` locally | Attempted; **No Android SDK found** |
+| Android Studio/Windows/physical-device workflow | Not executed here |
+| Release APK signing | Not attempted; owner signing material required |
+
+Additional checks execute all 24 new authored examples and 24 sample solutions in bounded child test processes with a controlled environment and temporary working folders. They assert exact expected stdout or the explicitly environment-dependent venv result. These are repository-owned teaching snippets, **not a local learner execution endpoint**. No live provider, Supabase migration/RLS or Judge0 certification was performed.
+
+Checks repaired a test-only debug-platform override that violated Flutter's teardown invariants, while retaining the guest edit/save/restore and corrupt-data tests. The final passing tests cover the new search/completion filters, all bilingual guides/references, web source limits/escaping, actual draft restoration, account-key separation, and preservation of unreadable data. Native WebView behavior still needs device testing. The same-document Chromium assertions and debug APK build are now CI gates; their actual remote result will be recorded on the PR/Actions after publication, not assumed here.
+
+See [course and web lab](COURSE_AND_WEB_LAB.md) for changed sources, exact workflows, security boundaries, migration 005, build setup and remaining academy scope.
+
 ## Learning workspace update — 2026-10-12 (0.4.0+4)
 
 Base: `5eff9f2c9cd8e9e9a61fd01ec7b59b71f3b8e1b9`. Branch: `development/byok-foundation`.
