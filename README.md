@@ -1,24 +1,27 @@
-# myanmar-ai-coding-academy
-AI-powered Android coding education app with Myanmar &amp; English lessons, Python Zero-to-Hero, interactive code editor, live execution, AI tutor, quizzes, and personalized learning paths.
+# Myanmar AI Coding Academy
 
-## Current status
+Myanmar-first coding education built on the existing Flutter Android app, FastAPI backend and Supabase/PostgreSQL foundation.
 
-This repository currently contains the final app-builder prompt package. The Android application, backend, and admin panel have not yet been implemented here. This package is not an APK or completed application source code.
+## Current development milestone
 
-## Prompt package
+The source now includes guest lessons, account-separated progress synchronization, email authentication and recovery, encrypted session storage, a Python editor with a Judge0 execution adapter, and a BYOK AI Tutor. Learners choose OpenRouter, DeepSeek, Groq or OpenAI and supply their own key through encrypted guest/account settings. Direct BYOK tutoring works without Supabase login. Keys are never embedded in the APK or stored in the backend database.
 
-- [Master prompt (Markdown)](prompts/FINAL_MASTER_PROMPT.md)
-- [Master prompt (plain text)](prompts/FINAL_MASTER_PROMPT.txt)
-- [Original package instructions](prompts/README.txt)
-- [Download the original ZIP](Myanmar_AI_Coding_Academy_Final_Prompt.zip)
+This is a tested development milestone, not the completed academy or a production release. Live Supabase/provider/runner configuration, Flutter CI and Android device verification remain required. The ten existing IDs are preserved. There are now 40 original bilingual lessons across beginner, intermediate, advanced and professional topics, with examples, hints, solutions and local quizzes. Learn supports search, level/completion filters, concept flows and computer-only environment notices. The Android Code Lab includes encrypted HTML/CSS/JavaScript drafts and an offline restricted native WebView preview. Seven learning paths, six server-graded challenge contracts, sixteen guided project workflows, a foreground study timer/history source and local reminder source are included. Sixty lessons remain toward the 100-lesson target; reminder delivery, live grading and the authenticated admin CMS still require validation or implementation.
 
-## How to use
+- [Expanded curriculum and restricted web preview](docs/COURSE_AND_WEB_LAB.md)
+- [Learning paths, challenges and project workflows](docs/LEARNING_WORKSPACE.md)
+- [Guest BYOK fixes and expanded beginner module](docs/GUEST_BYOK_UPDATE.md)
+- [Implemented scope and limitations](docs/BYOK_MILESTONE.md)
+- [Tests actually executed and APK status](docs/VALIDATION_REPORT.md)
+- [Android setup and signing](mobile/README.md)
+- [Backend configuration and security](backend/README.md)
+- [Development roadmap](docs/DEVELOPMENT_ROADMAP.md)
 
-1. Open the plain-text master prompt and copy its full contents into an AI app builder or coding agent.
-2. Build and validate the first working phase, then continue through the documented phases.
-3. Configure backend, database, AI provider, and isolated code-runner credentials securely on the server. Never commit secrets or embed provider keys in the Android app.
-4. Verify real code execution, Myanmar text rendering, authentication, AI integration, and Android packaging before release.
+## Original specification
 
-## Planned application
+The existing prompt package remains the long-term specification:
 
-The prompt specifies a Flutter Android app, FastAPI backend, Supabase/PostgreSQL data layer, web admin CMS, Myanmar-first programming lessons, a code lab, an AI tutor, exercises, progress tracking, and reminders. See the master prompt for the complete requirements and phased implementation plan.
+- [Master prompt](prompts/FINAL_MASTER_PROMPT.md)
+- [Plain-text prompt](prompts/FINAL_MASTER_PROMPT.txt)
+- [Package instructions](prompts/README.txt)
+- [Original ZIP](Myanmar_AI_Coding_Academy_Final_Prompt.zip)

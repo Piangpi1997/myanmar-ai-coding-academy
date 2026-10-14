@@ -1,0 +1,5 @@
+# Keep the portable Flutter run configuration; exclude machine-specific IDE data.
+.idea/*
+!.idea/runConfigurations/
+.idea/runConfigurations/*
+!.idea/runConfigurations/main_dart.xml
