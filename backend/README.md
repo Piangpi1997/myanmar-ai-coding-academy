@@ -22,6 +22,8 @@ Apply SQL migrations in numbered order to the intended Supabase project. Use a *
 
 Progress reads explicitly filter by the verified user ID; writes derive it from the JWT. The same user's token is forwarded to PostgREST so RLS independently enforces ownership. Migration 002 creates profiles on registration and backfills existing accounts. Migration 001 is a one-time migration, not a repeatable SQL reset. No remote migrations were applied during development.
 
+Migration 006 adds private, account-owned `study_sessions` with RLS and an idempotency key `(user_id, client_id)`. Apply it after migration 005 in the intended Supabase project. The mobile timer reports only explicit foreground checkpoints; durations are client-reported and are not a mastery score. Guest sessions stay local. Account history sync requires the configured HTTPS backend and uses the caller's verified JWT; the service-role secret is not used for these routes. Do not apply this source migration to production without reviewing the target schema and policies.
+
 ## Endpoints
 
 - `GET /health`: liveness only; does not claim integrations are configured.
@@ -29,6 +31,8 @@ Progress reads explicitly filter by the verified user ID; writes derive it from 
 - `PUT /api/v1/progress/{lesson_id}`: idempotent completion; existing lesson IDs only.
 - `POST /api/v1/ai/chat`: user JWT plus `X-AI-Key`, with provider, model, language, mode and bounded message context.
 - `POST /api/v1/code/run`: user JWT, code and stdin; genuine isolated runner response.
+- `GET /api/v1/study/sessions?limit=200`: read only the authenticated user's study history (limit 1–500).
+- `POST /api/v1/study/sessions`: save an owner-derived, idempotent study checkpoint; a repeated ID with changed values returns 409.
 - `GET /docs`: generated typed OpenAPI documentation.
 
 ## BYOK

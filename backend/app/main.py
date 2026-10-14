@@ -13,6 +13,7 @@ from .ai import router as ai_router
 from .runner import router as runner_router
 from .assessments import router as assessment_router
 from .catalog import router as catalog_router
+from .study import router as study_router
 
 
 class BodyLimit:
@@ -60,6 +61,7 @@ app.include_router(ai_router)
 app.include_router(runner_router)
 app.include_router(assessment_router)
 app.include_router(catalog_router)
+app.include_router(study_router)
 
 
 @app.middleware('http')

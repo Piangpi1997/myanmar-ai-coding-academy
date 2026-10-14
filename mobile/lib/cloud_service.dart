@@ -130,4 +130,27 @@ class CloudService {
       expectedUser: userId,
     );
   }
+
+  static Future<List<Map<String, dynamic>>> loadStudySessions(
+    String userId,
+  ) async {
+    final items = await request(
+      'GET',
+      '/api/v1/study/sessions?limit=500',
+      expectedUser: userId,
+    ) as List;
+    return items.map((item) => Map<String, dynamic>.from(item as Map)).toList();
+  }
+
+  static Future<void> saveStudySession(
+    String userId,
+    Map<String, dynamic> session,
+  ) async {
+    await request(
+      'POST',
+      '/api/v1/study/sessions',
+      expectedUser: userId,
+      body: session,
+    );
+  }
 }

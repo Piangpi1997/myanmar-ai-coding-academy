@@ -1,6 +1,6 @@
 # Myanmar AI Coding Academy — Android development
 
-Flutter 3.35.7 / Dart 3.9.2. The original ten IDs are preserved and expanded; 36 original lessons now have Myanmar/English instruction, examples, hints, solutions and local quizzes. Search and filter by level or completion. Code Lab also links to an offline Android HTML/CSS/JavaScript preview with encrypted local drafts. The app supports guest reading, separate account progress, Supabase email authentication, a Python editor/remote runner and a BYOK AI Tutor. See [milestone scope](../docs/BYOK_MILESTONE.md) and [actual validation](../docs/VALIDATION_REPORT.md).
+Flutter 3.35.7 / Dart 3.9.2. The original ten IDs are preserved and expanded; 40 original lessons now have Myanmar/English instruction, examples, hints, solutions and local quizzes. Search and filter by level or completion. Code Lab also links to an offline Android HTML/CSS/JavaScript preview with encrypted local drafts. The app supports guest reading, separate account progress, Supabase email authentication, a Python editor/remote runner, a BYOK AI Tutor, study history and local reminders. See [milestone scope](../docs/BYOK_MILESTONE.md) and [actual validation](../docs/VALIDATION_REPORT.md).
 
 ## Setup
 
@@ -31,6 +31,12 @@ See [course and web lab](../docs/COURSE_AND_WEB_LAB.md) for source, security bou
 ## Learning workspace
 
 Learn now links to seven pathways, six Python challenges and sixteen project guides. Drafts, selected paths, project checkpoints and notes are account/guest scoped; guest use is local/offline. Account users can read server assessment history. See [learning workspace](../docs/LEARNING_WORKSPACE.md) for actual scope, privacy, assessment setup and limitations. Project checkboxes are self-reported, not server certificates. Actual Python running/grading still requires configured services.
+
+## Study timer and local reminders
+
+Profile → **Study timer and history** records only explicit foreground intervals, pauses when the app loses foreground or the signed-in account changes, saves checkpoints locally first, and retries idempotent account sync when the backend is configured. Guest and account storage keys are separate; guest history is not automatically merged. The weekly chart counts time, not learning mastery. Migration `006_study_sessions.sql` must be reviewed and applied to Supabase for account sync. Backend requests remain owner-scoped by the user's JWT and RLS.
+
+Profile → **Daily reminders** stores per-guest/per-account preferences on-device and lets the learner choose time, weekdays, 15/25/45/60-minute goal and a separate review prompt. Android 13+ notification permission is requested through the native channel; disable and account-change cancel the active alarms. Alarms are local and use Android's inexact `setAndAllowWhileIdle` scheduling, so the operating system may defer delivery. A native receiver recalculates schedules after boot, wall-clock change, time-zone change and app replacement. Physical-device notification delivery and behavior under OEM battery restrictions still require testing; no live delivery test is claimed here. Reminders are not cloud push notifications.
 
 ## Run from Android Studio on Windows
 
@@ -94,4 +100,4 @@ Missing release signing configuration fails the build; release does not silently
 
 Generated ARB localization covers auth, tutor, BYOK, editor and errors; the existing home/catalog retain bilingual labels and lesson bodies remain Myanmar-first. Noto Sans Myanmar regular font is bundled under OFL in `assets/fonts/`.
 
-Before release, validate two-account sync, verification/recovery links, session restoration, Unicode, keyboard/editor behavior, secure storage and layouts on physical Android devices. Web preview, hidden-test grading, reminders, curriculum beyond the beginner module and administration are still pending. See the [roadmap](../docs/DEVELOPMENT_ROADMAP.md).
+Before release, validate two-account sync, verification/recovery links, session restoration, Unicode, keyboard/editor behavior, secure storage, study reminders and layouts on physical Android devices. Web preview, hidden-test grading, curriculum beyond the existing 40 lessons and administration remain incomplete. See the [roadmap](../docs/DEVELOPMENT_ROADMAP.md).

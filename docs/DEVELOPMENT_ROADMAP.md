@@ -1,6 +1,6 @@
 # Myanmar AI Coding Academy — Development Roadmap
 
-Status: Flutter/FastAPI starter extended with BYOK, a learning workspace, 36 original bilingual lessons and a restricted Android web preview. Live integrations and release validation remain pending. See [BYOK milestone](BYOK_MILESTONE.md), [guest BYOK and beginner update](GUEST_BYOK_UPDATE.md), [learning workspace](LEARNING_WORKSPACE.md), [course/web update](COURSE_AND_WEB_LAB.md), and the validation report.
+Status: Flutter/FastAPI starter extended with BYOK, a learning workspace, 40 original bilingual lessons, a restricted Android web preview, a foreground study timer/history API and native local reminder source. The new mobile/backend changes require CI verification; migrations 006–007 are source-only and reminder delivery has not been device-tested. Sixty more lessons are needed for the 100-lesson target; comprehensive textbook-scale curriculum, authenticated admin CMS, live integrations and release validation remain unfinished. See [BYOK milestone](BYOK_MILESTONE.md), [guest BYOK and beginner update](GUEST_BYOK_UPDATE.md), [learning workspace](LEARNING_WORKSPACE.md), [course/web update](COURSE_AND_WEB_LAB.md), and the validation report.
 
 ## Product goal
 Build a Myanmar-first Android app that teaches programming from zero to practical professional skills, with bilingual lessons, hands-on coding, AI assistance, practice, and progress tracking.
@@ -48,7 +48,8 @@ Build a Myanmar-first Android app that teaches programming from zero to practica
 
 ## Milestone 4 — Quizzes, reminders, admin and personalization
 - [ ] Complete academy assessments/dashboard: public beginner self-checks, six sandbox grading contracts, private attempt-history source and local project checkpoints are implemented; live validation and wider exercise types remain.
-- [ ] Daily learning reminders with user-selected schedule and permission handling.
+- [x] Source: local study timer/history with foreground-only lifecycle stops, owner-isolated persistence, local retry queue, authenticated study-session API and RLS migration 006. Live database application/RLS test remains.
+- [x] Source: Android study reminders with selected time/weekdays/duration, review preference, permission handling, cancellation and boot/time-zone rescheduling. Physical-device delivery is unverified; Android alarms may be deferred by the OS.
 - [ ] Admin CMS with create/edit/review/publish lesson workflows.
 - [ ] Personalized learning tracks, project tasks and achievements.
 - [ ] Offline reading, account/data deletion and accessibility audit.

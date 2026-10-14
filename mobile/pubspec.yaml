@@ -1,7 +1,7 @@
 name: myanmar_ai_coding_academy
 description: Myanmar-first coding education Android application.
 publish_to: none
-version: 0.5.0+5
+version: 0.6.0+6
 
 environment:
   sdk: '>=3.9.0 <4.0.0'

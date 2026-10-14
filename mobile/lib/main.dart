@@ -13,6 +13,8 @@ import 'features/learning/lesson_quiz.dart';
 import 'features/learning/course_browser.dart';
 import 'features/learning/learning_hub_page.dart';
 import 'features/learning/attempt_history_page.dart';
+import 'features/study/study_page.dart';
+import 'features/study/reminders_page.dart';
 import 'cloud_service.dart';
 import 'auth_page.dart';
 
@@ -517,6 +519,40 @@ class _AcademyShellState extends State<AcademyShell>
         ),
         const SizedBox(height: 12),
         Text(l.cloudNotice, textAlign: TextAlign.center),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.timer_outlined),
+            title: Text(tr('လေ့လာချိန်နှင့် မှတ်တမ်း', 'Study timer and history')),
+            subtitle: Text(tr('Foreground လေ့လာချိန်နှင့် အပတ်စဉ်အနှစ်ချုပ်', 'Foreground time and weekly summary')),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => StudyPage(
+                  key: ValueKey('study.$account'),
+                  account: account,
+                  english: english,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.notifications_active_outlined),
+            title: Text(tr('နေ့စဉ် Reminder', 'Daily reminders')),
+            subtitle: Text(tr('အချိန်၊ နေ့ရက်နှင့် လေ့လာချိန် ရွေးချယ်ရန်', 'Choose time, weekdays and study duration')),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => RemindersPage(
+                  key: ValueKey('reminder.$account'),
+                  account: account,
+                  english: english,
+                ),
+              ),
+            ),
+          ),
+        ),
         if (CloudService.configured)
           FilledButton.icon(
             icon: Icon(account == null ? Icons.login : Icons.logout),
