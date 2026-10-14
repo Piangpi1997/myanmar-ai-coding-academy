@@ -6,10 +6,14 @@ import 'package:myanmar_ai_coding_academy/lessons.dart';
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
-  test('Course preserves starter IDs and ships 36 unique lessons', () {
-    expect(pythonLessons.length, 36);
-    expect(pythonLessons.map((e) => e.id).toSet().length, 36);
+  test('Course preserves starter IDs and ships 40 unique lessons', () {
+    expect(pythonLessons.length, 40);
+    expect(pythonLessons.map((e) => e.id).toSet().length, 40);
     expect(pythonLessons.every((e) => e.code.isNotEmpty), isTrue);
+    expect(
+      pythonLessons.map((lesson) => lesson.id),
+      containsAll(['py-37', 'py-38', 'py-39', 'py-40']),
+    );
   });
 
   testWidgets('Home and Learn navigation renders', (tester) async {
