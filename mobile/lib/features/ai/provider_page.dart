@@ -21,6 +21,7 @@ class _ProviderPageState extends State<ProviderPage> {
   ByokConfig? saved;
   bool consent = false;
   bool busy = true;
+  bool showApiKey = false;
   bool loadFailed = false;
   String? message;
   @override
@@ -192,6 +193,7 @@ class _ProviderPageState extends State<ProviderPage> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final english = Localizations.localeOf(context).languageCode == 'en';
     return Scaffold(
       appBar: AppBar(title: Text(l.byokSettings)),
       body: ListView(
@@ -258,7 +260,7 @@ class _ProviderPageState extends State<ProviderPage> {
           TextField(
             controller: apiKey,
             enabled: !busy,
-            obscureText: true,
+            obscureText: !showApiKey,
             autocorrect: false,
             enableSuggestions: false,
             enableIMEPersonalizedLearning: false,
@@ -267,6 +269,13 @@ class _ProviderPageState extends State<ProviderPage> {
               labelText: l.apiKey,
               helperText: saved == null ? null : l.keySaved,
               helperMaxLines: 3,
+              suffixIcon: IconButton(
+                tooltip: showApiKey
+                    ? (english ? 'Hide API key' : 'API key ကို ဖျောက်ရန်')
+                    : (english ? 'Show API key' : 'API key ကို ပြရန်'),
+                onPressed: busy ? null : () => setState(() => showApiKey = !showApiKey),
+                icon: Icon(showApiKey ? Icons.visibility_off : Icons.visibility),
+              ),
             ),
           ),
           CheckboxListTile(

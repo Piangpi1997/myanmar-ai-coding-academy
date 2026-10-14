@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:myanmar_ai_coding_academy/core/secure_store.dart';
 import 'package:myanmar_ai_coding_academy/features/ai/byok_store.dart';
+import 'package:myanmar_ai_coding_academy/features/ai/provider_page.dart';
+import 'package:myanmar_ai_coding_academy/l10n/generated/app_localizations.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +36,25 @@ void main() {
       expect((await ByokStore.read('B'))!.provider, 'groq');
     },
   );
+  testWidgets('provider API key can be shown and hidden on demand', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const ProviderPage(account: null),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final apiKeyField = find.byType(TextField).last;
+    expect(tester.widget<TextField>(apiKeyField).obscureText, isTrue);
+    await tester.tap(find.byIcon(Icons.visibility));
+    await tester.pumpAndSettle();
+    expect(tester.widget<TextField>(apiKeyField).obscureText, isFalse);
+    await tester.tap(find.byIcon(Icons.visibility_off));
+    await tester.pumpAndSettle();
+    expect(tester.widget<TextField>(apiKeyField).obscureText, isTrue);
+  });
   test(
     'Session upgrade removes only this project plaintext token and preserves progress',
     () async {
