@@ -1336,6 +1336,226 @@
         "correct": 0,
         "reference": "https://docs.python.org/3/library/bisect.html"
       }
+    },
+    {
+      "id": "py-37",
+      "title": {
+        "my": "Big-O ဖြင့် အလုပ်ပမာဏ ခန့်မှန်းခြင်း",
+        "en": "Big-O and measuring work"
+      },
+      "level": "intermediate",
+      "environment": "sandbox",
+      "prerequisites": [
+        "py-36"
+      ],
+      "flow": [
+        "Input size n / အရွယ်အစား",
+        "Count comparisons / စစ်ဆေးမှုရေ",
+        "Profile after correctness / မှန်ကန်ပြီးမှတိုင်းတာ"
+      ],
+      "code": "def index_of(items, target):\n    for index, item in enumerate(items):\n        if item == target:\n            return index\n    return -1\n\nvalues = [4, 8, 12, 16]\nprint(index_of(values, 12))\nprint(index_of(values, 5))\n",
+      "solution": "def find_position(values, target):\n    return next((i for i, value in enumerate(values) if value == target), -1)\n\nvalues = [4, 8, 12, 16]\nprint(find_position(values, 12))\nprint(find_position(values, 5))\n",
+      "expected_stdout": "2\n-1\n",
+      "solution_stdout": "2\n-1\n",
+      "guide": {
+        "my": {
+          "objectives": "List ကိုရှာဖွေသည့် linear scan ၏ worst-case အလုပ်ပမာဏကို O(n) နှင့် ဆက်စပ်ရှင်းပြနိုင်ရန်။",
+          "body": "Big-O notation သည် input အရွယ်အစား n ကြီးလာသောအခါ algorithm တစ်ခု၏ လုပ်ဆောင်ရမည့်အဆင့်များ မည်သို့တိုးလာမည်ကို ဖော်ပြသည်။ ဤ code တွင် တန်ဖိုးကို မတွေ့မချင်း list ၏ item များကို တစ်ခုချင်းစီစစ်သည်။ ပထမ item တွင်တွေ့နိုင်သလို နောက်ဆုံး item တွင်မှတွေ့နိုင်ပြီး လုံးဝမရှိလည်း ဖြစ်နိုင်သည်။ ထို့ကြောင့် worst case တွင် စစ်ဆေးမှုသည် n ခုအထိ ရောက်နိုင်ပြီး အချိန်ရှုပ်ထွေးမှုကို O(n) ဟု ရေးသည်။\n\nBig-O သည် စက္ကန့်အတိအကျကို မခန့်မှန်းပါ။ စက်အမျိုးအစား၊ Python version နှင့် အခြားလုပ်ငန်းများကြောင့် လက်တွေ့အချိန် ပြောင်းနိုင်သည်။ O(1) သည် input ကြီးလာသော်လည်း အဆင့်အရေအတွက် မတိုးသည့်အခြေအနေ၊ O(n) သည် တစ်ဆတိုးသည့်အခြေအနေ၊ O(n²) သည် item တစ်ခုစီအတွက် အခြား item များကို ထပ်စစ်ရသည့် nested loop ကဲ့သို့ အခြေအနေဖြစ်သည်။ ထို notation သည် မလိုအပ်သည့် constant များကို လျှော့ကြည့်ပြီး ကြီးထွားပုံကို နှိုင်းယှဉ်သည်။\n\nဥပမာ code ၏ `return -1` သည် target မတွေ့သည့်အခါ အဓိပ္ပာယ်ရှိသော sentinel ဖြစ်သည်။ List အလွတ်ဖြစ်လျှင် loop မစဘဲ -1 ပြန်သည်။ List ထဲတွင် duplicate တန်ဖိုးများပါလျှင် ပထမဆုံး index ကိုပဲ ပြန်မည်။ `enumerate` သည် index နှင့် value ကို တွဲပေးသောကြောင့် ကိုယ်တိုင် counter တိုးရန် မလိုပါ။ Algorithm ကို ပိုကောင်းစေလိုလျှင် input ၏ သဘောသဘာဝ၊ ဥပမာ sorted ဖြစ်/မဖြစ်၊ နှင့် memory အသုံးပြုမှုကိုလည်း တွဲစဉ်းစားပါ။\n\nBig-O ကို အသုံးပြုပြီး performance ပြဿနာကို သက်သေမရှိဘဲ မခန့်မှန်းပါနှင့်။ ပထမဦးစွာ correctness ကို စစ်ပါ၊ ထို့နောက် ကိုယ်စားပြုသော input များဖြင့် profiling သို့မဟုတ် `timeit` ကို သုံးပါ။ ဤသင်ခန်းစာ၏ challenge တွင် list အရွယ်အစားကို ပြောင်းပြီး target အစ၊ အဆုံး၊ မရှိသော အခြေအနေများကို စမ်းပါ။ ရလဒ်မှ အလုပ်ပမာဏကို ရှင်းပြနိုင်ခြင်းက မြန်သလိုထင်ရခြင်းထက် ပိုအသုံးဝင်သည်။",
+          "lines": "`enumerate(items)` သည် (index, item) ကို တစ်ခုချင်းပေးသည်။ တူလျှင် ထို index ပြန်သည်။ Loop အဆုံးထိ မတွေ့လျှင် -1 ပြန်သည်။",
+          "mistake": "Target မတွေ့လျှင် loop အပြီးတွင် return မရေးဘဲ None ပြန်စေခြင်း၊ သို့မဟုတ် ပထမ match တွင် ရပ်မသွားခြင်း။",
+          "hint": "Index တစ်ခုစီအတွက် တစ်ကြိမ်သာ စစ်ဆေးမည်ဆိုလျှင် n အလွန်ကြီးသောအခါ အများဆုံး ဘယ်နှစ်ကြိမ် စစ်မလဲ။",
+          "challenge": "လုပ်ဆောင်ချက်ကို ပြင်ဆင်ပြီး target ၏ index အားလုံး၊ duplicate ပထမ index၊ empty list နှင့် မတွေ့သော target တို့ကို စမ်းပါ။",
+          "question": "Worst case တွင် n item ရှိသော list ကို linear search လုပ်ရာ မည်သည့် complexity ဖြစ်သနည်း။",
+          "explanation": "Worst case တွင် item အားလုံးကို တစ်ကြိမ်စီစစ်နိုင်သဖြင့် အလုပ်ပမာဏသည် n နှင့်အမျှ တိုးလာသည်။"
+        },
+        "en": {
+          "objectives": "Relate a linear scan’s worst-case work to O(n) and distinguish growth from measured seconds.",
+          "body": "Big-O notation describes how an algorithm’s number of steps grows as an input of size n grows. This function examines list items one at a time until it finds the target. The target might be first, last, or absent. In the worst case the function examines n items, so its time complexity is O(n).\n\nBig-O does not predict an exact number of seconds. Hardware, Python versions, and other work affect elapsed time. O(1) describes a fixed number of steps, O(n) grows in proportion to the input, and O(n²) often appears when each item is compared with many other items in nested loops. The notation focuses on growth and commonly ignores constant factors.\n\nThe `-1` return is a deliberate sentinel for “not found.” An empty list returns it without entering the loop. With duplicate values, this implementation returns the first matching index. `enumerate` supplies both index and value, avoiding a manually maintained counter. Choosing a better algorithm also depends on the input contract: a sorted list may allow a different search, while extra speed can require extra memory.\n\nUse Big-O to form a reasoned expectation, not to claim a measured speedup. First verify correctness, then profile representative data with tools such as `timeit`. Try a target at the beginning, at the end, and absent while changing list size. Explain how many comparisons each case requires. That explanation is more useful than saying that an algorithm merely “feels fast.”",
+          "lines": "`enumerate(items)` yields each index and item. A match returns its index; exhausting the loop returns -1.",
+          "mistake": "Forgetting the final not-found return, or continuing after the first match.",
+          "hint": "If each index is checked once, what is the maximum number of checks for n items?",
+          "challenge": "Test every matching position, the first duplicate, an empty list, and a missing target.",
+          "question": "What is the worst-case time complexity of linear search over n items?",
+          "explanation": "Every item may be checked once, so work grows linearly with n."
+        },
+        "myOptions": [
+          "O(1) အမြဲတမ်း",
+          "O(n)",
+          "O(n²) အမြဲတမ်း"
+        ],
+        "enOptions": [
+          "Always O(1)",
+          "O(n)",
+          "Always O(n²)"
+        ],
+        "correct": 1,
+        "reference": "https://docs.python.org/3/library/timeit.html"
+      }
+    },
+    {
+      "id": "py-38",
+      "title": {
+        "my": "sorted၊ key နှင့် stable sort",
+        "en": "Sorting with keys and stability"
+      },
+      "level": "intermediate",
+      "environment": "sandbox",
+      "prerequisites": [
+        "py-37"
+      ],
+      "flow": [
+        "Choose ranking rule / စီစဉ်စံ",
+        "Write key / key ရေး",
+        "Check ties and mutation / tie နှင့် မူရင်း"
+      ],
+      "code": "students = [(\"Moe\", 84), (\"May\", 95), (\"Aye\", 84)]\nranked = sorted(students, key=lambda row: (-row[1], row[0]))\nprint([name for name, score in ranked])\nprint(students[0])\n",
+      "solution": "students = [(\"Moe\", 84), (\"May\", 95), (\"Aye\", 84)]\nranked = sorted(students, key=lambda row: row[1], reverse=True)\nprint([name for name, score in ranked])\nprint(students[0])\n",
+      "expected_stdout": "['May', 'Aye', 'Moe']\n('Moe', 84)\n",
+      "solution_stdout": "['May', 'Moe', 'Aye']\n('Moe', 84)\n",
+      "guide": {
+        "my": {
+          "objectives": "key function ဖြင့် record များစီပြီး `sorted` နှင့် `list.sort` ၏ mutation ကွာခြားချက်ကို ရှင်းပြနိုင်ရန်။",
+          "body": "`sorted(iterable, key=..., reverse=...)` သည် မူရင်း iterable ကို မပြောင်းဘဲ list အသစ်ကို ပြန်ပေးသည်။ `key` function သည် item တစ်ခုစီမှ နှိုင်းယှဉ်ရန် တန်ဖိုးကို ထုတ်ပေးသည်။ ဤဥပမာတွင် အမှတ်ကို အများဆုံးမှ အနည်းဆုံးစီပြီး တူသောအမှတ်ရှိလျှင် အမည်အက္ခရာစဉ်အလိုက် ဆက်စီသည်။ Tuple key `(-score, name)` သည် အဆင့်သတ်မှတ်ချက်နှစ်ခုကို တိတိကျကျ ဖော်ပြသည်။\n\nPython ၏ sort သည် stable ဖြစ်သည်။ `key` တန်ဖိုးတူသည့် item များသည် မူရင်းအစဉ်အတိုင်း ကျန်ရှိမည်။ `reverse=True` ဖြင့် အမှတ်အလိုက်သာ စီလျှင် Aye နှင့် Moe အစဉ်သည် input အတိုင်း ဖြစ်သော်လည်း key tuple ထဲတွင် အမည်ပါလျှင် tie ကို အမည်က ဆုံးဖြတ်သည်။ အစဉ်တည်ငြိမ်မှုသည် အုပ်စုတူစံနှုန်းများအတွက် အရေးကြီးပြီး မတော်တဆမဟုတ်ပါ။\n\n`list.sort()` သည် မူရင်း list ကို in-place ပြင်ပြီး `None` ပြန်ပေးသည်။ ထို့ကြောင့် `students = students.sort()` ဟုရေးလျှင် students သည် None ဖြစ်သွားမည်။ မူရင်းအစဉ်ကို နောက်ပိုင်းလိုအပ်နိုင်လျှင် `sorted` ကိုသုံးပါ။ Dictionary သို့မဟုတ် tuple များကို sort လုပ်ရာတွင် key function က မည်သည့် field ကို ဦးစားပေးသည်ကို ရှင်းလင်းစွာရေးပါ။\n\nSort key သည် deterministic ဖြစ်သင့်သည်။ အပြင်ဘက် state ကို ပြောင်းလဲခြင်း၊ sort လုပ်နေစဉ် input ကို ပြင်ခြင်း၊ သို့မဟုတ် incomparable type များကို ပြန်ပေးခြင်းက error သို့မဟုတ် မမျှော်လင့်သော order ဖြစ်စေနိုင်သည်။ Challenge တွင် တူညီသောအမှတ်များ၊ မူရင်း list မပြောင်းခြင်း၊ အမည် tie-break လုပ်ခြင်းတို့ကို သက်ဆိုင်ရာ specification အတိုင်း စမ်းသပ်ပါ။",
+          "lines": "Tuple key ၏ ပထမအစိတ်အပိုင်း `-row[1]` သည် အမှတ်မြင့်ကို ဦးစားပေးပြီး ဒုတိယ `row[0]` သည် tie ကို အမည်ဖြင့်ဖြေရှင်းသည်။",
+          "mistake": "`list.sort()` ၏ return value ကို list အသစ်ဟုထင်ခြင်း သို့မဟုတ် မူရင်း list ပြောင်းသွားမည်ကို မသတိပြုခြင်း။",
+          "hint": "Tie-break rule ကို sort key ထဲ tuple အစိတ်အပိုင်းအဖြစ် ထည့်နိုင်သည်။ မူရင်းကို ထိန်းလိုလျှင် `sorted` ကို သုံးပါ။",
+          "challenge": "အမှတ်တူသူများ၏ အစဉ်ကို အမည်အလိုက် ပြောင်းပြီး မူရင်း students list သည် မပြောင်းကြောင်း assert လုပ်ပါ။",
+          "question": "`sorted(items, ...)` ၏ အဓိကအကျိုးသက်ရောက်မှုမှာ မည်သည်နည်း။",
+          "explanation": "`sorted` သည် စီထားသော list အသစ်ကို ပြန်ပေးပြီး input ကို မပြောင်းပါ။"
+        },
+        "en": {
+          "objectives": "Sort records using a key and explain the mutation difference between `sorted` and `list.sort`.",
+          "body": "`sorted(iterable, key=..., reverse=...)` returns a new list and leaves the original iterable unchanged. The key function extracts the value used for comparison. This example sorts scores from high to low, then names alphabetically when scores tie. The tuple key `(-score, name)` expresses both ordering rules explicitly.\n\nPython sorting is stable: items with equal keys keep their relative input order. Sorting only by score with `reverse=True` therefore preserves the original order of Moe and Aye, while including the name in the tuple key makes the tie-break alphabetical. Stability is useful when equal-ranked items should retain a prior grouping order; it is a defined property, not an accident.\n\n`list.sort()` mutates the original list in place and returns `None`. Writing `students = students.sort()` therefore replaces the variable with `None`. Use `sorted` when callers need the original order later. For records or tuples, write a key that clearly identifies the fields that determine ranking.\n\nSorting keys should be deterministic and return mutually comparable values. Mutating external state while sorting or mixing incompatible types can cause errors or surprising order. Test tied scores, preservation of the original list, and the required tie-break rule. The correct rule comes from the task specification, not from whichever ordering happens to look attractive.",
+          "lines": "The negative score sorts high scores first; the name resolves ties alphabetically.",
+          "mistake": "Treating `list.sort()` as if it returned a new list instead of mutating in place.",
+          "hint": "Add the tie-breaker as another tuple-key component; use `sorted` to preserve the input.",
+          "challenge": "Add a name tie-break and assert that the source list remains unchanged.",
+          "question": "What does `sorted(items, ...)` do to the input iterable?",
+          "explanation": "`sorted` creates and returns a new ordered list without mutating the input."
+        },
+        "myOptions": [
+          "မူရင်းကို အမြဲပြောင်းပြီး None ပြန်ပေးသည်",
+          "စီထားသော list အသစ်ပြန်ပေးသည်",
+          "Duplicate များကို အလိုအလျောက်ဖယ်သည်"
+        ],
+        "enOptions": [
+          "Always mutates input and returns None",
+          "Returns a new sorted list",
+          "Automatically removes duplicates"
+        ],
+        "correct": 1,
+        "reference": "https://docs.python.org/3/howto/sorting.html"
+      }
+    },
+    {
+      "id": "py-39",
+      "title": {
+        "my": "Recursion နှင့် ရပ်တန့်မည့် base case",
+        "en": "Recursion and base cases"
+      },
+      "level": "intermediate",
+      "environment": "sandbox",
+      "prerequisites": [
+        "py-38"
+      ],
+      "flow": [
+        "Define valid input / input contract",
+        "Stop at base / ရပ်တန့်ချက်",
+        "Reduce and test / လျှော့ပြီးစမ်း"
+      ],
+      "code": "def factorial(n):\n    if n < 0:\n        raise ValueError(\"n must be non-negative\")\n    if n in (0, 1):\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))\nprint(factorial(0))\n",
+      "solution": "def factorial(n):\n    if not isinstance(n, int) or isinstance(n, bool) or n < 0:\n        raise ValueError(\"n must be a non-negative integer\")\n    result = 1\n    for value in range(2, n + 1):\n        result *= value\n    return result\n\nprint(factorial(5))\nprint(factorial(0))\n",
+      "expected_stdout": "120\n1\n",
+      "solution_stdout": "120\n1\n",
+      "guide": {
+        "my": {
+          "objectives": "Recursive call, base case နှင့် call-stack သုံးစွဲမှုကို factorial ဥပမာဖြင့် ဖော်ပြနိုင်ရန်။",
+          "body": "Recursion ဆိုသည်မှာ function တစ်ခုက မိမိကိုယ်ကို input သေးငယ်လာသောပုံစံဖြင့် ပြန်ခေါ်ခြင်းဖြစ်သည်။ Factorial 5 ကို 5 × factorial(4) ဟု ခွဲပြီး နောက်တစ်ဆင့်တွင် 4 × factorial(3) ဟု ဆက်လျှော့သည်။ Base case သည် နောက်ထပ် function မခေါ်တော့ဘဲ တန်ဖိုးကို တိုက်ရိုက်ပြန်ပေးသည့်အခြေအနေဖြစ်သည်။ 0! နှင့် 1! ကို 1 ဟု သတ်မှတ်ထားသောကြောင့် call chain သည် ရပ်တန့်သည်။\n\nBase case မရှိလျှင် recursion ဆက်ခေါ်ပြီး Python ၏ recursion limit ကို ကျော်ကာ `RecursionError` ဖြစ်နိုင်သည်။ Recursive step သည် base case သို့ တကယ်နီးကပ်လာကြောင်း သက်သေပြပါ။ ဤဥပမာတွင် `n - 1` သည် non-negative integer ကို တဖြည်းဖြည်းလျော့စေသည်။ Input အနုတ်ဖြစ်လျှင် အဓိပ္ပာယ်မရှိသော recursion မစမီ `ValueError` ထုတ်သည်။\n\nRecursive factorial သည် n အဆင့် call များနှင့် call stack memory O(n) ကိုသုံးသည်။ Python သည် tail-call optimization မလုပ်သဖြင့် recursion ကို အလွန်နက်ရှိုင်းစေရန် မသင့်ပါ။ ထိုအတွက် loop သည် သင့်လျော်နိုင်သည်။ Recursion သည် tree၊ folder hierarchy သို့မဟုတ် divide-and-conquer ပြဿနာများတွင် သဘာဝကျနိုင်သော်လည်း base case နှင့် တိုးတက်မှုကို ရှင်းလင်းစွာရေးရမည်။\n\nFunction contract ကိုလည်း သတ်မှတ်ပါ။ ဤအဖြေက အနုတ်တန်ဖိုးကို reject လုပ်ပြီး integer များအတွက်သာ အဓိပ္ပာယ်ရှိသည်။ `bool` သည် Python တွင် `int` subclass ဖြစ်သော်လည်း factorial argument အဖြစ် True ကို မလက်ခံစေရန် ရည်ရွယ်လျှင် သီးခြားစစ်ပါ။ Challenge တွင် n=0, n=1, n=5, negative, non-integer ကို စမ်းပြီး base case ကို ဖျက်လိုက်ပါက ဘာဖြစ်မည်ကို ခန့်မှန်းပါ။",
+          "lines": "n အနုတ်ဖြစ်လျှင် error ပေးသည်။ 0 သို့မဟုတ် 1 တွင် 1 ပြန်သည်။ အခြားကိစ္စတွင် n ကို n-1 factorial နှင့် မြှောက်သည်။",
+          "mistake": "Base case ကို ချန်ထားခြင်း သို့မဟုတ် recursive call တွင် n ကို မလျှော့ခြင်း။",
+          "hint": "နောက်ဆုံးခေါ်ဆိုမှုကို 0 သို့မဟုတ် 1 ရောက်သောအခါ မိမိကိုယ်ကို ထပ်မခေါ်စေရန် သတ်မှတ်ပါ။",
+          "challenge": "Loop ဖြင့် factorial ကို ထပ်ရေးပြီး recursion နှင့် memory သုံးစွဲမှု၊ negative input behavior ကို နှိုင်းယှဉ်ပါ။",
+          "question": "Recursive factorial ကို ရပ်တန့်စေသော code အပိုင်းကို မည်သို့ခေါ်သနည်း။",
+          "explanation": "Base case က သတ်မှတ်ထားသော အခြေခံ input တွင် နောက်ထပ် call မခေါ်ဘဲ တန်ဖိုးပြန်ပေးသည်။"
+        },
+        "en": {
+          "objectives": "Identify a recursive call, its base case, and its call-stack cost using factorial.",
+          "body": "Recursion occurs when a function calls itself with a smaller version of the input. Factorial 5 becomes 5 times factorial(4), then 4 times factorial(3), and so on. A base case returns a result directly without another recursive call. Since both 0! and 1! equal 1, the call chain terminates.\n\nWithout a base case, calls continue until Python raises `RecursionError` after reaching its recursion limit. A recursive step must demonstrably move toward the base case. Here, `n - 1` decreases a non-negative integer. Negative input is rejected before recursion begins because the factorial contract does not define it.\n\nRecursive factorial uses n calls and O(n) call-stack space. Python does not optimize tail calls, so deep recursion is not a substitute for iteration. A loop can be clearer and safer for this simple calculation. Recursion is natural for trees, nested folders, and divide-and-conquer problems when the smaller subproblem and stopping condition are easy to state.\n\nDefine the function’s input contract as carefully as its algorithm. This example rejects negatives; a stricter version also rejects non-integers. Python treats `bool` as a subclass of `int`, so code that must reject `True` should check for it explicitly. Test n=0, n=1, n=5, a negative value, and a non-integer. Then remove the base case mentally and explain why the function would fail.",
+          "lines": "Negative values are rejected; 0 and 1 stop recursion; other values reduce n by one.",
+          "mistake": "Omitting the base case or failing to reduce the input toward it.",
+          "hint": "Make the call stop when its argument reaches 0 or 1.",
+          "challenge": "Write an iterative version and compare memory use and invalid-input behavior.",
+          "question": "What stops the recursive factorial from calling itself forever?",
+          "explanation": "The base case returns directly for a stopping input instead of making another call."
+        },
+        "myOptions": [
+          "Import statement",
+          "Base case",
+          "Decorator"
+        ],
+        "enOptions": [
+          "An import statement",
+          "A base case",
+          "A decorator"
+        ],
+        "correct": 1,
+        "reference": "https://docs.python.org/3/reference/expressions.html#calls"
+      }
+    },
+    {
+      "id": "py-40",
+      "title": {
+        "my": "heapq ဖြင့် အကြီးဆုံး k ခုရွေးခြင်း",
+        "en": "Selecting top-k items with heapq"
+      },
+      "level": "intermediate",
+      "environment": "sandbox",
+      "prerequisites": [
+        "py-39"
+      ],
+      "flow": [
+        "Set k and tie rule / k နဲ့ tie",
+        "Select top results / ရွေးချယ်",
+        "Test boundary k / အစွန်းစမ်း"
+      ],
+      "code": "import heapq\n\nscores = [4, 10, 7, 9, 8, 2]\nprint(heapq.nlargest(3, scores))\nprint(heapq.nsmallest(2, scores))\n",
+      "solution": "import heapq\n\nscores = [4, 10, 7, 9, 8, 2]\nlarge = heapq.nlargest(3, scores)\nsmall = heapq.nsmallest(2, scores)\nprint(large)\nprint(small)\n",
+      "expected_stdout": "[10, 9, 8]\n[2, 4]\n",
+      "solution_stdout": "[10, 9, 8]\n[2, 4]\n",
+      "guide": {
+        "my": {
+          "objectives": "`heapq` ဖြင့် top-k results ရွေးပြီး full sort နှင့် streaming memory အကျိုးအမြတ်ကို ခွဲခြားနိုင်ရန်။",
+          "body": "Top-k ပြဿနာတွင် item အားလုံးကို စီရန်မလိုဘဲ အကြီးဆုံး သို့မဟုတ် အသေးဆုံး k ခုကို ရွေးလိုသည်။ `heapq.nlargest(k, iterable)` နှင့် `nsmallest` သည် ရလဒ်ကို စီထားသော list အဖြစ် ပြန်ပေးပြီး မူရင်း scores ကို မပြောင်းပါ။ k ကို 3 ဟုသတ်မှတ်လျှင် အကြီးဆုံးသုံးခုသာ ရွေးသည်။ ထွက်လာသော အစဉ်ကိုလည်း helper က အကြီးဆုံးမှ အသေးဆုံးအဖြစ် ပြုလုပ်ပေးသည်။\n\nHeap သည် အစိတ်အပိုင်းအားလုံးကို အပြည့်အစုံစီထားသော list မဟုတ်ပါ။ အနည်းဆုံး item ကို အလွယ်တကူမြင်နိုင်သော tree-like structure ဖြစ်သည်။ ထို့ကြောင့် item များစွာထဲမှ အနည်းငယ်ကိုသာ ရွေးရသောအခါ အကျိုးရှိနိုင်သည်။ သို့သော် k သည် input အရွယ်အစားနှင့် နီးလာလျှင် `sorted(items)[:k]` သည် ရှင်းလင်းပြီး လုံလောက်နိုင်သည်။ Performance ကို workload ပေါ်တွင် တိုင်းတာပြီးမှ ရွေးချယ်ပါ။\n\n`nlargest` သည် object များအတွက် `key` ကိုလည်း လက်ခံသည်။ ဥပမာ score တစ်ခုတည်းမဟုတ်ဘဲ record ထဲမှ အမှတ် field ကို ရွေးနိုင်သည်။ Ties အတွက် output အစီအစဉ်ကို ကိုယ်တိုင်စစ်ဆေးပြီး specification လိုအပ်ချက်ကို ရှင်းလင်းပါ။ k သည် 0 ဖြစ်လျှင် empty list, k нь item тооноос их бол бүхรายการကို sort хийж returned list болгоно гэсэн behavior-ийг шалгах хэрэгтэй။\n\nStreaming source တွင် heap ကို ကိုယ်တိုင်ထိန်းထားနိုင်သည်။ အများဆုံး k ခုကို ထိန်းသိမ်းရန် min-heap ထဲတွင် k ခုအထိထည့်ပြီး နောက် item သည် root ထက်ကြီးမှသာ အသေးဆုံးကို အစားထိုးပါ။ ထိုနည်းသည် memory ကို O(k) အတွင်းထားနိုင်သည်။ Challenge တွင် duplicate scores, k=0, k အလွန်ကြီးခြင်းတို့ကို စမ်းပြီး memory/time လိုအပ်ချက်အတိုင်း algorithm ရွေးချယ်ပါ။",
+          "lines": "`nlargest` က iterable မှ အကြီးဆုံး k ခုကို စီထားသော list အဖြစ်ပေးသည်။ `nsmallest` က အသေးဆုံး k ခုကို ပေးသည်။",
+          "mistake": "Heap ကို အပြည့်အဝ sort ထားသော list ဟုယူဆခြင်း သို့မဟုတ် k edge cases ကို မစမ်းသပ်ခြင်း။",
+          "hint": "အကြီးဆုံးသုံးခုသာလိုလျှင် အခြား item အားလုံးကို မည်သို့တစ်ကြိမ်စီစီရန် မလိုအောင်လုပ်နိုင်သနည်း။",
+          "challenge": "Record list ကို `key` ဖြင့် score အလိုက်စီပြီး top-k, tie, k=0 နှင့် k အလွန်ကြီးခြင်းကို စမ်းပါ။",
+          "question": "`heapq.nlargest(3, values)` သည် မည်သည့်ရလဒ်ပေးသနည်း။",
+          "explanation": "Iterable ထဲမှ အကြီးဆုံးသုံးခုကို ရွေးပြီး descending order list ပြန်ပေးသည်။"
+        },
+        "en": {
+          "objectives": "Select top-k results with `heapq` and explain when partial selection can save work or memory.",
+          "body": "A top-k problem asks for only the largest or smallest k items, not a complete ordering of every item. `heapq.nlargest(k, iterable)` and `nsmallest` return a sorted list of the requested items without mutating the source. With k equal to three, only the three largest scores are returned, in descending order.\n\nA heap is not a fully sorted list. It is a tree-like structure that makes the smallest item easy to access. That can help when an input contains many values but only a small number are needed. When k approaches the size of the input, `sorted(items)[:k]` may be simpler and perfectly adequate. Measure representative workloads before choosing an optimization.\n\n`nlargest` also accepts a `key` for records, so selection can be based on a score field. Define tie behavior when the specification requires a particular order. Check edge cases: k=0 returns an empty list, and k larger than the input cannot produce more items than the input contains. These behaviors are useful to make explicit in tests.\n\nFor a stream, maintain a heap of at most k items. Insert the first k values, then replace the smallest retained value only when a new item is larger. This uses O(k) memory. Test duplicate scores, k=0, and k larger than the number of records. Choose the algorithm to match memory and latency needs rather than assuming that every heap operation is faster.",
+          "lines": "`nlargest` returns the k largest sorted values; `nsmallest` returns the k smallest.",
+          "mistake": "Assuming a heap is fully sorted or ignoring edge cases for k.",
+          "hint": "If only three values are required, do you need to retain a complete sorted copy?",
+          "challenge": "Select records by score with `key`, testing ties, k=0, and k larger than the list.",
+          "question": "What does `heapq.nlargest(3, values)` return?",
+          "explanation": "It returns a descending list of the three largest values."
+        },
+        "myOptions": [
+          "အငယ်ဆုံးသုံးခု",
+          "အကြီးဆုံးသုံးခု",
+          "Input ကို အမြဲပြောင်းလဲသော set"
+        ],
+        "enOptions": [
+          "The three smallest",
+          "The three largest",
+          "A set that always mutates input"
+        ],
+        "correct": 1,
+        "reference": "https://docs.python.org/3/library/heapq.html"
+      }
     }
   ]
 }
