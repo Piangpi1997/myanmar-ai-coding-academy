@@ -1,5 +1,30 @@
 # BYOK foundation validation — 2026-10-09
 
+## Study, reminders and curriculum continuation — 2026-10-15 (0.6.0+6)
+
+Base: `93b80c1`; final tested head: `cf8db21` on `development/byok-foundation`. Draft PR [#1](https://github.com/Piangpi1997/myanmar-ai-coding-academy/pull/1) remains open.
+
+| Command/check actually executed | Result |
+|---|---|
+| Backend `pip check` | No broken requirements |
+| Backend `compileall` | Passed |
+| Backend `pytest -q` | **133 passed**, one Starlette/httpx test-client deprecation warning |
+| `python scripts/sync-learning-catalog.py --check` | Passed |
+| `python scripts/build-python-course.py --check` | Passed; 40 lessons compile to the offline Dart bundle and additive SQL |
+| `git diff --exit-code -- database/migrations/005_python_course.sql` | Passed; published migration 005 remains unchanged |
+| `flutter analyze` (GitHub Actions, run [38630931092](https://github.com/Piangpi1997/myanmar-ai-coding-academy/actions/runs/38630931092)) | Passed |
+| `flutter test` (same Actions run) | Passed |
+| Restricted preview Chromium checks (same Actions run) | Passed |
+| `flutter build apk --debug` (same Actions run) | Passed; guest-mode debug APK artifact uploaded |
+| Downloaded APK `unzip -t` | Passed; ZIP integrity clean |
+| Windows Android Studio / physical-device notification delivery | Not executed here |
+| Apply migrations 006/007 / live RLS test | Not performed; source-only |
+| Release APK signing | Not attempted; no release keystore supplied |
+
+Verified APK: 154,610,645 bytes; SHA-256 `90453f4e9bc1514ae66228e90a18f1fabe6c5a97df56e626a15e4923880abee9`. The artifact is a CI debug build, not a Play Store/release-signed package. This computer had no local Flutter/Android SDK; Android analysis, tests and build ran on the linked GitHub Actions workflow. Two initial CI failures (an unimported Supabase `AuthState` type/relative test imports, then a stale 36-lesson assertion) were fixed; the final run is green.
+
+Scope remains incomplete: there are 40 original lessons (60 remain toward 100), no authenticated admin CMS, no live Supabase/RLS execution, and no physical-device test of notification delivery. Migration 006 adds study history and migration 007 adds py-37–py-40; neither was applied remotely. The timer records foreground time rather than mastery, and Android may defer inexact alarms.
+
 Base commit: `3b31c82a3c35dc10fb15109c2b119c2efa6d7767`.
 Branch: `development/byok-foundation`. This report describes local checks, not production certification.
 

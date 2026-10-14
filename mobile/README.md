@@ -40,7 +40,18 @@ Profile → **Daily reminders** stores per-guest/per-account preferences on-devi
 
 ## Run from Android Studio on Windows
 
-1. Fetch and switch to `development/byok-foundation`; preserve or commit your own local edits before switching.
+1. Preserve or commit your own local edits before switching branches. From PowerShell at the repository root:
+
+```powershell
+git fetch origin
+if (-not (git branch --list 'development/byok-foundation')) {
+  git switch --track -c development/byok-foundation origin/development/byok-foundation
+} else {
+git switch development/byok-foundation
+}
+git pull --ff-only origin development/byok-foundation
+```
+
 2. Install the Flutter and Dart plugins. Open **the repository's `mobile` folder**, which contains `pubspec.yaml`. Opening only `android` gives a Gradle project rather than the Flutter run configuration.
 3. Set the Flutter SDK path to your Flutter 3.35.7 folder under Settings → Languages & Frameworks → Flutter.
 4. Use Android SDK Manager to install **Android SDK Command-line Tools (latest)**, platform API 36, Build Tools 35.0.0 and NDK 27.0.12077973. Match SDK Location to Flutter's configuration.
@@ -53,7 +64,16 @@ flutter doctor --android-licenses
 flutter doctor -v
 ```
 
-6. In Studio's terminal inside `mobile`, run `flutter pub get` and `flutter gen-l10n`. The repository includes a portable `main.dart` Flutter Run configuration. Open `lib/main.dart`, select the connected Android device, and use Run (or right-click `main.dart` → Run). If the toolbar has no Flutter configuration, create a Flutter Run configuration whose Dart entrypoint is `lib/main.dart`. Leave additional arguments empty for guest/direct BYOK.
+6. After installing the toolchain, from Studio's terminal at the repository root run:
+
+```powershell
+Set-Location mobile
+flutter pub get
+flutter gen-l10n
+flutter run -t lib/main.dart
+```
+
+Alternatively, use Studio's portable `main.dart` Flutter Run configuration: open `lib/main.dart`, select the connected Android device and click Run (or right-click `main.dart` → Run). If the toolbar has no Flutter configuration, create one with Dart entrypoint `lib/main.dart`. Leave additional arguments empty for guest/direct BYOK.
 
 Visual Studio's Windows desktop warning does not block Android builds. Android command-line tools are required; installing Android Studio alone does not guarantee they are present. Never regenerate this repository with `flutter create .` just to fix missing SDK tools.
 
