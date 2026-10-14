@@ -1,10 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:myanmar_ai_coding_academy/features/study/reminder_preferences.dart';
+import 'package:myanmar_ai_coding_academy/features/study/study_store.dart';
+import 'package:myanmar_ai_coding_academy/features/study/study_tracker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../lib/features/study/reminder_preferences.dart';
-import '../lib/features/study/study_store.dart';
-import '../lib/features/study/study_tracker.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
