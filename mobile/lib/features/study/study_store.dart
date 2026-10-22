@@ -1,145 +1,168 @@
 import 'dart:convert';
-import 'reminder_preferences.dart';
-import 'study_tracker.dart';
 
-abstract class KeyValueStorage {
-  Future<String?> getString(String key);
-  Future<void> setString(String key, String value);
-  Future<void> remove(String key);
+import 'package:shared_preferences/shared_preferences.dart';
+
+class StudySession {
+  const StudySession({
+    required this.clientId,
+    required this.startedAt,
+    required this.durationSeconds,
+    required this.activity,
+    this.lessonId,
+    this.synced = false,
+  });
+
+  final String clientId;
+  final DateTime startedAt;
+  final int durationSeconds;
+  final String activity;
+  final String? lessonId;
+  final bool synced;
+
+  StudySession copyWith({bool? synced}) => StudySession(
+    clientId: clientId,
+    startedAt: startedAt,
+    durationSeconds: durationSeconds,
+    activity: activity,
+    lessonId: lessonId,
+    synced: synced ?? this.synced,
+  );
+
+  Map<String, dynamic> toLocalJson() => {
+    ...toApiJson(),
+    'synced': synced,
+  };
+
+  Map<String, dynamic> toApiJson() => {
+    'client_id': clientId,
+    'started_at': startedAt.toUtc().toIso8601String(),
+    'duration_seconds': durationSeconds,
+    'activity': activity,
+    'lesson_id': lessonId,
+  };
+
+  factory StudySession.fromJson(Map<String, dynamic> json, {bool? synced}) =>
+      StudySession(
+        clientId: json['client_id'] as String,
+        startedAt: DateTime.parse(json['started_at'] as String).toUtc(),
+        durationSeconds: (json['duration_seconds'] as num).toInt(),
+        activity: json['activity'] as String,
+        lessonId: json['lesson_id'] as String?,
+        synced: synced ?? json['synced'] == true,
+      );
 }
 
-class InMemoryKeyValueStorage implements KeyValueStorage {
-  final Map<String, String> _map = <String, String>{};
-
-  @override
-  Future<String?> getString(String key) async => _map[key];
-
-  @override
-  Future<void> setString(String key, String value) async {
-    _map[key] = value;
-  }
-
-  @override
-  Future<void> remove(String key) async {
-    _map.remove(key);
-  }
+class StudySyncResult {
+  const StudySyncResult({required this.sessions, required this.hadError});
+  final List<StudySession> sessions;
+  final bool hadError;
 }
 
+typedef LoadStudyRemote = Future<List<Map<String, dynamic>>> Function(String owner);
+typedef SaveStudyRemote = Future<void> Function(
+  String owner,
+  Map<String, dynamic> session,
+);
+
+/// Local owner-scoped history is written before any network request. Failed
+/// cloud writes remain queued locally and can be retried without duplicating rows.
 class StudyStore {
-  final KeyValueStorage _storage;
-  final Future<bool> Function(StudyCheckpoint checkpoint)? _cloudSyncCallback;
+  StudyStore(
+    this.prefs, {
+    this.loadRemote,
+    this.saveRemote,
+  });
 
-  StudyStore({
-    required KeyValueStorage storage,
-    Future<bool> Function(StudyCheckpoint checkpoint)? cloudSyncCallback,
-  })  : _storage = storage,
-        _cloudSyncCallback = cloudSyncCallback;
+  final SharedPreferences prefs;
+  final LoadStudyRemote? loadRemote;
+  final SaveStudyRemote? saveRemote;
 
-  String _checkpointsKey(String scope) => 'study_checkpoints_v1_$scope';
-  String _reminderKey(String scope) => 'study_reminders_v1_$scope';
+  static String storageKey(String? owner) => 'study.v1.${owner ?? 'guest'}';
 
-  Future<List<StudyCheckpoint>> saveCheckpoint(StudyCheckpoint checkpoint) async {
-    final String scope = checkpoint.accountScope;
-    final List<StudyCheckpoint> existing = await loadCheckpoints(scope);
-    final int idx = existing.indexWhere(
-      (StudyCheckpoint c) => c.checkpointId == checkpoint.checkpointId,
-    );
-
-    StudyCheckpoint toStore = checkpoint;
-    if (_cloudSyncCallback != null && scope != 'guest') {
-      try {
-        final bool synced = await _cloudSyncCallback!(checkpoint);
-        toStore = checkpoint.copyWith(syncedToCloud: synced);
-      } catch (_) {
-        toStore = checkpoint.copyWith(syncedToCloud: false);
-      }
-    }
-
-    if (idx >= 0) {
-      existing[idx] = toStore;
-    } else {
-      existing.add(toStore);
-    }
-
-    await _persistCheckpoints(scope, existing);
-    return existing;
+  List<StudySession> read(String? owner) {
+    final raw = prefs.getString(storageKey(owner));
+    if (raw == null) return [];
+    final decoded = jsonDecode(raw);
+    if (decoded is! List) throw const FormatException('Invalid study history');
+    return decoded.map((item) {
+      final map = Map<String, dynamic>.from(item as Map);
+      return StudySession.fromJson(map, synced: map['synced'] == true);
+    }).toList();
   }
 
-  Future<int> retryPendingSyncs(String scope) async {
-    if (scope == 'guest' || _cloudSyncCallback == null) return 0;
-    final List<StudyCheckpoint> list = await loadCheckpoints(scope);
-    int syncedCount = 0;
-    bool modified = false;
-
-    for (int i = 0; i < list.length; i++) {
-      final StudyCheckpoint item = list[i];
-      if (!item.syncedToCloud) {
-        try {
-          final bool ok = await _cloudSyncCallback!(item);
-          if (ok) {
-            list[i] = item.copyWith(syncedToCloud: true);
-            syncedCount += 1;
-            modified = true;
-          }
-        } catch (_) {}
-      }
+  Future<void> write(String? owner, List<StudySession> sessions) async {
+    final bounded = [...sessions]..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+    final serialized = bounded.map((item) => item.toLocalJson()).toList();
+    if (!await prefs.setString(storageKey(owner), jsonEncode(serialized))) {
+      throw StateError('Could not save study history');
     }
-
-    if (modified) {
-      await _persistCheckpoints(scope, list);
-    }
-    return syncedCount;
   }
 
-  Future<List<StudyCheckpoint>> loadCheckpoints(String scope) async {
-    final String? raw = await _storage.getString(_checkpointsKey(scope));
-    if (raw == null || raw.isEmpty) return <StudyCheckpoint>[];
+  Future<List<StudySession>> append(String? owner, StudySession session) async {
+    final current = read(owner);
+    if (!current.any((item) => item.clientId == session.clientId)) {
+      current.add(session);
+    }
+    await write(owner, current);
+    return read(owner);
+  }
+
+  Future<StudySyncResult> sync(String owner) async {
+    final local = read(owner);
+    if (loadRemote == null || saveRemote == null) {
+      return StudySyncResult(sessions: local, hadError: true);
+    }
+
+    List<StudySession> remote;
     try {
-      final dynamic decoded = jsonDecode(raw);
-      if (decoded is List) {
-        return decoded
-            .whereType<Map<String, dynamic>>()
-            .map(StudyCheckpoint.fromJson)
-            .toList();
-      }
-    } catch (_) {}
-    return <StudyCheckpoint>[];
-  }
-
-  Future<void> _persistCheckpoints(
-      String scope, List<StudyCheckpoint> checkpoints) async {
-    final String encoded = jsonEncode(
-      checkpoints.map((StudyCheckpoint c) => c.toJson()).toList(),
-    );
-    await _storage.setString(_checkpointsKey(scope), encoded);
-  }
-
-  Future<int> getTotalStudySeconds(String scope) async {
-    final List<StudyCheckpoint> list = await loadCheckpoints(scope);
-    return list.fold<int>(
-        0, (int sum, StudyCheckpoint c) => sum + c.foregroundSeconds);
-  }
-
-  Future<Set<String>> getReadingCompletedLessonIds(String scope) async {
-    final List<StudyCheckpoint> list = await loadCheckpoints(scope);
-    return list
-        .where((StudyCheckpoint c) => c.completedReading)
-        .map((StudyCheckpoint c) => c.lessonId)
-        .toSet();
-  }
-
-  Future<ReminderPreferences> loadReminderPreferences(String scope) async {
-    final String? raw = await _storage.getString(_reminderKey(scope));
-    if (raw == null || raw.isEmpty) {
-      return ReminderPreferences(accountScope: scope);
+      remote = (await loadRemote!(owner))
+          .map((item) => StudySession.fromJson(item, synced: true))
+          .toList();
+    } catch (_) {
+      return StudySyncResult(sessions: local, hadError: true);
     }
-    return ReminderPreferences.decode(raw, scope: scope);
+
+    var hadError = false;
+    for (var index = 0; index < local.length; index++) {
+      final session = local[index];
+      if (session.synced) continue;
+      try {
+        await saveRemote!(owner, session.toApiJson());
+        local[index] = session.copyWith(synced: true);
+      } catch (_) {
+        hadError = true;
+      }
+    }
+
+    final mergedById = <String, StudySession>{
+      for (final item in remote) item.clientId: item,
+    };
+    // An upload can take longer than the timer's next checkpoint. Re-read the
+    // device history after network awaits so a stale snapshot cannot erase it.
+    final uploadedById = {for (final item in local) item.clientId: item};
+    for (final current in read(owner)) {
+      final uploaded = uploadedById[current.clientId];
+      final item = uploaded != null && _sameSession(uploaded, current)
+          ? current.copyWith(synced: current.synced || uploaded.synced)
+          : current;
+      final serverCopy = mergedById[item.clientId];
+      if (serverCopy == null) {
+        mergedById[item.clientId] = item;
+        continue;
+      }
+      if (!_sameSession(serverCopy, item)) {
+        hadError = true;
+        mergedById[item.clientId] = item;
+      }
+    }
+    final merged = mergedById.values.toList();
+    await write(owner, merged);
+    return StudySyncResult(sessions: read(owner), hadError: hadError);
   }
 
-  Future<void> saveReminderPreferences(ReminderPreferences prefs) async {
-    await _storage.setString(
-      _reminderKey(prefs.accountScope),
-      prefs.encode(),
-    );
-  }
+  static bool _sameSession(StudySession first, StudySession second) =>
+      first.startedAt.isAtSameMomentAs(second.startedAt) &&
+      first.durationSeconds == second.durationSeconds &&
+      first.activity == second.activity &&
+      first.lessonId == second.lessonId;
 }

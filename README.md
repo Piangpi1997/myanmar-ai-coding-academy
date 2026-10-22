@@ -13,6 +13,7 @@ This is a tested development milestone, not the completed academy or a productio
 - [Guest BYOK fixes and expanded beginner module](docs/GUEST_BYOK_UPDATE.md)
 - [Implemented scope and limitations](docs/BYOK_MILESTONE.md)
 - [Tests actually executed and APK status](docs/VALIDATION_REPORT.md)
+- [Study/reminder compatibility repair (0.6.1)](docs/STUDY_REPAIR.md)
 - [Android setup and signing](mobile/README.md)
 - [Backend configuration and security](backend/README.md)
 - [Development roadmap](docs/DEVELOPMENT_ROADMAP.md)

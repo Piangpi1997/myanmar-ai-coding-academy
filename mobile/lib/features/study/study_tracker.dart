@@ -1,184 +1,80 @@
-import 'dart:async';
-import 'package:flutter/widgets.dart';
+import 'dart:math';
 
-class StudyCheckpoint {
-  final String checkpointId;
-  final String accountScope;
-  final String lessonId;
-  final String activityType;
-  final int foregroundSeconds;
-  final DateTime startedAt;
-  final DateTime endedAt;
-  final bool completedReading;
-  final bool syncedToCloud;
+import 'study_store.dart';
 
-  const StudyCheckpoint({
-    required this.checkpointId,
-    required this.accountScope,
-    required this.lessonId,
-    required this.activityType,
-    required this.foregroundSeconds,
-    required this.startedAt,
-    required this.endedAt,
-    this.completedReading = false,
-    this.syncedToCloud = false,
-  });
+/// Measures only explicit foreground intervals; the widget pauses it on lifecycle changes.
+class StudyTracker {
+  StudyTracker({DateTime Function()? now, String Function()? idFactory})
+    : _now = now ?? DateTime.now,
+      _idFactory = idFactory ?? _uuidV4;
 
-  StudyCheckpoint copyWith({bool? syncedToCloud, bool? completedReading}) {
-    return StudyCheckpoint(
-      checkpointId: checkpointId,
-      accountScope: accountScope,
-      lessonId: lessonId,
-      activityType: activityType,
-      foregroundSeconds: foregroundSeconds,
-      startedAt: startedAt,
-      endedAt: endedAt,
-      completedReading: completedReading ?? this.completedReading,
-      syncedToCloud: syncedToCloud ?? this.syncedToCloud,
-    );
-  }
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'checkpoint_id': checkpointId,
-        'account_scope': accountScope,
-        'lesson_id': lessonId,
-        'activity_type': activityType,
-        'foreground_seconds': foregroundSeconds,
-        'started_at': startedAt.toUtc().toIso8601String(),
-        'ended_at': endedAt.toUtc().toIso8601String(),
-        'completed_reading': completedReading,
-        'synced_to_cloud': syncedToCloud,
-      };
-
-  factory StudyCheckpoint.fromJson(Map<String, dynamic> json) {
-    return StudyCheckpoint(
-      checkpointId: (json['checkpoint_id'] as String?) ?? '',
-      accountScope: (json['account_scope'] as String?) ?? 'guest',
-      lessonId: (json['lesson_id'] as String?) ?? '',
-      activityType: (json['activity_type'] as String?) ?? 'lesson_reading',
-      foregroundSeconds: (json['foreground_seconds'] as num?)?.toInt() ?? 0,
-      startedAt: DateTime.tryParse((json['started_at'] as String?) ?? '')?.toUtc() ??
-          DateTime.now().toUtc(),
-      endedAt: DateTime.tryParse((json['ended_at'] as String?) ?? '')?.toUtc() ??
-          DateTime.now().toUtc(),
-      completedReading: json['completed_reading'] == true,
-      syncedToCloud: json['synced_to_cloud'] == true,
-    );
-  }
-}
-
-class StudyTracker with WidgetsBindingObserver {
-  final Future<void> Function(StudyCheckpoint checkpoint) onCheckpointReady;
-
-  String _accountScope;
-  String? _activeLessonId;
-  String _activityType = 'lesson_reading';
+  final DateTime Function() _now;
+  final String Function() _idFactory;
   DateTime? _segmentStartedAt;
-  int _accumulatedSeconds = 0;
-  bool _isRunning = false;
-  Timer? _ticker;
-  int _checkpointSequence = 0;
+  int _savedSeconds = 0;
+  bool _running = false;
+  String _activity = 'lesson';
+  String? _lessonId;
 
-  StudyTracker({
-    required String initialAccountScope,
-    required this.onCheckpointReady,
-  }) : _accountScope = initialAccountScope;
+  bool get isRunning => _running;
 
-  String get accountScope => _accountScope;
-  bool get isRunning => _isRunning;
-  int get currentSessionSeconds => _accumulatedSeconds;
-  String? get activeLessonId => _activeLessonId;
-
-  void startSession({
-    required String lessonId,
-    String activityType = 'lesson_reading',
-  }) {
-    if (_activeLessonId != null && _activeLessonId != lessonId) {
-      flushCheckpoint();
-    }
-    _activeLessonId = lessonId;
-    _activityType = activityType;
-    _resumeTimer();
+  int get elapsedSeconds {
+    if (!_running || _segmentStartedAt == null) return _savedSeconds;
+    final seconds = _now().difference(_segmentStartedAt!).inSeconds;
+    return _savedSeconds + (seconds < 0 ? 0 : seconds);
   }
 
-  void _resumeTimer() {
-    if (_isRunning || _activeLessonId == null) return;
-    _isRunning = true;
-    _segmentStartedAt ??= DateTime.now().toUtc();
-    _ticker?.cancel();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_isRunning) {
-        _accumulatedSeconds += 1;
-      }
-    });
+  int get currentSegmentSeconds {
+    if (!_running || _segmentStartedAt == null) return 0;
+    final seconds = _now().difference(_segmentStartedAt!).inSeconds;
+    return seconds < 0 ? 0 : seconds;
   }
 
-  void pauseSession() {
-    if (!_isRunning) return;
-    _isRunning = false;
-    _ticker?.cancel();
-    _ticker = null;
+  void start({String activity = 'lesson', String? lessonId}) {
+    if (_running) return;
+    _savedSeconds = 0;
+    _activity = activity;
+    _lessonId = lessonId;
+    _segmentStartedAt = _now();
+    _running = true;
   }
 
-  Future<StudyCheckpoint?> flushCheckpoint({bool completedReading = false}) async {
-    pauseSession();
-    final String? lessonId = _activeLessonId;
-    if (lessonId == null || _accumulatedSeconds <= 0) {
-      _accumulatedSeconds = 0;
-      _segmentStartedAt = null;
-      return null;
-    }
-
-    final DateTime endedAt = DateTime.now().toUtc();
-    final DateTime startedAt = _segmentStartedAt ??
-        endedAt.subtract(Duration(seconds: _accumulatedSeconds));
-    _checkpointSequence += 1;
-
-    final String checkpointId =
-        'chk_${_accountScope}_${lessonId}_${startedAt.millisecondsSinceEpoch}_$_checkpointSequence';
-
-    final StudyCheckpoint checkpoint = StudyCheckpoint(
-      checkpointId: checkpointId,
-      accountScope: _accountScope,
-      lessonId: lessonId,
-      activityType: _activityType,
-      foregroundSeconds: _accumulatedSeconds,
+  /// Saves an idempotent checkpoint; a repeated call within the same second is a no-op.
+  StudySession? checkpoint() {
+    if (!_running || _segmentStartedAt == null) return null;
+    final now = _now();
+    final elapsed = now.difference(_segmentStartedAt!).inSeconds;
+    final seconds = elapsed < 0 ? 0 : elapsed;
+    if (seconds == 0) return null;
+    final startedAt = _segmentStartedAt!;
+    _savedSeconds += seconds;
+    _segmentStartedAt = now;
+    return StudySession(
+      clientId: _idFactory(),
       startedAt: startedAt,
-      endedAt: endedAt,
-      completedReading: completedReading,
+      durationSeconds: seconds,
+      activity: _activity,
+      lessonId: _lessonId,
     );
+  }
 
-    _accumulatedSeconds = 0;
+  StudySession? stop() {
+    if (!_running) return null;
+    final last = checkpoint();
+    _running = false;
     _segmentStartedAt = null;
-
-    await onCheckpointReady(checkpoint);
-    return checkpoint;
+    _savedSeconds = 0;
+    _lessonId = null;
+    return last;
   }
 
-  Future<void> switchAccountScope(String newAccountScope) async {
-    if (newAccountScope == _accountScope) return;
-    await flushCheckpoint();
-    _activeLessonId = null;
-    _accountScope = newAccountScope;
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      if (_activeLessonId != null) {
-        _resumeTimer();
-      }
-    } else if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached ||
-        state == AppLifecycleState.hidden) {
-      unawaited(flushCheckpoint());
-    }
-  }
-
-  void dispose() {
-    _ticker?.cancel();
-    _ticker = null;
-    _isRunning = false;
+  static String _uuidV4() {
+    final random = Random.secure();
+    final bytes = List<int>.generate(16, (_) => random.nextInt(256));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    final hex = bytes.map((value) => value.toRadixString(16).padLeft(2, '0')).join();
+    return '${hex.substring(0, 8)}-${hex.substring(8, 12)}-'
+        '${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20)}';
   }
 }
