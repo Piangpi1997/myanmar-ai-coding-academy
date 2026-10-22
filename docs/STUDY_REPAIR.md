@@ -10,4 +10,6 @@ Regression coverage includes the actual timer and reminder widgets, native sched
 
 Local checks on 2026-10-23: backend **133 tests passed** with one existing Starlette/httpx deprecation warning; dependency consistency and both catalog generation checks passed. Flutter/Android tools are not installed in this editing environment. Flutter analysis, tests, Chromium preview checks and APK compilation are verified by the [validation workflow](https://github.com/Piangpi1997/myanmar-ai-coding-academy/actions/workflows/validate.yml) for the patch commit; consult that run's actual result and matching artifact.
 
+The first repair run (`39866464986`, commit `3a778dd`) passed Flutter analysis and **57 mobile tests**, then stopped during browser installation: the pinned Playwright 1.56.1 has no Chromium headless shell for the new `ubuntu-latest` image (Ubuntu 26.04). The mobile job now uses `ubuntu-24.04`; all browser assertions and APK build gates remain enabled. The follow-up workflow result is authoritative for that environment repair.
+
 Physical-device notifications and live provider/Supabase/runner integrations still need their configured environments. This is a debug development update with 40 lessons; the 100-lesson curriculum and administrator CMS remain unfinished.

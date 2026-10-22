@@ -27,7 +27,8 @@ jobs:
       - run: pytest -q
         working-directory: backend
   mobile:
-    runs-on: ubuntu-latest
+    # Playwright 1.56.1 has no Chromium headless shell for Ubuntu 26.04.
+    runs-on: ubuntu-24.04
     env:
       CI: 'true'
       FLUTTER_SUPPRESS_ANALYTICS: 'true'
