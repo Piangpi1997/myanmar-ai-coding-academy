@@ -1,6 +1,6 @@
 # Myanmar AI Coding Academy — Development Roadmap
 
-Status: Planning / Prompt package only. This is not yet an APK or functional app.
+Status: Flutter/FastAPI starter extended with BYOK, a learning workspace, 40 original bilingual lessons, a restricted Android web preview, a foreground study timer/history API and native local reminder source. The new mobile/backend changes require CI verification; migrations 006–007 are source-only and reminder delivery has not been device-tested. Sixty more lessons are needed for the 100-lesson target; comprehensive textbook-scale curriculum, authenticated admin CMS, live integrations and release validation remain unfinished. See [BYOK milestone](BYOK_MILESTONE.md), [guest BYOK and beginner update](GUEST_BYOK_UPDATE.md), [learning workspace](LEARNING_WORKSPACE.md), [course/web update](COURSE_AND_WEB_LAB.md), and the validation report.
 
 ## Product goal
 Build a Myanmar-first Android app that teaches programming from zero to practical professional skills, with bilingual lessons, hands-on coding, AI assistance, practice, and progress tracking.
@@ -9,7 +9,7 @@ Build a Myanmar-first Android app that teaches programming from zero to practica
 - **Android:** Flutter / Dart, Material 3, Riverpod, GoRouter, Noto Sans Myanmar.
 - **Backend:** Python FastAPI with typed Pydantic request and response models.
 - **Database and authentication:** Supabase (PostgreSQL, Auth, Storage) with Row Level Security.
-- **AI tutor:** Backend proxy to an OpenAI-compatible provider; never ship API keys in an APK.
+- **AI tutor:** User-selected direct BYOK to fixed HTTPS compatible providers for guest/account use, or authenticated backend proxy for configured accounts. User-owned keys are encrypted at runtime; no keys are embedded in the APK. Direct mode is the requested BYOK exception to the original backend-only design.
 - **Code runner:** Dedicated Judge0-compatible service with sandboxing, quotas and strict execution limits; do not execute learner code inside the primary backend.
 - **Web preview:** Isolated HTML/CSS/JS WebView with restricted origin and no privileged bridges.
 - **Admin CMS:** Next.js / React, with role-based lesson approval and publishing.
@@ -47,8 +47,9 @@ Build a Myanmar-first Android app that teaches programming from zero to practica
 **Acceptance:** Authenticated learner asks about the current lesson and receives Myanmar explanation without exposing credentials in the app.
 
 ## Milestone 4 — Quizzes, reminders, admin and personalization
-- [ ] Quiz bank, auto grading, attempt history, and progress dashboard.
-- [ ] Daily learning reminders with user-selected schedule and permission handling.
+- [ ] Complete academy assessments/dashboard: public beginner self-checks, six sandbox grading contracts, private attempt-history source and local project checkpoints are implemented; live validation and wider exercise types remain.
+- [x] Source: local study timer/history with foreground-only lifecycle stops, owner-isolated persistence, local retry queue, authenticated study-session API and RLS migration 006. Live database application/RLS test remains.
+- [x] Source: Android study reminders with selected time/weekdays/duration, review preference, permission handling, cancellation and boot/time-zone rescheduling. Physical-device delivery is unverified; Android alarms may be deferred by the OS.
 - [ ] Admin CMS with create/edit/review/publish lesson workflows.
 - [ ] Personalized learning tracks, project tasks and achievements.
 - [ ] Offline reading, account/data deletion and accessibility audit.
@@ -80,6 +81,6 @@ prompts/                # Existing master prompts
 - Prefer reliable working vertical slices over a giant scaffold with nonfunctional buttons.
 
 ## Recommended next development task
-**Build Milestone 1 as a real Flutter + FastAPI + Supabase foundation.** Deliver tested code and instructions. Do not attempt the full curriculum and all AI features in one implementation step.
+**Validate the implemented authentication/progress/BYOK/code-runner slice against a real Supabase project, compatible AI model and isolated runner on an Android device.** Complete the remaining substantial curriculum, reminders and protected admin publishing; validate the web preview on a physical device. Existing checkboxes describe original acceptance targets; they are not evidence of completed live integrations.
 
 Original full product specification: [Master Prompt](../prompts/FINAL_MASTER_PROMPT.md).

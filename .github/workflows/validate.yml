@@ -1,0 +1,78 @@
+name: Validate academy milestone
+on:
+  push:
+    branches: [main, 'development/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: academy-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements.lock.txt
+      - run: pip install -r backend/requirements.lock.txt
+      - run: pip check
+      - run: python scripts/sync-learning-catalog.py --check
+      - run: python scripts/build-academy-catalog.py --check
+      - run: python scripts/build-python-course.py --check
+      - run: pytest -q
+        working-directory: backend
+  mobile:
+    # Playwright 1.56.1 has no Chromium headless shell for Ubuntu 26.04.
+    runs-on: ubuntu-24.04
+    env:
+      CI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: mobile
+      - run: flutter gen-l10n
+        working-directory: mobile
+      - run: flutter analyze
+        working-directory: mobile
+      - run: flutter test
+        working-directory: mobile
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: academy-ui-previews-${{ github.sha }}
+          path: mobile/build/preview/*.png
+          if-no-files-found: warn
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated preview test tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/academy-preview-tests" playwright@1.56.1 --ignore-scripts
+          node "$RUNNER_TEMP/academy-preview-tests/node_modules/playwright/cli.js" install --with-deps chromium --only-shell
+      - name: Validate web preview document in Chromium
+        run: |
+          dart run scripts/export-web-preview-fixtures.dart "$RUNNER_TEMP/academy-preview-fixtures"
+          NODE_PATH="$RUNNER_TEMP/academy-preview-tests/node_modules" node scripts/test-web-preview.cjs "$RUNNER_TEMP/academy-preview-fixtures"
+      - run: flutter build apk --debug
+        working-directory: mobile
+      - uses: actions/upload-artifact@v4
+        with:
+          name: academy-debug-guest-${{ github.sha }}
+          path: mobile/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error

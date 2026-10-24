@@ -1,0 +1,1707 @@
+{
+  "schema_version": 1,
+  "exercises": [
+    {
+      "id": "sum-two",
+      "lesson_ids": [
+        "py-02",
+        "py-04"
+      ],
+      "title": {
+        "my": "ကိန်းနှစ်ခု ပေါင်းခြင်း",
+        "en": "Add two integers"
+      },
+      "statement": {
+        "my": "stdin စာကြောင်းနှစ်ကြောင်းမှ integer တစ်ခုစီကို ဖတ်ပါ။ တစ်ခုစီ -100000 မှ 100000 ထိ ဖြစ်နိုင်သည်။ ပေါင်းလဒ်တစ်ခုတည်းကို print လုပ်ပါ။ Prompt သို့ label မထည့်ပါနှင့်။",
+        "en": "Read one integer per stdin line, each between -100000 and 100000. Print their sum only. Do not print input prompts or labels."
+      },
+      "hint": {
+        "my": "input() ပြန်လာသည့် string နှစ်ခုကို int ဖြင့် ပြောင်းပြီး ပေါင်းပါ။",
+        "en": "Convert each input string with int before adding."
+      },
+      "starter": "a = int(input())\nb = int(input())\n# Print the sum of a and b.\n",
+      "solution": "a = int(input())\nb = int(input())\nprint(a + b)",
+      "examples": [
+        {
+          "stdin": "2\n3\n",
+          "stdout": "5"
+        },
+        {
+          "stdin": "-4\n4\n",
+          "stdout": "0"
+        }
+      ]
+    },
+    {
+      "id": "even-number",
+      "lesson_ids": [
+        "py-05",
+        "py-06"
+      ],
+      "title": {
+        "my": "စုံကိန်းနှင့် မကိန်း",
+        "en": "Even or odd"
+      },
+      "statement": {
+        "my": "Integer တစ်ခုကို stdin မှ ဖတ်ပါ။ စုံကိန်းဆို even၊ မကိန်းဆို odd ကို lowercase ဖြင့် တစ်ကြောင်းတည်း ပြပါ။ Zero နှင့် အနုတ်ကိန်းများကိုလည်း စစ်ပါ။",
+        "en": "Read an integer. Print exactly even or odd in lowercase. Handle zero and negative integers as well."
+      },
+      "hint": {
+        "my": "n % 2 == 0 ဆိုလျှင် စုံကိန်းဖြစ်သည်။",
+        "en": "Check whether n % 2 == 0."
+      },
+      "starter": "n = int(input())\n# Choose even or odd using a condition.\n",
+      "solution": "n = int(input())\nif n % 2 == 0:\n    print(\"even\")\nelse:\n    print(\"odd\")",
+      "examples": [
+        {
+          "stdin": "8\n",
+          "stdout": "even"
+        },
+        {
+          "stdin": "-3\n",
+          "stdout": "odd"
+        }
+      ]
+    },
+    {
+      "id": "discount-price",
+      "lesson_ids": [
+        "py-05"
+      ],
+      "title": {
+        "my": "လျှော့ဈေး တွက်ခြင်း",
+        "en": "Discount calculator"
+      },
+      "statement": {
+        "my": "ပထမ stdin လိုင်းသည် ကျပ်ဈေးနှုန်း integer 0..10000၊ ဒုတိယလိုင်းသည် လျှော့ဈေး percent 0..100 ဖြစ်သည်။ လျှော့ပြီးဈေးကို integer floor ဖြင့် ပြပါ။ Decimal output မထုတ်ပါနှင့်။",
+        "en": "The first stdin line is an integer price from 0 to 10000; the second is a discount percentage from 0 to 100. Print the final price rounded down to an integer, without decimal output."
+      },
+      "hint": {
+        "my": "price * (100 - percent) // 100 ကို စဉ်းစားပါ။ // သည် floor division ဖြစ်သည်။",
+        "en": "Calculate price * (100 - percent) // 100. The // operator performs floor division."
+      },
+      "starter": "price = int(input())\npercent = int(input())\n# Calculate the discounted integer price.\n",
+      "solution": "price = int(input())\npercent = int(input())\nprint(price * (100 - percent) // 100)",
+      "examples": [
+        {
+          "stdin": "100\n15\n",
+          "stdout": "85"
+        },
+        {
+          "stdin": "99\n50\n",
+          "stdout": "49"
+        }
+      ]
+    },
+    {
+      "id": "count-vowels",
+      "lesson_ids": [
+        "py-03",
+        "py-07"
+      ],
+      "title": {
+        "my": "Vowel အရေအတွက်",
+        "en": "Count vowels"
+      },
+      "statement": {
+        "my": "stdin မှ စာကြောင်းတစ်ကြောင်းဖတ်ပြီး a e i o u အရေအတွက်ကို ပြပါ။ Uppercase နှင့် lowercase နှစ်မျိုးလုံး စစ်ပါ။ Empty line အတွက် 0 ပြပါ။ y ကို vowel အဖြစ် မတွက်ပါနှင့်။",
+        "en": "Read one line and count occurrences of a, e, i, o and u, ignoring case. An empty line has zero vowels; y is not included."
+      },
+      "hint": {
+        "my": "စာသားကို lower() ပြောင်းပြီး character တစ်ခုချင်း လှည့်ပါ။ Count ကို loop မဝင်မီ 0 သတ်မှတ်ပါ။",
+        "en": "Lowercase the text and iterate over characters. Initialize the counter before the loop."
+      },
+      "starter": "text = input().lower()\ncount = 0\n# Count vowels in text, then print the count.\n",
+      "solution": "text = input().lower()\ncount = 0\nfor char in text:\n    if char in \"aeiou\":\n        count += 1\nprint(count)",
+      "examples": [
+        {
+          "stdin": "Mya\n",
+          "stdout": "1"
+        },
+        {
+          "stdin": "PYTHON\n",
+          "stdout": "1"
+        }
+      ]
+    },
+    {
+      "id": "sum-list",
+      "lesson_ids": [
+        "py-07",
+        "py-09"
+      ],
+      "title": {
+        "my": "List ပေါင်းလဒ်",
+        "en": "Sum a list"
+      },
+      "statement": {
+        "my": "ပထမလိုင်းသည် n ဖြစ်ပြီး ဒုတိယလိုင်းတွင် space ခွဲထားသော integer n ခု ပါသည်။ 0 <= n <= 100 ဖြစ်သည်။ n = 0 ဆို ဒုတိယလိုင်းသည် blank ဖြစ်သည်။ အားလုံး၏ ပေါင်းလဒ်ကို ပြပါ။",
+        "en": "The first line is n; the second contains n space-separated integers. Here 0 <= n <= 100. For n = 0 the second line is blank. Print the sum of the numbers."
+      },
+      "hint": {
+        "my": "split() က token များထုတ်ပေးသည်။ int ပြောင်းပြီး list ထဲ စုနိုင်သည်။ Empty list ၏ sum သည် 0 ဖြစ်သည်။",
+        "en": "Use split() to obtain tokens and convert them to integers. The sum of an empty list is zero."
+      },
+      "starter": "n = int(input())\ntokens = input().split()\n# Convert the tokens and calculate their sum.\n",
+      "solution": "n = int(input())\nnumbers = [int(token) for token in input().split()]\nprint(sum(numbers))",
+      "examples": [
+        {
+          "stdin": "3\n1 2 3\n",
+          "stdout": "6"
+        },
+        {
+          "stdin": "0\n\n",
+          "stdout": "0"
+        }
+      ]
+    },
+    {
+      "id": "safe-age",
+      "lesson_ids": [
+        "py-06",
+        "py-12"
+      ],
+      "title": {
+        "my": "အသက် input စစ်ဆေးခြင်း",
+        "en": "Validate an age"
+      },
+      "statement": {
+        "my": "အသက်ကို stdin မှ ဖတ်ပါ။ Valid integer ဖြစ်ပြီး 0 မှ 120 ထိ ပါလျှင် နောက်နှစ်အသက်ကို ပြပါ။ မဟုတ်လျှင် invalid ဟု lowercase ပြပါ။ Invalid text နှင့် negative age ကို မမေ့ပါနှင့်။",
+        "en": "Read an age. If it is an integer in the inclusive range 0..120, print the age next year. Otherwise print invalid in lowercase. Handle invalid text and negative ages."
+      },
+      "hint": {
+        "my": "int(input()) ကို try ထဲ ထည့်ပါ။ ValueError ကို catch လုပ်ပြီး range ကို if ဖြင့် သီးခြားစစ်ပါ။",
+        "en": "Catch ValueError around int(input()), then separately check the permitted numeric range."
+      },
+      "starter": "try:\n    age = int(input())\n    # Validate the range and print the next age.\nexcept ValueError:\n    print(\"invalid\")\n",
+      "solution": "try:\n    age = int(input())\n    if 0 <= age <= 120:\n        print(age + 1)\n    else:\n        print(\"invalid\")\nexcept ValueError:\n    print(\"invalid\")",
+      "examples": [
+        {
+          "stdin": "18\n",
+          "stdout": "19"
+        },
+        {
+          "stdin": "hello\n",
+          "stdout": "invalid"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "calculator",
+      "title": {
+        "my": "Calculator တည်ဆောက်ခြင်း",
+        "en": "Calculator"
+      },
+      "level": "beginner",
+      "language": "python",
+      "objective": {
+        "my": "Operator နှင့် function များကို ခွဲထားသော calculator ရေးရန်။",
+        "en": "Build a calculator whose operations are separate functions."
+      },
+      "requirements": {
+        "my": "ကိန်းနှစ်ခု၊ + - * / operation၊ invalid input နှင့် zero division ကို ကိုင်တွယ်ပါ။",
+        "en": "Accept two numbers and +, -, *, /; handle invalid input and division by zero."
+      },
+      "architecture": {
+        "my": "stdin → parsing → calculate(a, b, op) → output ဟူ၍ ခွဲပါ။ Function ကို input() မပါအောင် ရေးလျှင် စမ်းသပ်ရလွယ်သည်။",
+        "en": "Separate stdin, parsing, calculate(a, b, op), and output. Keep input() outside the calculation function for testability."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "ပေါင်းခြင်း function ရေး၍ 2 + 3 ကို စမ်းပါ။",
+            "en": "Write addition and check 2 + 3."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Operation argument ထည့်ပြီး လေးမျိုးကို branch ခွဲပါ။",
+            "en": "Dispatch four operations through an operation argument."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Unknown operation နှင့် divisor zero အတွက် ValueError ပြန်ပေးပါ။",
+            "en": "Reject unknown operators and zero divisors with ValueError."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "input သုံးလိုင်းကို parsing လုပ်ပြီး error message ကို အပြင် layer မှ ပြပါ။",
+            "en": "Parse three input lines and display errors at the input/output layer."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Boundary စမ်းသပ်ချက်များရေးပြီး CLI အသုံးပြုနည်းကို မှတ်တမ်းတင်ပါ။",
+            "en": "Write boundary tests and document the CLI inputs."
+          }
+        }
+      ],
+      "testing": {
+        "my": "2 + 3 → 5၊ -2 * 4 → -8၊ divisor 0၊ စာသား input နှင့် မရှိသော operator ကို စမ်းပါ။",
+        "en": "Test addition, negative multiplication, a zero divisor, invalid text and an unknown operator."
+      },
+      "troubleshooting": {
+        "my": "Input ကို float မပြောင်းထားလျှင် string ဆက်ခြင်း ဖြစ်နိုင်သည်။ Error branch မှ false success မပြပါနှင့်။",
+        "en": "String inputs can concatenate if not converted. Never show a fabricated successful result in an error branch."
+      },
+      "completion": {
+        "my": "Operation လေးမျိုး၊ error နှစ်မျိုးနှင့် အနည်းဆုံး test ၅ ခု ကိုယ်တိုင် ပြနိုင်ရမည်။",
+        "en": "Demonstrate four operations, two error cases and at least five tests."
+      },
+      "starter": "def calculate(a, b, op):\n    if op == \"+\":\n        return a + b\n    if op == \"-\":\n        return a - b\n    if op == \"*\":\n        return a * b\n    if op == \"/\" and b != 0:\n        return a / b\n    raise ValueError(\"Invalid operation or zero divisor\")\n\nprint(calculate(2, 3, \"+\"))",
+      "lesson_ids": [
+        "py-05",
+        "py-06",
+        "py-10",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/tutorial/controlflow.html"
+    },
+    {
+      "id": "quiz-app",
+      "title": {
+        "my": "Quiz application",
+        "en": "Quiz application"
+      },
+      "level": "beginner",
+      "language": "python",
+      "objective": {
+        "my": "Question bank၊ answer checking နှင့် score ကို ခွဲရေးရန်။",
+        "en": "Separate a question bank, answer checking and score calculation."
+      },
+      "requirements": {
+        "my": "မေးခွန်း ၅ ခု၊ option ၃ ခုစီ၊ invalid choice ပြန်မေးခြင်း၊ အဆုံး score ပြခြင်း။",
+        "en": "Five questions, three choices each, invalid-choice handling and a final score."
+      },
+      "architecture": {
+        "my": "Question dictionary list → prompt → normalized choice → grader → summary။",
+        "en": "Use question dictionaries, prompt rendering, normalized choice, grading and a summary."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Question နှင့် correct option index ပါသော dictionary ဆောက်ပါ။",
+            "en": "Create dictionaries with question text and correct option index."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Option များကို enumerate ဖြင့် 1 မှ စ၍ ပြပါ။",
+            "en": "Display numbered options using enumerate starting at one."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Input က 1..3 မဟုတ်လျှင် valid choice ပြန်တောင်းပါ။",
+            "en": "Ask again when the choice is outside 1..3."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "အဖြေမှန်လျှင် score ၁ တိုးပြီး explanation ပြပါ။",
+            "en": "Increment the score for a correct answer and explain it."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Question အားလုံးပြီးလျှင် score/total နှင့် ပြန်လေ့လာရမည့် topic ပြပါ။",
+            "en": "Summarize score/total and topics to review."
+          }
+        }
+      ],
+      "testing": {
+        "my": "အကုန်မှန်၊ အကုန်မှား၊ blank၊ non-number နှင့် boundary option ကို စမ်းပါ။",
+        "en": "Test all-correct, all-wrong, blank, nonnumeric and boundary choices."
+      },
+      "troubleshooting": {
+        "my": "Displayed option 1 သည် list index 0 ဖြစ်ကြောင်း သတိပြုပါ။ Question အပြင်မှာ score သတ်မှတ်ပါ။",
+        "en": "Displayed option 1 corresponds to index 0. Initialize score outside the question loop."
+      },
+      "completion": {
+        "my": "မေးခွန်း ၅ ခု အမှန်တကယ် ဖြေဆိုနိုင်ပြီး score ကို ကိုယ်တိုင်တွက်ချက်မှုနှင့် ကိုက်ရမည်။",
+        "en": "Answer five questions interactively and verify the score against a manual count."
+      },
+      "starter": "question = {\"text\": \"What is 2 + 3?\", \"options\": [4, 5, 6], \"correct\": 1}\nfor i, option in enumerate(question[\"options\"], 1):\n    print(i, option)\nchoice = int(input()) - 1\nprint(\"Correct\" if choice == question[\"correct\"] else \"Try again\")",
+      "lesson_ids": [
+        "py-04",
+        "py-06",
+        "py-07",
+        "py-09",
+        "py-11"
+      ],
+      "reference": "https://docs.python.org/3/tutorial/datastructures.html"
+    },
+    {
+      "id": "guessing-game",
+      "title": {
+        "my": "ကိန်းခန့်မှန်းဂိမ်း",
+        "en": "Number guessing game"
+      },
+      "level": "beginner",
+      "language": "python",
+      "objective": {
+        "my": "Loop termination နှင့် bounded attempts လေ့ကျင့်ရန်။",
+        "en": "Practice loop termination and a bounded attempt count."
+      },
+      "requirements": {
+        "my": "1..100 target၊ high/low hint၊ valid guess ၇ ကြိမ်၊ invalid input မတွက်ခြင်း။",
+        "en": "A target from 1..100, high/low hints and seven valid guesses; invalid input does not count."
+      },
+      "architecture": {
+        "my": "Random target → validation → comparison loop → won/lost state။",
+        "en": "Generate a target, validate guesses, compare in a loop and finish with won/lost state."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Target ကို random.randint(1, 100) ဖြင့် ရွေးပါ။",
+            "en": "Choose the target with random.randint(1, 100)."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Testing တွင် target 42 သတ်မှတ်ပြီး comparison branch များ စမ်းပါ။",
+            "en": "Use a fixed target of 42 in tests to exercise comparison branches."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Guess က range ထဲရှိ integer ဖြစ်မှ attempts တိုးပါ။",
+            "en": "Count only valid in-range integer guesses."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "မှန်လျှင် break၊ မမှန်လျှင် high/low hint ပေးပါ။",
+            "en": "Break on success, otherwise give high/low feedback."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "၇ ကြိမ်ပြည့်လျှင် target ပြ၍ ဂိမ်းအဆုံးသတ်ပါ။",
+            "en": "Reveal the target after seven unsuccessful valid guesses."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Target ကို တစ်ကြိမ်တည်းတွေ့ခြင်း၊ attempt အကုန်ကုန်ခြင်း၊ invalid text၊ 0 နှင့် 101 ကို စမ်းပါ။",
+        "en": "Test first-guess success, exhausting attempts, invalid text, zero and 101."
+      },
+      "troubleshooting": {
+        "my": "while branch တစ်ခုတွင် update မရှိလျှင် loop မရပ်နိုင်ပါ။ Seed ကို fairness အတွက် production တွင် မသတ်မှတ်ပါနှင့်။",
+        "en": "Missing a loop update can prevent termination. Do not use a fixed test seed in the real game."
+      },
+      "completion": {
+        "my": "Win နှင့် lose နှစ်မျိုးလုံး၊ invalid input handling နှင့် bounded loop ကို ပြနိုင်ရမည်။",
+        "en": "Demonstrate winning, losing, invalid input and bounded termination."
+      },
+      "starter": "target = 42  # Deterministic starting point; add random selection later.\nfor attempt in range(7):\n    guess = int(input())\n    if guess == target:\n        print(\"You win\")\n        break\n    print(\"Too low\" if guess < target else \"Too high\")\nelse:\n    print(\"Target:\", target)",
+      "lesson_ids": [
+        "py-04",
+        "py-06",
+        "py-08",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/library/random.html"
+    },
+    {
+      "id": "todo-list",
+      "title": {
+        "my": "To-do list",
+        "en": "To-do list"
+      },
+      "level": "beginner",
+      "language": "python",
+      "objective": {
+        "my": "List mutation၊ stable IDs နှင့် local JSON persistence သင်ယူရန်။",
+        "en": "Learn list mutation, stable IDs and local JSON persistence."
+      },
+      "requirements": {
+        "my": "Add၊ list၊ complete၊ remove၊ save/load menu။ Task text blank မဖြစ်ရ။",
+        "en": "Add, list, complete, remove and save/load tasks; reject blank task text."
+      },
+      "architecture": {
+        "my": "Menu → task service → list of id/text/done records → JSON file။ File persistence အပိုင်းကို computer ပေါ်တွင် စမ်းပါ။",
+        "en": "Use a menu, task service, records with id/text/done and a JSON file. Test persistence on a computer."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Task ကို id၊ text၊ done ပါသော dictionary သတ်မှတ်ပါ။",
+            "en": "Define a task record with id, text and done."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Add နဲ့ list function ကို file I/O မပါဘဲ ရေးပါ။",
+            "en": "Implement add and list functions without file I/O."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Position အစား stable ID ဖြင့် complete/remove လုပ်ပါ။",
+            "en": "Complete/remove by stable ID rather than list position."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "JSON save/load layer ထည့်ပြီး missing file ကို empty list အဖြစ် ကိုင်တွယ်ပါ။",
+            "en": "Add JSON storage and treat a missing file as an empty list."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Restart ပြီး task ပြန်ရှိမှုနှင့် corrupted file ကို သီးခြားစမ်းပါ။",
+            "en": "Test restart persistence and corrupted data separately."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Task ၂ ခုထည့်၊ ဒုတိယပြီးဆုံးမှတ်၊ ပထမဖျက်၊ save/load ပြီး ID မပြောင်းရ။",
+        "en": "Add two tasks, complete the second, delete the first, then save/load without changing IDs."
+      },
+      "troubleshooting": {
+        "my": "List လှည့်နေစဉ် item ဖျက်လျှင် ကျော်နိုင်သည်။ Unknown ID ကို ရှင်းလင်းစွာ ပယ်ချပါ။",
+        "en": "Removing during iteration can skip items. Reject unknown IDs explicitly."
+      },
+      "completion": {
+        "my": "Menu ၅ မျိုးအလုပ်လုပ်၊ restart ပြီး records ထိန်းထားပြီး tests ပါရမည်။",
+        "en": "Five menu actions work, records survive restart and tests cover their behavior."
+      },
+      "starter": "tasks = []\ndef add_task(text):\n    if not text.strip():\n        raise ValueError(\"Task text is required\")\n    next_id = max((t[\"id\"] for t in tasks), default=0) + 1\n    tasks.append({\"id\": next_id, \"text\": text.strip(), \"done\": False})\n\nadd_task(\"Study Python\")\nprint(tasks)",
+      "lesson_ids": [
+        "py-09",
+        "py-10",
+        "py-11",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/library/json.html"
+    },
+    {
+      "id": "password-generator",
+      "title": {
+        "my": "Password generator",
+        "en": "Password generator"
+      },
+      "level": "beginner",
+      "language": "python",
+      "objective": {
+        "my": "Security-sensitive randomness နှင့် length validation သင်ယူရန်။",
+        "en": "Learn security-sensitive randomness and length validation."
+      },
+      "requirements": {
+        "my": "16..128 length၊ letters/digits/symbols၊ generated password ကို မသိမ်း/မ log လုပ်ရ။",
+        "en": "Length 16..128 with letters/digits/symbols; do not store or log real generated passwords."
+      },
+      "architecture": {
+        "my": "Length parser → secrets.choice generator → user-only display။ random module ကို credential အတွက် မသုံးပါနှင့်။",
+        "en": "Parse length, generate with secrets.choice and display to the user only. Do not use random for credentials."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Alphabet ကို letters၊ digits နှင့် symbols ဖြင့် ဆောက်ပါ။",
+            "en": "Build an alphabet from letters, digits and symbols."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Length ကို 16..128 ထဲသာ လက်ခံပါ။",
+            "en": "Validate the 16..128 length range."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "secrets.choice ဖြင့် character တစ်ခုချင်း ရွေးပါ။",
+            "en": "Select each character with secrets.choice."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "Category requirement လိုလျှင် generation ကို bounded retry ဖြင့် စစ်ပါ။",
+            "en": "If category rules are required, validate generated candidates using a bounded retry."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Length၊ allowed characters နှင့် invalid arguments ကို tests ရေးပါ။",
+            "en": "Test length, allowed characters and invalid arguments."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Length 16 နှင့် 128၊ invalid 0၊ category rule နှင့် allowed alphabet စစ်ပါ။ Random output တိတိကျကျ တူမည်ဟု မစမ်းပါနှင့်။",
+        "en": "Test boundary lengths, invalid zero, category rules and alphabet membership; do not expect an exact random string."
+      },
+      "troubleshooting": {
+        "my": "Characters အသစ်တွေ မပါတာက randomness မကောင်းဟု အမြဲမဆိုလိုပါ။ Real password ကို demo မှတ်တမ်းထဲ မထည့်ပါနှင့်။",
+        "en": "A missing category in one sample does not prove poor randomness. Never put real passwords in demo records."
+      },
+      "completion": {
+        "my": "secrets သုံးကြောင်း၊ input validation နှင့် repeat generation behavior ကို ရှင်းပြနိုင်ရမည်။",
+        "en": "Explain secrets usage, input validation and repeated generation behavior."
+      },
+      "starter": "import secrets\nimport string\n\ndef generate(length):\n    if not 16 <= length <= 128:\n        raise ValueError(\"Length must be 16..128\")\n    alphabet = string.ascii_letters + string.digits + \"!@#%-_\"\n    return \"\".join(secrets.choice(alphabet) for _ in range(length))\n\nprint(\"Generated length:\", len(generate(20)))",
+      "lesson_ids": [
+        "py-03",
+        "py-07",
+        "py-10",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/library/secrets.html"
+    },
+    {
+      "id": "expense-tracker",
+      "title": {
+        "my": "အသုံးစရိတ် မှတ်တမ်း",
+        "en": "Expense tracker"
+      },
+      "level": "intermediate",
+      "language": "python",
+      "objective": {
+        "my": "ငွေကြေးတန်ဖိုး၊ validation နှင့် summary များကို စနစ်တကျ သိမ်းရန်။",
+        "en": "Store money values, validate entries and calculate summaries."
+      },
+      "requirements": {
+        "my": "Date၊ category၊ amount၊ description၊ monthly total၊ JSON persistence။ အမှန်ငွေကို float ဖြင့် မသိမ်းရ။",
+        "en": "Record date, category, amount and description; summarize monthly totals and persist JSON. Do not store monetary values as float."
+      },
+      "architecture": {
+        "my": "Decimal parser → integer minor units → expense records → grouped summary။",
+        "en": "Parse with Decimal, convert to integer minor units, store expense records and group summaries."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Minor units ဖြင့် amount သတ်မှတ်ပြီး negative input ပယ်ချပါ။",
+            "en": "Represent amounts in minor units and reject negatives."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "ISO date နှင့် allowed category စစ်ပါ။",
+            "en": "Validate ISO dates and allowed categories."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "add_expense နှင့် total_by_category function ရေးပါ။",
+            "en": "Implement add_expense and total_by_category."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "JSON ထဲ save လုပ်ပြီး schema version ထည့်ပါ။",
+            "en": "Save JSON with a schema version."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Month filter နှင့် report ကို ထည့်၍ လက်ဖြင့်တွက်ထားသောနမူနာနှင့် နှိုင်းပါ။",
+            "en": "Add monthly filtering and compare reports with a manually calculated sample."
+          }
+        }
+      ],
+      "testing": {
+        "my": "10.10 + 0.20 က 10.30 တိတိကျကျ ဖြစ်ရမည်။ Invalid date၊ blank category နှင့် corrupted file ကို စမ်းပါ။",
+        "en": "Verify exact 10.10 + 0.20 = 10.30 and test invalid dates, blank categories and corrupted files."
+      },
+      "troubleshooting": {
+        "my": "JSON က Decimal ကို တိုက်ရိုက် encode မလုပ်နိုင်ပါ။ Integer minor units သို့ string ဖြင့် သိမ်းပါ။",
+        "en": "JSON does not directly encode Decimal; persist integer minor units or decimal strings."
+      },
+      "completion": {
+        "my": "Month/category report၊ valid persistence နှင့် financial rounding tests ပါရမည်။",
+        "en": "Provide month/category reports, persistence and financial rounding tests."
+      },
+      "starter": "from decimal import Decimal\n\ndef minor_units(text):\n    value = Decimal(text)\n    if not value.is_finite() or value < 0:\n        raise ValueError(\"Invalid amount\")\n    cents = value * 100\n    if cents != cents.to_integral_value():\n        raise ValueError(\"Use at most two decimal places\")\n    return int(cents)\n\nprint(minor_units(\"10.10\") + minor_units(\"0.20\"))",
+      "lesson_ids": [
+        "py-03",
+        "py-09",
+        "py-11",
+        "py-12",
+        "py-21",
+        "py-27",
+        "py-34"
+      ],
+      "reference": "https://docs.python.org/3/library/decimal.html"
+    },
+    {
+      "id": "weather-api",
+      "title": {
+        "my": "Weather API application",
+        "en": "Weather API application"
+      },
+      "level": "intermediate",
+      "language": "python",
+      "objective": {
+        "my": "HTTP status၊ timeout၊ response validation နှင့် cache သင်ယူရန်။",
+        "en": "Learn HTTP status handling, timeouts, response validation and caching."
+      },
+      "requirements": {
+        "my": "User-selected city၊ configured provider key၊ real weather response၊ stale-cache label။ API ကို computer/backend ပေါ်တွင် စမ်းရမည်။",
+        "en": "User-selected city, configured provider credentials, actual weather responses and a stale-cache label. Test networking on a computer/backend."
+      },
+      "architecture": {
+        "my": "City selector → provider adapter → typed weather record → cache → presentation။",
+        "en": "Separate city selection, provider adapter, typed weather data, cache and presentation."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Provider documentation မှ endpoint နှင့် response fields ကို စာရင်းလုပ်ပါ။",
+            "en": "List the documented endpoint and required response fields."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Key ကို environment မှ ဖတ်ပြီး URL/output/log ထဲ မထည့်ပါနှင့်။",
+            "en": "Read the key from the environment and keep it out of URLs, output and logs."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Finite timeout နှင့် non-2xx handling ထည့်ပါ။",
+            "en": "Set a finite timeout and handle non-2xx responses."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "Response field types၊ units နှင့် timestamp ကို စစ်ပါ။",
+            "en": "Validate field types, units and timestamps."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Offline cache ကို stale ဟု label ပေးပြီး provider tests ကို mocks ဖြင့် စမ်းပါ။",
+            "en": "Label offline cache as stale and test provider failures with mocks."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Valid data၊ 401၊ 429၊ timeout၊ malformed JSON နှင့် stale cache ကို စမ်းပါ။",
+        "en": "Test valid data, 401, 429, timeout, malformed JSON and stale cache."
+      },
+      "troubleshooting": {
+        "my": "ဒီ app sandbox သည် network ပိတ်ထားသည်။ Code Lab တွင် provider network code run လုပ်ရန် မကြိုးစားပါနှင့်။",
+        "en": "The app sandbox blocks networking. Run provider integration in your configured development environment."
+      },
+      "completion": {
+        "my": "Real provider response တစ်ခုကို timestamp/units ဖြင့် ပြနိုင်ပြီး failure အတွက် data အတု မထုတ်ရ။",
+        "en": "Display one actual provider response with units/time and never fabricate weather on failure."
+      },
+      "starter": "def parse_weather(data):\n    current = data[\"current\"]\n    temperature = current[\"temperature_2m\"]\n    if not isinstance(temperature, (int, float)):\n        raise ValueError(\"Temperature is not numeric\")\n    return {\"temperature\": temperature, \"time\": current[\"time\"]}\n\n# Parser-only example, not a live weather response.\nprint(parse_weather({\"current\": {\"temperature_2m\": 28, \"time\": \"example-time\"}}))",
+      "lesson_ids": [
+        "py-10",
+        "py-11",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/library/urllib.request.html"
+    },
+    {
+      "id": "file-organizer",
+      "title": {
+        "my": "ဖိုင် စုစည်းခြင်း",
+        "en": "File organizer"
+      },
+      "level": "intermediate",
+      "language": "python",
+      "objective": {
+        "my": "Path handling၊ preview-first workflow နှင့် safe file operations သင်ယူရန်။",
+        "en": "Learn path handling, a preview-first workflow and safe file operations."
+      },
+      "requirements": {
+        "my": "ရွေးထားသော folder တစ်ခုသာ စုစည်း၊ dry-run default၊ existing destination မ overwrite၊ symlink မလိုက်ရ။",
+        "en": "Organize one selected folder; default to dry-run, never overwrite destinations and do not follow symlinks."
+      },
+      "architecture": {
+        "my": "Read-only scanner → action plan → explicit apply → operation log။",
+        "en": "Separate read-only scanning, an action plan, explicit apply and an operation log."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Temporary test folder နှင့် sample file များသာ ဖန်တီးပါ။",
+            "en": "Create a temporary test folder and sample files."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Path.resolve ဖြင့် selected root အတွင်းရှိမှု စစ်ပါ။",
+            "en": "Resolve paths and verify that they stay within the selected root."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Extension အလိုက် destination plan ထုတ်ပြီး ဖိုင်မရွှေ့သေးပါနှင့်။",
+            "en": "Build extension-based destination plans without moving files."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "Collision နှင့် symlink များကို skip လုပ်ကြောင်း ပြပါ။",
+            "en": "Report and skip collisions and symlinks."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "User apply ရွေးမှ move လုပ်ပြီး နောက်မှ result စစ်ပါ။",
+            "en": "Move only after an explicit apply choice, then verify results."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Dry-run က ဖိုင်မပြောင်းရ။ Destination ရှိပြီးသား၊ extension မရှိ၊ symlink နှင့် denied permissions ကို စမ်းပါ။",
+        "en": "Ensure dry-run changes nothing and test collisions, no extension, symlinks and denied permissions."
+      },
+      "troubleshooting": {
+        "my": "Downloads အစစ်ကို ပထမစမ်းသပ်ချက်အဖြစ် မသုံးပါနှင့်။ OS path permission သည် sandbox path နှင့် မတူပါ။",
+        "en": "Use test fixtures first. OS folder permissions differ from sandbox filesystem behavior."
+      },
+      "completion": {
+        "my": "Preview နှင့် apply ကွာခြားချက်၊ collision protection နှင့် tests ကို ပြနိုင်ရမည်။",
+        "en": "Demonstrate preview/apply separation, collision protection and tests."
+      },
+      "starter": "from pathlib import Path\n\ndef plan_files(root):\n    root = Path(root).resolve()\n    plan = []\n    for source in root.iterdir():\n        if source.is_file() and not source.is_symlink():\n            group = source.suffix.lower().lstrip(\".\") or \"other\"\n            target = root / group / source.name\n            if not target.exists():\n                plan.append((str(source), str(target)))\n    return plan\n\n# Call with a temporary test folder; this snippet moves nothing.",
+      "lesson_ids": [
+        "py-09",
+        "py-10",
+        "py-12",
+        "py-19",
+        "py-20"
+      ],
+      "reference": "https://docs.python.org/3/library/pathlib.html"
+    },
+    {
+      "id": "web-scraping",
+      "title": {
+        "my": "Web scraping tutorial",
+        "en": "Web scraping tutorial"
+      },
+      "level": "intermediate",
+      "language": "python",
+      "objective": {
+        "my": "HTML parsing၊ data normalization နှင့် permission-aware fetching သင်ယူရန်။",
+        "en": "Learn HTML parsing, normalization and permission-aware fetching."
+      },
+      "requirements": {
+        "my": "ကိုယ်ပိုင် sample HTML ဖြင့် အရင်စမ်း၊ site terms/robots policy ကို စစ်၊ bounded fetch/cache၊ personal data မစုရ။",
+        "en": "Start with your own sample HTML, check site terms/robots policy, bound requests/cache and avoid collecting personal data."
+      },
+      "architecture": {
+        "my": "Permission check → HTTP adapter → HTML parser → normalized rows → export။",
+        "en": "Separate permission checks, HTTP fetching, parsing, normalization and export."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Sample page ထဲ title နှင့် link နမူနာများ ဖန်တီးပါ။",
+            "en": "Create a sample page with titles and links."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "HTMLParser subclass ဖြင့် heading text ကို စုပါ။",
+            "en": "Collect heading text with an HTMLParser subclass."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Whitespace normalize၊ empty rows ဖယ်၊ duplicates ကို စစ်ပါ။",
+            "en": "Normalize whitespace, remove empty rows and handle duplicates."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "Permission ရှိသော host တွင်သာ timeout/rate limit ဖြင့် fetch ထည့်ပါ။",
+            "en": "Add fetching only for permitted hosts with timeouts and rate limits."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "HTML fixture များဖြင့် parser test ရေးပြီး CSV export ထည့်ပါ။",
+            "en": "Test parsing with HTML fixtures and add CSV export."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Nested tags၊ missing heading၊ Unicode နှင့် repeated content ကို စမ်းပါ။ Network tests ကို fixtures ခွဲထားပါ။",
+        "en": "Test nested tags, absent headings, Unicode and duplicates; isolate network tests from parser fixtures."
+      },
+      "troubleshooting": {
+        "my": "HTML ကို regex တစ်ခုတည်းဖြင့် မ parse ပါနှင့်။ Scraped result သည် site ၏ current content ဖြစ်ကြောင်း အတည်မပြုဘဲ မဆိုပါနှင့်။",
+        "en": "Do not parse arbitrary HTML with a single regex or claim a fixture is current site content."
+      },
+      "completion": {
+        "my": "Permission decision၊ reusable parser၊ fixture tests နှင့် reproducible export ပါရမည်။",
+        "en": "Provide a permission decision, reusable parser, fixture tests and reproducible export."
+      },
+      "starter": "from html.parser import HTMLParser\n\nclass HeadingParser(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.inside = False\n        self.parts = []\n    def handle_starttag(self, tag, attrs):\n        if tag == \"h1\": self.inside = True\n    def handle_endtag(self, tag):\n        if tag == \"h1\": self.inside = False\n    def handle_data(self, data):\n        if self.inside: self.parts.append(data)\n\np = HeadingParser()\np.feed(\"<h1>Myanmar <em>Academy</em></h1>\")\nprint(\" \".join(p.parts))",
+      "lesson_ids": [
+        "py-03",
+        "py-10",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/library/html.parser.html"
+    },
+    {
+      "id": "sqlite-app",
+      "title": {
+        "my": "SQLite application",
+        "en": "SQLite application"
+      },
+      "level": "intermediate",
+      "language": "python",
+      "objective": {
+        "my": "Relational records၊ parameterized SQL နှင့် transactions သင်ယူရန်။",
+        "en": "Learn relational records, parameterized SQL and transactions."
+      },
+      "requirements": {
+        "my": "Task table၊ CRUD၊ unique ID၊ parameterized query၊ backup နှင့် rollback test။",
+        "en": "A task table, CRUD, unique IDs, parameterized queries, backups and rollback tests."
+      },
+      "architecture": {
+        "my": "CLI → repository functions → sqlite3 connection → transaction → database file။",
+        "en": "Use CLI commands, repository functions, sqlite3 connections and transactions around a database file."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Schema version နှင့် create table migration ရေးပါ။",
+            "en": "Write a schema version and create-table migration."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Placeholder ? ဖြင့် insert/read function ဆောက်ပါ။",
+            "en": "Build insert/read functions with ? parameters."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Unknown ID handling ပါသော update/delete ရေးပါ။",
+            "en": "Implement update/delete with unknown-ID handling."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "Transaction ကို context manager ဖြင့် scope လုပ်ပြီး rollback စမ်းပါ။",
+            "en": "Scope transactions with a context manager and test rollback."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Temporary database tests ရေးပြီး restart persistence စစ်ပါ။",
+            "en": "Use temporary database tests and verify persistence after restart."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Quote ပါသော task၊ duplicate ID၊ rollback၊ reopen၊ empty table တို့ကို စမ်းပါ။",
+        "en": "Test quoted text, duplicate IDs, rollback, reopening and an empty table."
+      },
+      "troubleshooting": {
+        "my": "String interpolation ဖြင့် SQL မဆောက်ပါနှင့်။ Commit မလုပ်မိလျှင် restart ပြီး data ပျောက်နိုင်သည်။",
+        "en": "Never interpolate untrusted SQL values; uncommitted data may disappear after restart."
+      },
+      "completion": {
+        "my": "CRUD ၄ မျိုးနှင့် parameterized-query/rollback tests ရှိရမည်။",
+        "en": "Demonstrate CRUD and parameterized-query/rollback tests."
+      },
+      "starter": "import sqlite3\n\nwith sqlite3.connect(\":memory:\") as db:\n    db.execute(\"CREATE TABLE tasks (id INTEGER PRIMARY KEY, text TEXT NOT NULL)\")\n    db.execute(\"INSERT INTO tasks(text) VALUES (?)\", (\"Study Python\",))\n    for row in db.execute(\"SELECT id, text FROM tasks ORDER BY id\"):\n        print(row)",
+      "lesson_ids": [
+        "py-10",
+        "py-11",
+        "py-12",
+        "py-27",
+        "py-28"
+      ],
+      "reference": "https://docs.python.org/3/library/sqlite3.html"
+    },
+    {
+      "id": "rest-api",
+      "title": {
+        "my": "REST API backend",
+        "en": "REST API backend"
+      },
+      "level": "advanced",
+      "language": "python",
+      "objective": {
+        "my": "Typed HTTP endpoints၊ validation၊ persistence နှင့် error contracts သင်ယူရန်။",
+        "en": "Learn typed endpoints, validation, persistence and error contracts."
+      },
+      "requirements": {
+        "my": "Task CRUD၊ typed body/response၊ pagination၊ server validation၊ test client နှင့် deployment guide။",
+        "en": "Task CRUD, typed bodies/responses, pagination, server validation, test-client coverage and deployment instructions."
+      },
+      "architecture": {
+        "my": "Router → service → repository → database။ Network host ကို computer/server ပေါ်တွင် လုပ်ပါ။",
+        "en": "Separate router, service, repository and database; host the application on a computer/server."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Virtual environment ထဲ FastAPI နှင့် uvicorn တင်ပါ။",
+            "en": "Install FastAPI and uvicorn in a virtual environment."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Pydantic input/output models သတ်မှတ်ပြီး unknown fields ကို ပယ်ချပါ။",
+            "en": "Define Pydantic models and reject unknown fields."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Repository abstraction နဲ့ database migration ထည့်ပါ။",
+            "en": "Add a repository abstraction and database migration."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "404၊ validation၊ pagination နှင့် auth tests ရေးပါ။",
+            "en": "Test not-found, validation, pagination and authorization."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "HTTPS၊ process supervision နှင့် database backup ကို deployment docs ထဲ ရေးပါ။",
+            "en": "Document HTTPS, supervision and database backups."
+          }
+        }
+      ],
+      "testing": {
+        "my": "POST valid/invalid၊ GET missing၊ pagination bounds နှင့် unauthorized update စမ်းပါ။",
+        "en": "Test valid/invalid POST, missing GET, pagination bounds and unauthorized updates."
+      },
+      "troubleshooting": {
+        "my": "နမူနာ health endpoint သည် full CRUD မဟုတ်ပါ။ Sandbox တွင် FastAPI dependency မရှိနိုင်ပါ။",
+        "en": "A health endpoint is not full CRUD. The sandbox may not contain FastAPI dependencies."
+      },
+      "completion": {
+        "my": "Persistent CRUD၊ typed API docs နှင့် passing tests ရှိမှ project ပြီးဆုံးဟု မှတ်ပါ။",
+        "en": "Mark complete only after persistent CRUD, typed API documentation and passing tests."
+      },
+      "starter": "from fastapi import FastAPI\nfrom pydantic import BaseModel, ConfigDict\n\napp = FastAPI()\nclass TaskInput(BaseModel):\n    model_config = ConfigDict(extra=\"forbid\")\n    text: str\n\n@app.get(\"/health\")\ndef health():\n    return {\"status\": \"ok\"}\n\n# Add repository-backed CRUD; run with uvicorn on your development computer.",
+      "lesson_ids": [
+        "py-10",
+        "py-11",
+        "py-12"
+      ],
+      "reference": "https://fastapi.tiangolo.com/tutorial/"
+    },
+    {
+      "id": "auth-system",
+      "title": {
+        "my": "Authentication system",
+        "en": "Authentication system"
+      },
+      "level": "advanced",
+      "language": "text",
+      "objective": {
+        "my": "Established auth provider၊ session lifecycle နှင့် data authorization သင်ယူရန်။",
+        "en": "Learn provider-based authentication, session lifecycle and data authorization."
+      },
+      "requirements": {
+        "my": "Registration၊ verification၊ login၊ recovery၊ logout၊ expired session၊ own-data access။",
+        "en": "Registration, verification, login, recovery, logout, expired sessions and owner-only data access."
+      },
+      "architecture": {
+        "my": "Client secure session → Supabase Auth → API JWT verification → PostgreSQL RLS။ Password hashing ကို ကိုယ်တိုင် မတည်ဆောက်ပါနှင့်။",
+        "en": "Use secure client sessions, Supabase Auth, API JWT verification and PostgreSQL RLS; avoid inventing password cryptography."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Development Supabase project ဖန်တီးပြီး allowed redirect URL သတ်မှတ်ပါ။",
+            "en": "Configure a development Supabase project and allowed redirect URLs."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Public publishable key ကို client၊ secret key ကို backend တစ်နေရာတည်းထားပါ။",
+            "en": "Keep publishable keys in clients and secret keys only on the backend."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Secure session storage၊ token expiry နှင့် logout ကို ထည့်ပါ။",
+            "en": "Implement secure storage, token expiry and logout."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "RLS own-user policies နဲ့ JWT claims validation ရေးပါ။",
+            "en": "Write owner-only RLS and validate JWT claims."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Account နှစ်ခု၊ recovery link နှင့် delayed requests ကို end-to-end စမ်းပါ။",
+            "en": "Test two accounts, recovery links and delayed requests end to end."
+          }
+        }
+      ],
+      "testing": {
+        "my": "A က B data မဖတ်/မပြင်နိုင်ရ၊ logout token ပြန်သုံးမှုနှင့် expired JWT စမ်းပါ။",
+        "en": "Ensure A cannot read/change B data; test token expiry and post-logout behavior."
+      },
+      "troubleshooting": {
+        "my": "UI မှာ button ဖုံးထားရုံက authorization မဟုတ်ပါ။ Client ထဲ service-role key မထည့်ပါနှင့်။",
+        "en": "Hiding a button is not authorization; never put a service-role key in the client."
+      },
+      "completion": {
+        "my": "Real verification/recovery နှင့် independent RLS tests အောင်မှ completion မှတ်ပါ။",
+        "en": "Complete only after real verification/recovery and independent RLS tests pass."
+      },
+      "starter": "Client: Supabase email auth + encrypted session storage\nBackend: verify issuer, audience, signature, expiry and subject\nDatabase: RLS policy user_id = auth.uid()\nTest: account A cannot access account B records\nNever store raw passwords or server secret keys in the APK.",
+      "lesson_ids": [
+        "py-10",
+        "py-11",
+        "py-12",
+        "py-22",
+        "py-28",
+        "py-35"
+      ],
+      "reference": "https://supabase.com/docs/guides/auth"
+    },
+    {
+      "id": "ai-chatbot",
+      "title": {
+        "my": "AI chatbot",
+        "en": "AI chatbot"
+      },
+      "level": "advanced",
+      "language": "python",
+      "objective": {
+        "my": "BYOK request routing၊ context budget၊ private history နှင့် honest failure states သင်ယူရန်။",
+        "en": "Learn BYOK routing, context budgets, private history and honest failure states."
+      },
+      "requirements": {
+        "my": "Provider/model settings၊ explicit sharing consent၊ bounded messages၊ timeout၊ manual retry၊ clear history။",
+        "en": "Provider/model settings, explicit consent, bounded messages, timeouts, manual retry and clear history."
+      },
+      "architecture": {
+        "my": "Chat UI → fixed HTTPS provider adapter → validated response → account-scoped history။",
+        "en": "Use chat UI, a fixed HTTPS provider adapter, validated responses and account-scoped history."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Provider destinations ကို fixed allowlist ဖြင့် သတ်မှတ်ပါ။",
+            "en": "Define a fixed provider allowlist."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Key ကို secure storage မှ explicit request အတွက်သာ ဖတ်ပါ။",
+            "en": "Read a stored key only for an explicit request."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Input length၊ output token budget နှင့် timeout သတ်မှတ်ပါ။",
+            "en": "Bound input, output tokens and timeout."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "401/429/timeout၊ malformed output နှင့် redirects ကို mock tests ရေးပါ။",
+            "en": "Test credential errors, quotas, timeouts, malformed output and redirects using mocks."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Real user-owned key ဖြင့် request အနည်းငယ်စမ်းပြီး billing/privacy policy ကို စစ်ပါ။",
+            "en": "Validate with a small real user-owned request and inspect billing/privacy policies."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Key echo redaction၊ account switch၊ no auto retry နှင့် empty output ကို စမ်းပါ။",
+        "en": "Test key redaction, account switching, no automatic retry and empty output."
+      },
+      "troubleshooting": {
+        "my": "Predicted Python output ကို executed result ဟု မရေးပါနှင့်။ Key ကို prompt ထဲ မထည့်ပါနှင့်။",
+        "en": "Do not label predicted output as executed, and never put the key inside a prompt."
+      },
+      "completion": {
+        "my": "Real response၊ controlled errors၊ private history နှင့် request privacy ကို ပြနိုင်ရမည်။",
+        "en": "Demonstrate a real response, controlled errors, private history and request privacy."
+      },
+      "starter": "def validate_messages(messages):\n    if not 1 <= len(messages) <= 12:\n        raise ValueError(\"Invalid message count\")\n    for message in messages:\n        if message[\"role\"] not in (\"user\", \"assistant\"):\n            raise ValueError(\"Invalid role\")\n        if not 1 <= len(message[\"content\"]) <= 4000:\n            raise ValueError(\"Invalid content length\")\n    return messages\n\nprint(validate_messages([{\"role\": \"user\", \"content\": \"Explain loops\"}]))",
+      "lesson_ids": [
+        "py-09",
+        "py-10",
+        "py-11",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/library/urllib.request.html"
+    },
+    {
+      "id": "data-dashboard",
+      "title": {
+        "my": "Data dashboard",
+        "en": "Data dashboard"
+      },
+      "level": "advanced",
+      "language": "python",
+      "objective": {
+        "my": "Data validation၊ aggregation နှင့် reproducible charts/report သင်ယူရန်။",
+        "en": "Learn validation, aggregation and reproducible charts/reports."
+      },
+      "requirements": {
+        "my": "CSV import၊ numeric/date validation၊ filters၊ summary၊ chart၊ export၊ source/units label။",
+        "en": "CSV import, numeric/date validation, filters, summaries, charts, exports and source/unit labels."
+      },
+      "architecture": {
+        "my": "File input → validated rows → aggregations → view model → chart/report။",
+        "en": "Separate file input, validated rows, aggregations, view models and charts/reports."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Fictional CSV schema နှင့် allowed units ကို သတ်မှတ်ပါ။",
+            "en": "Define a fictional CSV schema and allowed units."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Malformed row ကို silently drop မလုပ်ဘဲ report လုပ်ပါ။",
+            "en": "Report malformed rows rather than silently dropping them."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Total/average နှင့် date filter ကို pure functions ရေးပါ။",
+            "en": "Write pure total/average and date-filter functions."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "Chart renderer ထည့်ပြီး empty dataset state ကို ဖြည့်ပါ။",
+            "en": "Add a chart renderer and an empty-data state."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Golden sample summary နဲ့ export ပြန်ဖတ်စမ်းပါ။",
+            "en": "Verify a known summary and re-import exported data."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Empty rows၊ bad numbers၊ duplicates၊ filter boundaries နှင့် unit mismatch ကို စမ်းပါ။",
+        "en": "Test empty data, invalid numbers, duplicates, filter boundaries and unit mismatches."
+      },
+      "troubleshooting": {
+        "my": "Average တွက်ရာတွင် denominator 0 မဖြစ်စေရ။ Missing data ကို 0 အဖြစ် အလိုအလျောက် မသတ်မှတ်ပါနှင့်။",
+        "en": "Avoid dividing by zero and do not silently replace missing observations with zero."
+      },
+      "completion": {
+        "my": "Valid source labels၊ reproducible calculations၊ real chart နှင့် export ပါရမည်။",
+        "en": "Include source labels, reproducible calculations, an actual chart and export."
+      },
+      "starter": "def summary(values):\n    if not values:\n        return {\"count\": 0, \"total\": 0, \"average\": None}\n    if any(not isinstance(v, (int, float)) for v in values):\n        raise ValueError(\"Numeric values required\")\n    return {\"count\": len(values), \"total\": sum(values), \"average\": sum(values) / len(values)}\n\nprint(summary([10, 20, 30]))",
+      "lesson_ids": [
+        "py-09",
+        "py-10",
+        "py-11",
+        "py-12"
+      ],
+      "reference": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "id": "full-stack",
+      "title": {
+        "my": "Full-stack application",
+        "en": "Full-stack application"
+      },
+      "level": "advanced",
+      "language": "text",
+      "objective": {
+        "my": "Client/server contract၊ authorization၊ persistence နှင့် deployment တစ်ဆက်တည်း သင်ယူရန်။",
+        "en": "Connect client/server contracts, authorization, persistence and deployment."
+      },
+      "requirements": {
+        "my": "Task UI၊ authenticated CRUD API၊ database migrations၊ offline errors၊ integration tests၊ HTTPS deployment။",
+        "en": "Task UI, authenticated CRUD API, migrations, offline errors, integration tests and HTTPS deployment."
+      },
+      "architecture": {
+        "my": "Browser UI → HTTPS FastAPI → service/repository → PostgreSQL with RLS။",
+        "en": "Use browser UI, HTTPS FastAPI, service/repository and PostgreSQL with RLS."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "API contract နှင့် ownership rules ကို အရင်ရေးပါ။",
+            "en": "Write the API contract and ownership rules first."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Database migrations နဲ့ seeded development data ထည့်ပါ။",
+            "en": "Add migrations and seeded development data."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "Backend auth/validation/pagination ကို tests နဲ့ တည်ဆောက်ပါ။",
+            "en": "Build backend auth, validation and pagination with tests."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "Frontend loading/error/edit flow ကို backend အစစ်နှင့် ချိတ်ပါ။",
+            "en": "Connect frontend loading/error/edit flows to the real backend."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "Account နှစ်ခု၊ offline failure၊ deployment rollback ကို စမ်းပါ။",
+            "en": "Test two accounts, offline failures and deployment rollback."
+          }
+        }
+      ],
+      "testing": {
+        "my": "UI add→refresh→edit→delete အလုပ်လုပ်ပြီး account isolation မပျက်ရ။",
+        "en": "Verify add/refresh/edit/delete through the UI while preserving account isolation."
+      },
+      "troubleshooting": {
+        "my": "CORS error သည် native Android နှင့် browser တွင် မတူနိုင်သည်။ Network fail ကို success ဟု မပြပါနှင့်။",
+        "en": "Browser CORS and native Android networking differ; do not display success for a failed request."
+      },
+      "completion": {
+        "my": "Live UI၊ persistent API/database၊ end-to-end tests နှင့် deployment instructions ပါရမည်။",
+        "en": "Provide a live UI, persistent API/database, end-to-end tests and deployment instructions."
+      },
+      "starter": "GET /api/tasks?limit=20  -> own paginated tasks\nPOST /api/tasks          -> validate body and authenticated owner\nPATCH /api/tasks/{id}    -> enforce owner and allowed fields\nDELETE /api/tasks/{id}   -> enforce owner\nTest the complete client → API → database workflow.",
+      "lesson_ids": [
+        "py-10",
+        "py-11",
+        "py-12"
+      ],
+      "reference": "https://fastapi.tiangolo.com/tutorial/security/"
+    },
+    {
+      "id": "flutter-app",
+      "title": {
+        "my": "Flutter mobile application",
+        "en": "Flutter mobile application"
+      },
+      "level": "advanced",
+      "language": "dart",
+      "objective": {
+        "my": "Widget state၊ responsive layout၊ localization နှင့် Android packaging သင်ယူရန်။",
+        "en": "Learn widget state, responsive layout, localization and Android packaging."
+      },
+      "requirements": {
+        "my": "Study timer၊ task list၊ Myanmar/English၊ light/dark၊ local persistence၊ widget tests၊ debug APK။",
+        "en": "A study timer, task list, Myanmar/English, light/dark, local persistence, widget tests and a debug APK."
+      },
+      "architecture": {
+        "my": "Feature widgets → controller → persistence adapter။ Dart code ကို Android Studio Flutter project ထဲတွင် ရေးပါ။",
+        "en": "Separate feature widgets, a controller and persistence; write Dart in an Android Studio Flutter project."
+      },
+      "steps": [
+        {
+          "id": "s1",
+          "text": {
+            "my": "Official Flutter CLI ဖြင့် platform files ဆောက်ပြီး package ID သတ်မှတ်ပါ။",
+            "en": "Generate platform files with Flutter tooling and choose the package ID."
+          }
+        },
+        {
+          "id": "s2",
+          "text": {
+            "my": "Stateless/Stateful widget lifecycle နဲ့ dispose ကို လေ့လာပါ။",
+            "en": "Study widget lifecycle and disposal."
+          }
+        },
+        {
+          "id": "s3",
+          "text": {
+            "my": "State controller မှ local persistence ကို ခွဲထုတ်ပါ။",
+            "en": "Separate persistence from the state controller."
+          }
+        },
+        {
+          "id": "s4",
+          "text": {
+            "my": "ARB localization နှင့် small keyboard layout tests ရေးပါ။",
+            "en": "Add ARB localization and small-keyboard layout tests."
+          }
+        },
+        {
+          "id": "s5",
+          "text": {
+            "my": "flutter analyze/test/build apk စစ်ပြီး physical device တွင် Run ပါ။",
+            "en": "Run analyze, test and APK build; verify on a physical device."
+          }
+        }
+      ],
+      "testing": {
+        "my": "Timer start/pause၊ restart restore၊ language switching၊ keyboard overflow နှင့် error state ကို စမ်းပါ။",
+        "en": "Test start/pause, restart restoration, language switching, keyboard overflow and error states."
+      },
+      "troubleshooting": {
+        "my": "Python Code Lab သည် Dart compiler မဟုတ်ပါ။ Starter ကို copy လုပ်ပြီး Flutter project တွင် သုံးပါ။",
+        "en": "Python Code Lab is not a Dart compiler; copy the starter into a Flutter project."
+      },
+      "completion": {
+        "my": "Passing widget tests၊ debug APK၊ Myanmar text နှင့် actual device workflow ကို ပြနိုင်ရမည်။",
+        "en": "Demonstrate passing widget tests, a debug APK, Myanmar rendering and a real device workflow."
+      },
+      "starter": "import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: StudyCounter()));\nclass StudyCounter extends StatefulWidget {\n  const StudyCounter({super.key});\n  @override\n  State<StudyCounter> createState() => _StudyCounterState();\n}\nclass _StudyCounterState extends State<StudyCounter> {\n  int sessions = 0;\n  @override\n  Widget build(BuildContext context) => Scaffold(\n    appBar: AppBar(title: const Text('Study sessions')),\n    body: Center(child: Text('Completed: $sessions')),\n    floatingActionButton: FloatingActionButton(\n      onPressed: () => setState(() => sessions++),\n      child: const Icon(Icons.add),\n    ),\n  );\n}",
+      "lesson_ids": [
+        "py-02",
+        "py-06",
+        "py-10"
+      ],
+      "reference": "https://docs.flutter.dev/get-started/fundamentals"
+    }
+  ],
+  "paths": [
+    {
+      "id": "beginner",
+      "title": {
+        "my": "အစမှ စတင်သူ",
+        "en": "Complete Beginner"
+      },
+      "goal": {
+        "my": "Python အခြေခံ ၁၂ ခု၊ practice ၆ ခုနှင့် ပထမ project ကို အဆင့်လိုက် လေ့လာပါ။",
+        "en": "Work through twelve Python foundations, six challenges and your first project."
+      },
+      "lesson_ids": [
+        "py-01",
+        "py-02",
+        "py-03",
+        "py-04",
+        "py-05",
+        "py-06",
+        "py-07",
+        "py-08",
+        "py-09",
+        "py-10",
+        "py-11",
+        "py-12",
+        "py-13",
+        "py-14",
+        "py-15",
+        "py-16"
+      ],
+      "exercise_ids": [
+        "sum-two",
+        "even-number",
+        "discount-price",
+        "count-vowels",
+        "sum-list",
+        "safe-age"
+      ],
+      "project_ids": [
+        "calculator",
+        "quiz-app",
+        "guessing-game"
+      ]
+    },
+    {
+      "id": "python",
+      "title": {
+        "my": "Python Developer",
+        "en": "Python Developer"
+      },
+      "goal": {
+        "my": "Foundation ပြီးလျှင် files၊ JSON၊ SQLite နှင့် reusable function projects ကို ရွေးပါ။",
+        "en": "After the foundation, work through file, JSON, SQLite and reusable-function projects."
+      },
+      "lesson_ids": [
+        "py-01",
+        "py-02",
+        "py-03",
+        "py-04",
+        "py-05",
+        "py-06",
+        "py-07",
+        "py-08",
+        "py-09",
+        "py-10",
+        "py-11",
+        "py-12",
+        "py-13",
+        "py-14",
+        "py-15",
+        "py-16",
+        "py-17",
+        "py-18",
+        "py-19",
+        "py-20",
+        "py-21",
+        "py-22",
+        "py-23",
+        "py-24",
+        "py-25",
+        "py-26",
+        "py-27",
+        "py-28",
+        "py-29",
+        "py-30",
+        "py-31",
+        "py-32",
+        "py-33",
+        "py-34",
+        "py-35",
+        "py-36"
+      ],
+      "exercise_ids": [
+        "sum-list",
+        "safe-age"
+      ],
+      "project_ids": [
+        "todo-list",
+        "expense-tracker",
+        "file-organizer",
+        "sqlite-app"
+      ]
+    },
+    {
+      "id": "web",
+      "title": {
+        "my": "Web Developer",
+        "en": "Web Developer"
+      },
+      "goal": {
+        "my": "Input validation နှင့် API contracts မှ စ၍ scraping နှင့် full-stack guide သို့ ဆက်ပါ။ HTML/CSS/JS course အပြည့်သည် နောက်ထပ် content လိုသေးသည်။",
+        "en": "Start with validation and API contracts, then use scraping/full-stack guides. A full HTML/CSS/JS course remains future content."
+      },
+      "lesson_ids": [
+        "py-03",
+        "py-06",
+        "py-10",
+        "py-11",
+        "py-12"
+      ],
+      "exercise_ids": [
+        "count-vowels",
+        "safe-age"
+      ],
+      "project_ids": [
+        "web-scraping",
+        "rest-api",
+        "full-stack"
+      ]
+    },
+    {
+      "id": "backend",
+      "title": {
+        "my": "Backend Developer",
+        "en": "Backend Developer"
+      },
+      "goal": {
+        "my": "Functions၊ validation၊ persistence၊ typed API နှင့် authorization workflow သို့ ဆက်ပါ။",
+        "en": "Progress through functions, validation, persistence, typed APIs and authorization."
+      },
+      "lesson_ids": [
+        "py-04",
+        "py-06",
+        "py-10",
+        "py-11",
+        "py-12",
+        "py-17",
+        "py-18",
+        "py-22",
+        "py-23",
+        "py-24",
+        "py-27",
+        "py-28",
+        "py-32",
+        "py-35"
+      ],
+      "exercise_ids": [
+        "sum-two",
+        "safe-age"
+      ],
+      "project_ids": [
+        "sqlite-app",
+        "rest-api",
+        "auth-system"
+      ]
+    },
+    {
+      "id": "mobile",
+      "title": {
+        "my": "Mobile Developer",
+        "en": "Mobile Developer"
+      },
+      "goal": {
+        "my": "State/data အခြေခံကို လေ့လာပြီး Flutter project guide ကို Android Studio တွင် လုပ်ပါ။ Dart course အပြည့် မပါသေးပါ။",
+        "en": "Study state/data foundations and follow the Flutter guide in Android Studio. A complete Dart course is not yet included."
+      },
+      "lesson_ids": [
+        "py-02",
+        "py-06",
+        "py-09",
+        "py-10",
+        "py-11"
+      ],
+      "exercise_ids": [
+        "even-number",
+        "sum-list"
+      ],
+      "project_ids": [
+        "flutter-app",
+        "auth-system"
+      ]
+    },
+    {
+      "id": "ai",
+      "title": {
+        "my": "AI Developer",
+        "en": "AI Developer"
+      },
+      "goal": {
+        "my": "Python data၊ validation နှင့် privacy မှ စ၍ BYOK chatbot နှင့် data dashboard guide သို့ ဆက်ပါ။ Model training course မပါသေးပါ။",
+        "en": "Start with Python data, validation and privacy, then use the BYOK chatbot and dashboard guides. Model-training lessons are not yet included."
+      },
+      "lesson_ids": [
+        "py-03",
+        "py-09",
+        "py-10",
+        "py-11",
+        "py-12",
+        "py-17",
+        "py-18",
+        "py-25",
+        "py-28",
+        "py-35"
+      ],
+      "exercise_ids": [
+        "count-vowels",
+        "safe-age"
+      ],
+      "project_ids": [
+        "ai-chatbot",
+        "data-dashboard"
+      ]
+    },
+    {
+      "id": "fullstack",
+      "title": {
+        "my": "Full-Stack Developer",
+        "en": "Full-Stack Developer"
+      },
+      "goal": {
+        "my": "Python foundation မှ database၊ API၊ auth နှင့် client integration project guide များကို အဆင့်လိုက် ရွေးပါ။",
+        "en": "Follow Python foundations with database, API, auth and client-integration project guides."
+      },
+      "lesson_ids": [
+        "py-01",
+        "py-02",
+        "py-03",
+        "py-04",
+        "py-05",
+        "py-06",
+        "py-07",
+        "py-08",
+        "py-09",
+        "py-10",
+        "py-11",
+        "py-12",
+        "py-17",
+        "py-18",
+        "py-27",
+        "py-28",
+        "py-33",
+        "py-35"
+      ],
+      "exercise_ids": [
+        "sum-list",
+        "safe-age"
+      ],
+      "project_ids": [
+        "sqlite-app",
+        "rest-api",
+        "auth-system",
+        "full-stack"
+      ]
+    }
+  ]
+}
