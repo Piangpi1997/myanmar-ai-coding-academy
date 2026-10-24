@@ -26,7 +26,7 @@ def test_catalog_is_120_lessons_with_preserved_python_course():
         assert q['code'] and q['solution']
         for lang in ('my','en'):
             g=q['guide'][lang]
-            assert len(g['body'])>=300
+            assert len(g['body'])>650
             assert all(g.get(k) for k in ('objectives','lines','mistake','hint','challenge','question','explanation'))
         assert len(q['guide']['myOptions'])==len(q['guide']['enOptions'])==3
         assert 0<=q['guide']['correct']<3

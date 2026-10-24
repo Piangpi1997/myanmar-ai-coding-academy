@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 const academyTracks = ['python', 'programming', 'web', 'linux', 'security'];
 String trackLabel(String track, bool en) => switch (track) {
+  'quiz' => en ? 'Q&A Practice' : 'Q&A စမ်းသပ်ခန်း',
   'python' => 'Python',
   'programming' => en ? 'Programming' : 'Programming အခြေခံ',
   'web' => en ? 'Web development' : 'Web တည်ဆောက်ခြင်း',
@@ -10,6 +11,7 @@ String trackLabel(String track, bool en) => switch (track) {
   _ => en ? 'All subjects' : 'ဘာသာရပ်အားလုံး',
 };
 IconData trackIcon(String track) => switch (track) {
+  'quiz' => Icons.quiz_outlined,
   'python' => Icons.code_rounded,
   'programming' => Icons.account_tree_outlined,
   'web' => Icons.web_outlined,

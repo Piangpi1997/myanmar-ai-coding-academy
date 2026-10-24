@@ -36,7 +36,7 @@ def build():
         seen.add(lesson['id'])
         guide = lesson['guide']
         for lang in ('my','en'):
-            assert len(guide[lang]['body']) >= 300, (lesson['id'],lang)
+            assert len(guide[lang]['body']) > 650, (lesson['id'],lang)
             assert all(guide[lang].get(k) for k in ('objectives','lines','mistake','hint','challenge','question','explanation'))
         assert len(guide['myOptions']) == len(guide['enOptions']) == 3
         assert 0 <= guide['correct'] < 3

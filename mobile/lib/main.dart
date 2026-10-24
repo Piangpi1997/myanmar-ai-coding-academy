@@ -443,7 +443,7 @@ class _AcademyShellState extends State<AcademyShell>
       ),
       const SizedBox(height: 18),
       Text(
-        tr('ဘာသာရပ်များ', 'Explore subjects'),
+        tr('သင်ယူရန်နှင့် လေ့ကျင့်ရန်', 'Learn & practice'),
         style: Theme.of(
           context,
         ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
@@ -461,13 +461,14 @@ class _AcademyShellState extends State<AcademyShell>
             spacing: 12,
             runSpacing: 2,
             children: [
-              for (final track in academyTracks)
+              for (final track in [...academyTracks, 'quiz'])
                 SizedBox(
                   width: width,
                   child: Card(
                     child: InkWell(
                       borderRadius: BorderRadius.circular(18),
-                      onTap: () => _learnTrack(track),
+                      onTap: () =>
+                          track == 'quiz' ? _openQuiz() : _learnTrack(track),
                       child: Padding(
                         padding: const EdgeInsets.all(15),
                         child: Column(
@@ -488,7 +489,12 @@ class _AcademyShellState extends State<AcademyShell>
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              '${academyLessons.where((l) => l.track == track).length} ${tr('သင်ခန်းစာ', 'lessons')}',
+                              track == 'quiz'
+                                  ? tr(
+                                      'Preview နှင့် အဖြေရှင်းချက်',
+                                      'Preview & explanations',
+                                    )
+                                  : '${academyLessons.where((l) => l.track == track).length} ${tr('သင်ခန်းစာ', 'lessons')}',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -512,13 +518,6 @@ class _AcademyShellState extends State<AcademyShell>
       Card(
         child: Column(
           children: [
-            ListTile(
-              leading: const Icon(Icons.quiz_outlined),
-              title: Text(tr('Q&A နှင့် Test Preview', 'Q&A & test preview')),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: _openQuiz,
-            ),
-            const Divider(indent: 54),
             ListTile(
               leading: const Icon(Icons.web_outlined),
               title: const Text('HTML Viewer'),

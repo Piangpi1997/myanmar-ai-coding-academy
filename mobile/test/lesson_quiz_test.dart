@@ -23,7 +23,10 @@ void main() {
   test(
     'Every shipped lesson has bilingual original guides and valid quiz options',
     () {
-      expect(lessonGuides.keys.toSet(), pythonLessons.map((l) => l.id).toSet());
+      expect(
+        lessonGuides.keys.toSet(),
+        academyLessons.map((l) => l.id).toSet(),
+      );
       for (final guide in lessonGuides.values) {
         for (final text in [guide.my, guide.en]) {
           expect(text['body']!.length, greaterThan(650));
