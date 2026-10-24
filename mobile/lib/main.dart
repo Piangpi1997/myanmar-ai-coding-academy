@@ -367,7 +367,7 @@ class _AcademyShellState extends State<AcademyShell>
       return;
     }
     await Clipboard.setData(ClipboardData(text: code));
-    if (mounted)
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -378,6 +378,7 @@ class _AcademyShellState extends State<AcademyShell>
           ),
         ),
       );
+    }
   }
 
   Widget _home() => ListView(

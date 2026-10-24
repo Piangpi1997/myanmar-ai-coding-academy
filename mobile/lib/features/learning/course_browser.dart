@@ -36,8 +36,9 @@ class _CourseBrowserState extends State<CourseBrowser> {
   @override
   void didUpdateWidget(covariant CourseBrowser oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialTrack != widget.initialTrack)
+    if (oldWidget.initialTrack != widget.initialTrack) {
       track = widget.initialTrack;
+    }
   }
 
   @override
@@ -66,7 +67,7 @@ class _CourseBrowserState extends State<CourseBrowser> {
       padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
       itemCount: visible.length + 1,
       itemBuilder: (context, index) {
-        if (index == 0)
+        if (index == 0) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -180,6 +181,7 @@ class _CourseBrowserState extends State<CourseBrowser> {
                 ),
             ],
           );
+        }
         final lesson = visible[index - 1];
         final done = widget.completed.contains(lesson.id);
         return Card(

@@ -22,10 +22,12 @@ class PracticeRun {
       .where((q) => answers[q.id] == lessonGuides[q.id]!.correct)
       .length;
   void answer(String id, int value) {
-    if (!questions.any((q) => q.id == id))
+    if (!questions.any((q) => q.id == id)) {
       throw ArgumentError('Unknown question');
-    if (value < 0 || value >= lessonGuides[id]!.enOptions.length)
+    }
+    if (value < 0 || value >= lessonGuides[id]!.enOptions.length) {
       throw ArgumentError('Invalid answer');
+    }
     answers[id] = value;
   }
 }
@@ -39,14 +41,23 @@ class PracticeHistory {
     final raw = prefs.getString(key(account));
     if (raw == null) return [];
     final parsed = jsonDecode(raw);
-    if (parsed is! List)
+    if (parsed is! List) {
       throw const FormatException('Unreadable practice history');
+    }
     return parsed.map((row) {
       if (row is! Map ||
           row['score'] is! int ||
           row['total'] is! int ||
-          row['at'] is! String)
+          row['at'] is! String ||
+          row['track'] is! String ||
+          !['all', ...academyTracks].contains(row['track']) ||
+          (row['total'] as int) < 1 ||
+          (row['total'] as int) > 20 ||
+          (row['score'] as int) < 0 ||
+          (row['score'] as int) > (row['total'] as int) ||
+          DateTime.tryParse(row['at'] as String) == null) {
         throw const FormatException('Unreadable practice history');
+      }
       return Map<String, dynamic>.from(row);
     }).toList();
   }
@@ -63,8 +74,9 @@ class PracticeHistory {
     if (!await prefs.setString(
       key(account),
       jsonEncode(entries.take(60).toList()),
-    ))
+    )) {
       throw StateError('Save failed');
+    }
   }
 }
 
@@ -105,13 +117,14 @@ class _PracticeTestPageState extends State<PracticeTestPage> {
         history = rows;
       });
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(
           () => notice = t(
             'မှတ်တမ်းဟောင်း ဖတ်မရပါ။ မူရင်းကို မပြင်ထားပါ။',
             'History could not be read; the stored data is preserved.',
           ),
         );
+      }
     }
   }
 
@@ -136,19 +149,21 @@ class _PracticeTestPageState extends State<PracticeTestPage> {
       saving = true;
     });
     try {
-      if (CloudService.user?.id != widget.account)
+      if (CloudService.user?.id != widget.account) {
         throw StateError('Account changed');
+      }
       if (store == null) throw StateError('Storage unavailable');
       await store!.save(widget.account, run!, track);
       if (mounted) setState(() => history = store!.read(widget.account));
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(
           () => notice = t(
             'ရလဒ်ကို ပြထားသည်။ Device မှတ်တမ်းကို မသိမ်းနိုင်သေးပါ။',
             'Result shown; it could not be saved to device history.',
           ),
         );
+      }
     } finally {
       if (mounted) setState(() => saving = false);
     }

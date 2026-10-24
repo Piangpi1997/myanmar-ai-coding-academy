@@ -126,8 +126,9 @@ class _WebLabPageState extends State<WebLabPage> {
     if (approved != true ||
         !mounted ||
         changedAccount ||
-        CloudService.user?.id != widget.account)
+        CloudService.user?.id != widget.account) {
       return;
+    }
     apply(WebProject(html: source, css: '', javascript: ''));
     setState(() => editor = 0);
     await save();
@@ -522,13 +523,16 @@ class _HtmlPreviewPageState extends State<HtmlPreviewPage> {
   @override
   void initState() {
     super.initState();
-    if (CloudService.configured)
+    if (CloudService.configured) {
       auth = CloudService.authChanges.listen((_) {
-        if (mounted && CloudService.user?.id != widget.account)
+        if (mounted && CloudService.user?.id != widget.account) {
           setState(() => error = 'Account changed. Reopen the viewer.');
+        }
       });
-    if (CloudService.user?.id != widget.account)
+    }
+    if (CloudService.user?.id != widget.account) {
       error = 'Account changed. Reopen the viewer.';
+    }
   }
 
   @override
