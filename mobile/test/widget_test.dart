@@ -22,7 +22,7 @@ void main() {
     expect(find.text('Code Lab'), findsWidgets);
     await tester.tap(find.byIcon(Icons.school_outlined));
     await tester.pumpAndSettle();
-    expect(find.text('Python သင်ခန်းစာများ'), findsOneWidget);
+    expect(find.text('သင်ခန်းစာ စာကြည့်တိုက်'), findsOneWidget);
     expect(find.text('Introduction to Python'), findsNothing);
   });
   testWidgets('Language switches instantly and persists the choice', (
@@ -32,13 +32,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('EN'));
     await tester.pumpAndSettle();
-    expect(find.text('Start coding today!'), findsOneWidget);
+    expect(find.text('Build a little, learn a lot.'), findsOneWidget);
     expect(
       (await SharedPreferences.getInstance()).getBool('english_ui'),
       isTrue,
     );
     await tester.tap(find.text('မြန်မာ'));
     await tester.pumpAndSettle();
-    expect(find.text('Coding ကို ဒီနေ့ စလိုက်ပါ!'), findsOneWidget);
+    expect(find.text('တစ်နေ့ နည်းနည်းချင်း လေ့လာပါ'), findsOneWidget);
   });
 }

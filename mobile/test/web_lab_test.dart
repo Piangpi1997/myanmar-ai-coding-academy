@@ -67,7 +67,7 @@ void main() {
       );
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
-      expect(find.text('Web Code Lab'), findsOneWidget);
+      expect(find.text('HTML Viewer'), findsOneWidget);
       await tester.enterText(find.byType(TextField), '<h1>My saved page</h1>');
       await tester.tap(find.text('CSS'));
       await tester.pump();
@@ -109,4 +109,52 @@ void main() {
     await tester.pumpAndSettle();
     expect(await secureStorage.read(key: 'web.v1.guest'), 'broken');
   });
+  testWidgets(
+    'lesson HTML import needs approval and preserves a cancelled draft',
+    (tester) async {
+      FlutterSecureStorage.setMockInitialValues({});
+      await secureStorage.write(
+        key: 'web.v1.guest',
+        value: const WebProject(
+          html: '<h1>Keep my work</h1>',
+          css: 'p{color:teal}',
+          javascript: '',
+        ).encode(),
+      );
+      Widget app() => MaterialApp(
+        locale: const Locale('en'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        home: const WebLabPage(
+          account: null,
+          initialHtml: '<h1>Lesson example</h1>',
+        ),
+      );
+      await tester.pumpWidget(app());
+      await tester.pumpAndSettle();
+      expect(find.text('Open this HTML example?'), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(
+        WebProject.decode(
+          (await secureStorage.read(key: 'web.v1.guest'))!,
+        ).html,
+        '<h1>Keep my work</h1>',
+      );
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(app());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      final saved = WebProject.decode(
+        (await secureStorage.read(key: 'web.v1.guest'))!,
+      );
+      expect(saved.html, '<h1>Lesson example</h1>');
+      expect(saved.css, '');
+      expect(saved.javascript, '');
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+    },
+  );
 }

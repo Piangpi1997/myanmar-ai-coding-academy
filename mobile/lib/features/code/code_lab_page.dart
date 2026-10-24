@@ -160,7 +160,7 @@ class _CodeLabPageState extends State<CodeLabPage> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Python Code Lab',
+          'Code workspace',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         OutlinedButton.icon(
@@ -174,11 +174,20 @@ class _CodeLabPageState extends State<CodeLabPage> {
           icon: const Icon(Icons.web),
           label: Text(
             Localizations.localeOf(context).languageCode == 'en'
-                ? 'HTML / CSS / JavaScript lab'
-                : 'HTML / CSS / JavaScript လေ့ကျင့်ရန်',
+                ? 'HTML Viewer · offline preview'
+                : 'HTML Viewer · Offline ကြည့်ရန်',
           ),
         ),
-        if (widget.account == null) Text(l.signInRequired),
+        if (widget.account == null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              Localizations.localeOf(context).languageCode == 'en'
+                  ? 'Python execution needs a connected account. HTML preview works offline.'
+                  : 'Python run ရန် ချိတ်ဆက်ထားသော account လိုသည်။ HTML preview သည် offline သုံးနိုင်သည်။',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
         Wrap(
           spacing: 8,
           children: [
@@ -198,18 +207,24 @@ class _CodeLabPageState extends State<CodeLabPage> {
             ),
           ],
         ),
-        Row(
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(l.fontSize, style: Theme.of(context).textTheme.bodySmall),
           children: [
-            Text(l.fontSize),
-            Expanded(
-              child: Slider(
-                value: fontSize,
-                min: 12,
-                max: 24,
-                divisions: 12,
-                label: fontSize.round().toString(),
-                onChanged: (v) => setState(() => fontSize = v),
-              ),
+            Row(
+              children: [
+                Text(l.fontSize),
+                Expanded(
+                  child: Slider(
+                    value: fontSize,
+                    min: 12,
+                    max: 24,
+                    divisions: 12,
+                    label: fontSize.round().toString(),
+                    onChanged: (v) => setState(() => fontSize = v),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

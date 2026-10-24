@@ -8,6 +8,8 @@ class Lesson {
     required this.code,
     required this.challengeMy,
     required this.answer,
+    this.track = 'python',
+    this.language = 'python',
     this.level = 'beginner',
     this.environment = 'sandbox',
     this.prerequisites = const [],
@@ -22,7 +24,7 @@ class Lesson {
   final String code;
   final String challengeMy;
   final String answer;
-  final String level, environment;
+  final String level, environment, track, language;
   final List<String> prerequisites, flow;
 }
 

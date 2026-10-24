@@ -1,5 +1,6 @@
 import 'lesson_models.dart';
 import 'generated/python_course.dart';
+import 'generated/academy_extensions.dart';
 export 'lesson_models.dart' show Lesson;
 
 const foundationLessons = <Lesson>[
@@ -169,3 +170,5 @@ const foundationLessons = <Lesson>[
 ];
 
 const pythonLessons = <Lesson>[...foundationLessons, ...extendedLessons];
+
+const academyLessons = <Lesson>[...pythonLessons, ...academyExtensions];

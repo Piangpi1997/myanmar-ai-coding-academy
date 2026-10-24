@@ -1,5 +1,6 @@
 import 'lesson_models.dart';
 import 'generated/python_course.dart';
+import 'generated/academy_extensions.dart';
 export 'lesson_models.dart' show LessonGuide;
 
 const foundationGuides = <String, LessonGuide>{
@@ -479,4 +480,5 @@ const foundationGuides = <String, LessonGuide>{
 const lessonGuides = <String, LessonGuide>{
   ...foundationGuides,
   ...extendedGuides,
+  ...academyExtensionGuides,
 };

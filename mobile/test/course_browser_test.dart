@@ -31,4 +31,28 @@ void main() {
     expect(find.text('0 lessons shown'), findsOneWidget);
     expect(find.text('No lessons match these filters.'), findsOneWidget);
   });
+  testWidgets(
+    'subject filters expose Linux and security lessons without losing search',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CourseBrowser(
+              english: true,
+              completed: const {},
+              actions: const SizedBox(),
+              initialTrack: 'linux',
+              onLesson: (_) {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('20 lessons shown'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'Nmap');
+      await tester.pumpAndSettle();
+      expect(find.text('1 lessons shown'), findsOneWidget);
+      expect(find.text('Nmap on your loopback lab'), findsOneWidget);
+    },
+  );
 }

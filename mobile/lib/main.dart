@@ -1,4 +1,9 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
+import 'core/academy_theme.dart';
+import 'features/learning/academy_tracks.dart';
+import 'features/learning/practice_test_page.dart';
+import 'features/code/web_lab_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/progress_controller.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -24,10 +29,7 @@ Future<void> main() async {
   runApp(const CodingAcademyApp());
 }
 
-const _background = Color(0xFF080D1B);
-const _panel = Color(0xFF111B2E);
-const _purple = Color(0xFF775CFF);
-const _cyan = Color(0xFF00D9E8);
+const _cyan = Color(0xFF72D7CE);
 
 class CodingAcademyApp extends StatefulWidget {
   const CodingAcademyApp({super.key});
@@ -73,30 +75,8 @@ class _CodingAcademyAppState extends State<CodingAcademyApp> {
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     themeMode: dark ? ThemeMode.dark : ThemeMode.light,
-    theme: ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.light,
-      colorScheme: ColorScheme.fromSeed(seedColor: _purple),
-      fontFamily: 'NotoSansMyanmar',
-    ),
-    darkTheme: ThemeData(
-      fontFamily: 'NotoSansMyanmar',
-      brightness: Brightness.dark,
-      useMaterial3: true,
-      scaffoldBackgroundColor: _background,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: _purple,
-        brightness: Brightness.dark,
-        surface: _panel,
-      ),
-      appBarTheme: const AppBarTheme(backgroundColor: _background),
-      cardTheme: CardThemeData(color: _panel, elevation: 0),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: _panel,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-    ),
+    theme: academyTheme(Brightness.light),
+    darkTheme: academyTheme(Brightness.dark),
     home: AcademyShell(
       english: english,
       dark: dark,
@@ -126,6 +106,7 @@ class AcademyShell extends StatefulWidget {
 class _AcademyShellState extends State<AcademyShell>
     with WidgetsBindingObserver {
   int tab = 0;
+  String selectedTrack = 'all';
   final visitedTabs = <int>{0};
   bool get english => widget.english;
   Set<String> get completed => progress?.completed ?? {};
@@ -262,7 +243,7 @@ class _AcademyShellState extends State<AcademyShell>
           },
           onLesson: (id) {
             Navigator.of(context).popUntil((route) => route.isFirst);
-            final lesson = pythonLessons.firstWhere(
+            final lesson = academyLessons.firstWhere(
               (lesson) => lesson.id == id,
             );
             Navigator.of(context).push(
@@ -272,7 +253,7 @@ class _AcademyShellState extends State<AcademyShell>
                   english: english,
                   completed: completed.contains(id),
                   onComplete: _completionFor(lesson, account),
-                  onCode: _openCode,
+                  onCode: (code) => _lessonCode(lesson, code),
                   onTutor: () => setState(() {
                     lessonContext = lessonGuides[id]!.text(english)['body']!;
                     codeContext = lesson.code;
@@ -299,7 +280,7 @@ class _AcademyShellState extends State<AcademyShell>
           ? null
           : AppBar(
               title: Text(
-                tr('မြန်မာ AI Coding Academy', 'Myanmar AI Coding Academy'),
+                'Coding Academy',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -359,71 +340,207 @@ class _AcademyShellState extends State<AcademyShell>
     );
   }
 
+  void _learnTrack(String track) => setState(() {
+    selectedTrack = track;
+    tab = 1;
+    visitedTabs.add(1);
+  });
+  void _openQuiz() => Navigator.push(
+    context,
+    MaterialPageRoute<void>(
+      builder: (_) => PracticeTestPage(account: account, english: english),
+    ),
+  );
+  void _openHtml([String? html]) => Navigator.push(
+    context,
+    MaterialPageRoute<void>(
+      builder: (_) => WebLabPage(account: account, initialHtml: html),
+    ),
+  );
+  Future<void> _lessonCode(Lesson lesson, String code) async {
+    if (lesson.language == 'html') {
+      _openHtml(code);
+      return;
+    }
+    if (lesson.language == 'python') {
+      await _openCode(code);
+      return;
+    }
+    await Clipboard.setData(ClipboardData(text: code));
+    if (mounted)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            tr(
+              'နမူနာကို ကူးပြီးပါပြီ။ Computer/VM lab တွင် လေ့ကျင့်ပါ။',
+              'Example copied. Practice in your computer or VM lab.',
+            ),
+          ),
+        ),
+      );
+  }
+
   Widget _home() => ListView(
-    padding: const EdgeInsets.all(20),
+    padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
     children: [
+      Text(
+        tr('တစ်နေ့ နည်းနည်းချင်း လေ့လာပါ', 'Build a little, learn a lot.'),
+        style: Theme.of(
+          context,
+        ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+      ),
       const SizedBox(height: 8),
       Text(
-        tr('Coding ကို ဒီနေ့ စလိုက်ပါ!', 'Start coding today!'),
-        style: const TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 12),
-      Text(
         tr(
-          'အခြေခံမှ ပရော်ဖက်ရှင်နယ်အထိ တစ်ဆင့်ချင်း လေ့လာပါ။',
-          'Learn step by step, from zero to professional skills.',
+          'ဖတ်ပါ၊ လေ့ကျင့်ပါ၊ ကိုယ့်တိုးတက်မှုကို ကြည့်ပါ။',
+          'Read, practice, and see your progress.',
         ),
+        style: Theme.of(context).textTheme.bodyMedium,
       ),
-      const SizedBox(height: 24),
+      const SizedBox(height: 18),
       Card(
         child: Padding(
-          padding: const EdgeInsets.all(22),
+          padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('PYTHON ZERO TO HERO', style: TextStyle(color: _cyan)),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      tr('သင့်လေ့လာမှု', 'YOUR LEARNING'),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ),
+                  Text(
+                    '${completed.length} / ${academyLessons.length}',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
               const SizedBox(height: 12),
-              Text(
-                '${completed.length} / ${pythonLessons.length} ${tr('သင်ခန်းစာ ပြီးဆုံး', 'lessons completed')}',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              LinearProgressIndicator(
+                value: (completed.length / academyLessons.length).clamp(
+                  0.0,
+                  1.0,
                 ),
+                minHeight: 6,
+                borderRadius: BorderRadius.circular(9),
               ),
               const SizedBox(height: 14),
-              LinearProgressIndicator(
-                value: completed.length / pythonLessons.length,
-                minHeight: 9,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              const SizedBox(height: 20),
-              FilledButton.icon(
-                onPressed: () => setState(() {
-                  tab = 1;
-                  visitedTabs.add(1);
-                }),
-                icon: const Icon(Icons.arrow_forward),
-                label: Text(tr('ဆက်လက်လေ့လာမယ်', 'Continue learning')),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => _learnTrack(selectedTrack),
+                  icon: const Icon(Icons.arrow_forward, size: 18),
+                  label: Text(tr('ဆက်လက်လေ့လာမယ်', 'Continue learning')),
+                ),
               ),
             ],
           ),
         ),
       ),
-      const SizedBox(height: 16),
-      _infoCard(
-        Icons.auto_awesome,
-        tr('AI Tutor', 'AI Tutor'),
-        tr(
-          'ကိုယ်ပိုင် API key ဖြင့် မြန်မာလို မေးမြန်းလေ့လာပါ။',
-          'Learn with your own provider and API key.',
-        ),
+      const SizedBox(height: 18),
+      Text(
+        tr('ဘာသာရပ်များ', 'Explore subjects'),
+        style: Theme.of(
+          context,
+        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
       ),
-      _infoCard(
-        Icons.terminal,
-        'Code Lab',
-        tr(
-          'Python ရေးပြီး ချိတ်ဆက်ထားသော sandbox တွင် run ပါ။',
-          'Write Python and run it in a configured remote sandbox.',
+      const SizedBox(height: 8),
+      LayoutBuilder(
+        builder: (context, constraints) {
+          final columns = constraints.maxWidth >= 700
+              ? 3
+              : constraints.maxWidth < 300
+              ? 1
+              : 2;
+          final width = (constraints.maxWidth - 12 * (columns - 1)) / columns;
+          return Wrap(
+            spacing: 12,
+            runSpacing: 2,
+            children: [
+              for (final track in academyTracks)
+                SizedBox(
+                  width: width,
+                  child: Card(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: () => _learnTrack(track),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              trackIcon(track),
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 24,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              trackLabel(track, english),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              '${academyLessons.where((l) => l.track == track).length} ${tr('သင်ခန်းစာ', 'lessons')}',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+      const SizedBox(height: 18),
+      Text(
+        tr('လေ့ကျင့်ရန်', 'Practice tools'),
+        style: Theme.of(
+          context,
+        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+      ),
+      const SizedBox(height: 6),
+      Card(
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.quiz_outlined),
+              title: Text(tr('Q&A နှင့် Test Preview', 'Q&A & test preview')),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: _openQuiz,
+            ),
+            const Divider(indent: 54),
+            ListTile(
+              leading: const Icon(Icons.web_outlined),
+              title: const Text('HTML Viewer'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _openHtml(),
+            ),
+            const Divider(indent: 54),
+            ListTile(
+              leading: const Icon(Icons.auto_awesome_outlined),
+              title: const Text('AI Tutor'),
+              subtitle: Text(
+                tr(
+                  'ကိုယ်ပိုင် provider ဖြင့် မေးမြန်းပါ',
+                  'Ask with your own AI provider',
+                ),
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => setState(() {
+                tab = 3;
+                visitedTabs.add(3);
+              }),
+            ),
+          ],
         ),
       ),
     ],
@@ -440,10 +557,16 @@ class _AcademyShellState extends State<AcademyShell>
   Widget _courses() => CourseBrowser(
     english: english,
     completed: completed,
+    initialTrack: selectedTrack,
     actions: Wrap(
       spacing: 8,
       runSpacing: 8,
       children: [
+        OutlinedButton.icon(
+          onPressed: _openQuiz,
+          icon: const Icon(Icons.quiz_outlined),
+          label: Text(tr('Q&A စမ်းဖြေရန်', 'Q&A Practice')),
+        ),
         OutlinedButton.icon(
           onPressed: () => _openLearning(0),
           icon: const Icon(Icons.route_outlined),
@@ -469,7 +592,7 @@ class _AcademyShellState extends State<AcademyShell>
               english: english,
               completed: completed.contains(lesson.id),
               onComplete: _completionFor(lesson, account),
-              onCode: _openCode,
+              onCode: (code) => _lessonCode(lesson, code),
               onTutor: () => setState(() {
                 lessonContext = lessonGuides[lesson.id]!.text(english)['body']!;
                 codeContext = lesson.code;
@@ -506,24 +629,35 @@ class _AcademyShellState extends State<AcademyShell>
     return ListView(
       padding: const EdgeInsets.all(22),
       children: [
-        const CircleAvatar(
-          radius: 42,
-          backgroundColor: _purple,
-          child: Icon(Icons.person, size: 42),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          CloudService.user?.email ?? l.guest,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
+        Card(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              child: const Icon(Icons.person_outline),
+            ),
+            title: Text(
+              CloudService.user?.email ?? l.guest,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              tr('သင့်ကိုယ်ပိုင် လေ့လာမှုနေရာ', 'Your learning space'),
+            ),
+          ),
         ),
         const SizedBox(height: 12),
-        Text(l.cloudNotice, textAlign: TextAlign.center),
         Card(
           child: ListTile(
             leading: const Icon(Icons.timer_outlined),
-            title: Text(tr('လေ့လာချိန်နှင့် မှတ်တမ်း', 'Study timer and history')),
-            subtitle: Text(tr('Foreground လေ့လာချိန်နှင့် အပတ်စဉ်အနှစ်ချုပ်', 'Foreground time and weekly summary')),
+            title: Text(
+              tr('လေ့လာချိန်နှင့် မှတ်တမ်း', 'Study timer and history'),
+            ),
+            subtitle: Text(
+              tr(
+                'Foreground လေ့လာချိန်နှင့် အပတ်စဉ်အနှစ်ချုပ်',
+                'Foreground time and weekly summary',
+              ),
+            ),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
@@ -540,7 +674,12 @@ class _AcademyShellState extends State<AcademyShell>
           child: ListTile(
             leading: const Icon(Icons.notifications_active_outlined),
             title: Text(tr('နေ့စဉ် Reminder', 'Daily reminders')),
-            subtitle: Text(tr('အချိန်၊ နေ့ရက်နှင့် လေ့လာချိန် ရွေးချယ်ရန်', 'Choose time, weekdays and study duration')),
+            subtitle: Text(
+              tr(
+                'အချိန်၊ နေ့ရက်နှင့် လေ့လာချိန် ရွေးချယ်ရန်',
+                'Choose time, weekdays and study duration',
+              ),
+            ),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
@@ -608,10 +747,27 @@ class _AcademyShellState extends State<AcademyShell>
             onTap: progress?.syncing == true ? null : () => progress?.sync(),
           ),
         ],
+        ListTile(
+          leading: const Icon(Icons.quiz_outlined),
+          title: Text(tr('Q&A စမ်းဖြေရလဒ်များ', 'Q&A practice & results')),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: _openQuiz,
+        ),
         _infoCard(
           Icons.check_circle_outline,
           tr('ပြီးဆုံးသင်ခန်းစာ', 'Lessons completed'),
-          '${completed.length} / ${pythonLessons.length}',
+          '${completed.length} / ${academyLessons.length}',
+        ),
+        ExpansionTile(
+          title: Text(
+            tr('Account နှင့် Sync အကြောင်း', 'Account & sync details'),
+          ),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(l.cloudNotice),
+            ),
+          ],
         ),
         SwitchListTile(
           title: const Text('မြန်မာ / English'),
@@ -679,8 +835,8 @@ class _LessonPageState extends State<LessonPage> {
                 padding: const EdgeInsets.all(12),
                 child: Text(
                   widget.english
-                      ? 'Run this example in your own computer development environment. It needs files or installed tools that the restricted mobile Python sandbox may not provide.'
-                      : 'ဒီနမူနာကို computer ပေါ်ရှိ development environment တွင် run ပါ။ Mobile sandbox တွင် ကန့်သတ်ထားသော ဖိုင် သို့မဟုတ် tools လိုအပ်နိုင်သည်။',
+                      ? 'Computer / VM lab. Read and copy on your phone; practice with the indicated tools in your own computer environment.'
+                      : 'Computer / VM lab အတွက် ဖြစ်သည်။ ဖုန်းတွင် ဖတ်ပြီး ကူးနိုင်သည်။ ကိုယ့်စက်ပေါ်ရှိ သတ်မှတ် tool များဖြင့် လေ့ကျင့်ပါ။',
                 ),
               ),
             ),
@@ -706,7 +862,7 @@ class _LessonPageState extends State<LessonPage> {
           const SizedBox(height: 18),
           Text(
             text['body']!,
-            style: const TextStyle(fontSize: 17, height: 1.8),
+            style: const TextStyle(fontSize: 15, height: 1.75),
           ),
           const SizedBox(height: 24),
           Text(
@@ -737,7 +893,13 @@ class _LessonPageState extends State<LessonPage> {
               widget.onCode(lesson.code);
             },
             icon: const Icon(Icons.code),
-            label: Text(AppLocalizations.of(context)!.insertCode),
+            label: Text(
+              lesson.language == 'html'
+                  ? 'HTML Viewer'
+                  : lesson.language == 'python'
+                  ? l.insertCode
+                  : (widget.english ? 'Copy example' : 'နမူနာကူးရန်'),
+            ),
           ),
           TextButton.icon(
             onPressed: () {
@@ -769,7 +931,15 @@ class _LessonPageState extends State<LessonPage> {
               widget.onCode(lesson.code);
             },
             icon: const Icon(Icons.edit_note),
-            label: Text(l.startExercise),
+            label: Text(
+              lesson.language == 'html'
+                  ? 'HTML Viewer'
+                  : lesson.language == 'python'
+                  ? l.startExercise
+                  : (widget.english
+                        ? 'Copy for computer lab'
+                        : 'Computer lab အတွက် ကူးရန်'),
+            ),
           ),
           const SizedBox(height: 12),
           ExpansionTile(

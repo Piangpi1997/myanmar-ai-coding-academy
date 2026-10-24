@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../lessons.dart';
-import '../../lesson_guides.dart';
+import 'academy_tracks.dart';
 
 String courseLevel(String level, bool english) => switch (level) {
   'beginner' => english ? 'Beginner' : 'အခြေခံ',
@@ -17,11 +17,13 @@ class CourseBrowser extends StatefulWidget {
     required this.completed,
     required this.actions,
     required this.onLesson,
+    this.initialTrack = 'all',
   });
   final bool english;
   final Set<String> completed;
   final Widget actions;
   final ValueChanged<Lesson> onLesson;
+  final String initialTrack;
   @override
   State<CourseBrowser> createState() => _CourseBrowserState();
 }
@@ -29,7 +31,15 @@ class CourseBrowser extends StatefulWidget {
 class _CourseBrowserState extends State<CourseBrowser> {
   final search = TextEditingController();
   String level = 'all';
+  late String track = widget.initialTrack;
   bool unfinished = false;
+  @override
+  void didUpdateWidget(covariant CourseBrowser oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialTrack != widget.initialTrack)
+      track = widget.initialTrack;
+  }
+
   @override
   void dispose() {
     search.dispose();
@@ -40,9 +50,10 @@ class _CourseBrowserState extends State<CourseBrowser> {
   Widget build(BuildContext context) {
     final en = widget.english;
     final query = search.text.trim().toLowerCase();
-    final visible = pythonLessons
+    final visible = academyLessons
         .where(
           (lesson) =>
+              (track == 'all' || lesson.track == track) &&
               (level == 'all' || lesson.level == level) &&
               (!unfinished || !widget.completed.contains(lesson.id)) &&
               '${lesson.id} ${lesson.titleMy} ${lesson.titleEn}'
@@ -50,70 +61,117 @@ class _CourseBrowserState extends State<CourseBrowser> {
                   .contains(query),
         )
         .toList();
+    final scheme = Theme.of(context).colorScheme;
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
       itemCount: visible.length + 1,
       itemBuilder: (context, index) {
-        if (index == 0) {
+        if (index == 0)
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                en ? 'Python Lessons' : 'Python သင်ခန်းစာများ',
-                style: Theme.of(context).textTheme.headlineSmall,
+                en ? 'Lesson library' : 'သင်ခန်းစာ စာကြည့်တိုက်',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
+              const SizedBox(height: 6),
               Text(
                 en
-                    ? '${pythonLessons.length} original bilingual lessons'
-                    : 'မြန်မာ / English သင်ခန်းစာ ${pythonLessons.length} ခု',
+                    ? '${academyLessons.length} lessons · 5 subjects · offline reading'
+                    : 'သင်ခန်းစာ ${academyLessons.length} ခု · ဘာသာရပ် ၅ မျိုး · Offline ဖတ်နိုင်',
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-              const SizedBox(height: 12),
-              widget.actions,
-              const SizedBox(height: 12),
+              const SizedBox(height: 18),
               TextField(
                 controller: search,
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(
-                  labelText: en ? 'Search lessons' : 'သင်ခန်းစာ ရှာရန်',
+                  hintText: en ? 'Search lessons' : 'သင်ခန်းစာ ရှာရန်',
                   prefixIcon: const Icon(Icons.search),
+                  suffixIcon: query.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: en ? 'Clear search' : 'ရှာဖွေစာ ဖျက်ရန်',
+                          onPressed: () => setState(search.clear),
+                          icon: const Icon(Icons.close),
+                        ),
                 ),
               ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: level,
-                decoration: InputDecoration(
-                  labelText: en ? 'Course level' : 'သင်ခန်းစာအဆင့်',
+              const SizedBox(height: 10),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (final value in ['all', ...academyTracks])
+                      Padding(
+                        padding: const EdgeInsets.only(right: 7),
+                        child: ChoiceChip(
+                          label: Text(trackLabel(value, en)),
+                          selected: track == value,
+                          onSelected: (_) => setState(() => track = value),
+                        ),
+                      ),
+                  ],
                 ),
-                items:
-                    [
-                          'all',
-                          'beginner',
-                          'intermediate',
-                          'advanced',
-                          'professional',
-                        ]
-                        .map(
-                          (value) => DropdownMenuItem(
-                            value: value,
-                            child: Text(courseLevel(value, en)),
-                          ),
-                        )
-                        .toList(),
-                onChanged: (value) => setState(() => level = value ?? 'all'),
               ),
-              FilterChip(
-                label: Text(en ? 'Not completed' : 'မပြီးသေးသော သင်ခန်းစာများ'),
-                selected: unfinished,
-                onSelected: (value) => setState(() => unfinished = value),
+              ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                title: Text(
+                  en
+                      ? 'Filters & learning tools'
+                      : 'စစ်ထုတ်ရန်နှင့် လေ့ကျင့်ခန်းများ',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                children: [
+                  DropdownButtonFormField<String>(
+                    initialValue: level,
+                    decoration: InputDecoration(
+                      labelText: en ? 'Course level' : 'သင်ခန်းစာအဆင့်',
+                    ),
+                    items:
+                        [
+                              'all',
+                              'beginner',
+                              'intermediate',
+                              'advanced',
+                              'professional',
+                            ]
+                            .map(
+                              (v) => DropdownMenuItem(
+                                value: v,
+                                child: Text(courseLevel(v, en)),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (v) => setState(() => level = v ?? 'all'),
+                  ),
+                  const SizedBox(height: 10),
+                  widget.actions,
+                  const SizedBox(height: 10),
+                ],
               ),
-              Text(
-                en
-                    ? '${visible.length} lessons shown'
-                    : 'သင်ခန်းစာ ${visible.length} ခု တွေ့သည်',
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      en
+                          ? '${visible.length} lessons shown'
+                          : 'သင်ခန်းစာ ${visible.length} ခု တွေ့သည်',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  FilterChip(
+                    label: Text(en ? 'Not completed' : 'မပြီးသေး'),
+                    selected: unfinished,
+                    onSelected: (v) => setState(() => unfinished = v),
+                  ),
+                ],
               ),
               if (visible.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 24),
                   child: Text(
                     en
                         ? 'No lessons match these filters.'
@@ -122,22 +180,40 @@ class _CourseBrowserState extends State<CourseBrowser> {
                 ),
             ],
           );
-        }
         final lesson = visible[index - 1];
         final done = widget.completed.contains(lesson.id);
         return Card(
           child: ListTile(
-            leading: CircleAvatar(
-              child: done
-                  ? const Icon(Icons.check)
-                  : Text(lesson.id.substring(3)),
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: scheme.primaryContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                done ? Icons.check : trackIcon(lesson.track),
+                size: 21,
+                color: scheme.onPrimaryContainer,
+              ),
             ),
-            title: Text(en ? lesson.titleEn : lesson.titleMy),
-            subtitle: Text(
-              '${courseLevel(lesson.level, en)} · ${lessonGuides[lesson.id]!.text(en)['objectives']}',
-              maxLines: 3,
+            title: Text(
+              en ? lesson.titleEn : lesson.titleMy,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
-            trailing: const Icon(Icons.chevron_right),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text(
+                '${lesson.id.toUpperCase()} · ${trackLabel(lesson.track, en)} · ${courseLevel(lesson.level, en)}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 11),
+              ),
+            ),
+            trailing: const Icon(Icons.chevron_right, size: 20),
             onTap: () => widget.onLesson(lesson),
           ),
         );

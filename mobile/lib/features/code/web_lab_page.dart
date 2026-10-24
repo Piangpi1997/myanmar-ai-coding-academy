@@ -8,7 +8,8 @@ import '../../l10n/generated/app_localizations.dart';
 import 'web_project.dart';
 
 class WebLabPage extends StatefulWidget {
-  const WebLabPage({super.key, required this.account});
+  const WebLabPage({super.key, required this.account, this.initialHtml});
+  final String? initialHtml;
   final String? account;
   @override
   State<WebLabPage> createState() => _WebLabPageState();
@@ -75,7 +76,67 @@ class _WebLabPageState extends State<WebLabPage> {
     } catch (_) {
       if (mounted) storageError = 'storage';
     }
-    if (mounted) setState(() => loading = false);
+    if (mounted) {
+      setState(() => loading = false);
+      if (restored && widget.initialHtml != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) importHtml(widget.initialHtml!);
+        });
+      }
+    }
+  }
+
+  Future<void> importHtml(String source) async {
+    if (!restored || changedAccount) return;
+    if (source.length > 16000) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            t(
+              'HTML သည် စာလုံး ၁၆၀၀၀ ထက် မကျော်ရပါ။',
+              'HTML must be at most 16,000 characters.',
+            ),
+          ),
+        ),
+      );
+      return;
+    }
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t('HTML နမူနာ ဖွင့်မလား။', 'Open this HTML example?')),
+        content: Text(
+          t(
+            'လက်ရှိ Web draft ကို အစားထိုးမည်။ မလိုပါက Cancel နှိပ်ပါ။',
+            'This replaces the current web draft. Cancel to keep your saved work.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(t('မလုပ်ပါ', 'Cancel')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(t('ဖွင့်မယ်', 'Open')),
+          ),
+        ],
+      ),
+    );
+    if (approved != true ||
+        !mounted ||
+        changedAccount ||
+        CloudService.user?.id != widget.account)
+      return;
+    apply(WebProject(html: source, css: '', javascript: ''));
+    setState(() => editor = 0);
+    await save();
+    resetPreview();
+  }
+
+  Future<void> pasteHtml() async {
+    final clip = await Clipboard.getData(Clipboard.kTextPlain);
+    if (mounted && clip?.text != null) await importHtml(clip!.text!);
   }
 
   Future<void> save({bool announce = false}) async {
@@ -225,7 +286,7 @@ class _WebLabPageState extends State<WebLabPage> {
     }
     if (loading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Web Code Lab')),
+        appBar: AppBar(title: const Text('HTML Viewer')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -251,8 +312,26 @@ class _WebLabPageState extends State<WebLabPage> {
     final controller = [html, css, js][editor];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Web Code Lab'),
+        title: const Text('HTML Viewer'),
         actions: [
+          IconButton(
+            onPressed: pasteHtml,
+            tooltip: t('HTML ထည့်ရန်', 'Paste HTML'),
+            icon: const Icon(Icons.content_paste),
+          ),
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => HtmlPreviewPage(
+                  document: project.previewDocument(),
+                  account: widget.account,
+                ),
+              ),
+            ),
+            tooltip: t('Preview အပြည့်ကြည့်ရန်', 'Full screen preview'),
+            icon: const Icon(Icons.open_in_full),
+          ),
           IconButton(
             onPressed: () => save(announce: true),
             tooltip: l.save,
@@ -265,8 +344,8 @@ class _WebLabPageState extends State<WebLabPage> {
         children: [
           Text(
             t(
-              'HTML / CSS / JavaScript ကို offline preview ဖြင့် လေ့ကျင့်ပါ။ Network၊ ဖိုင်၊ popup နှင့် phone API များ မသုံးနိုင်ပါ။',
-              'Practice HTML, CSS and JavaScript in an offline preview. Network, file access, popups and phone APIs are blocked.',
+              'HTML ရေးပါ သို့မဟုတ် paste လုပ်ပြီး offline preview ကြည့်ပါ။',
+              'Write or paste HTML and view it offline.',
             ),
           ),
           const SizedBox(height: 12),
@@ -396,19 +475,93 @@ class _WebLabPageState extends State<WebLabPage> {
               ),
             ),
           const SizedBox(height: 12),
-          Text(
-            t('Console နှင့် errors', 'Console and errors'),
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          if (console.isEmpty)
-            Text(t('Console message မရှိသေးပါ။', 'No console messages.')),
-          for (final message in console)
-            SelectableText(
-              message,
-              style: const TextStyle(fontFamily: 'monospace'),
+          ExpansionTile(
+            title: Text(
+              t('Console နှင့် Preview အကြောင်း', 'Console & preview details'),
             ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  t(
+                    'Offline preview ဖြစ်သည်။ Network၊ ဖိုင်၊ popup နှင့် phone API များ မသုံးနိုင်ပါ။',
+                    'Offline preview: network, files, popups and phone APIs are blocked.',
+                  ),
+                ),
+              ),
+              if (console.isEmpty)
+                Text(t('Console message မရှိသေးပါ။', 'No console messages.')),
+              for (final message in console)
+                SelectableText(
+                  message,
+                  style: const TextStyle(fontFamily: 'monospace'),
+                ),
+            ],
+          ),
         ],
       ),
     );
   }
+}
+
+class HtmlPreviewPage extends StatefulWidget {
+  const HtmlPreviewPage({
+    super.key,
+    required this.document,
+    required this.account,
+  });
+  final String? account;
+  final String document;
+  @override
+  State<HtmlPreviewPage> createState() => _HtmlPreviewPageState();
+}
+
+class _HtmlPreviewPageState extends State<HtmlPreviewPage> {
+  String? error;
+  StreamSubscription? auth;
+  @override
+  void initState() {
+    super.initState();
+    if (CloudService.configured)
+      auth = CloudService.authChanges.listen((_) {
+        if (mounted && CloudService.user?.id != widget.account)
+          setState(() => error = 'Account changed. Reopen the viewer.');
+      });
+    if (CloudService.user?.id != widget.account)
+      error = 'Account changed. Reopen the viewer.';
+  }
+
+  @override
+  void dispose() {
+    auth?.cancel();
+    super.dispose();
+  }
+
+  Future<void> created(int id) async {
+    if (CloudService.user?.id != widget.account) return;
+    try {
+      await MethodChannel(
+        'academy/web-preview/$id',
+      ).invokeMethod<void>('load', {'html': widget.document});
+    } catch (_) {
+      if (mounted) setState(() => error = 'Preview unavailable');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('HTML Preview')),
+    body: error != null
+        ? Center(child: Text(error!))
+        : (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+        ? AndroidView(
+            viewType: 'academy/restricted-web-preview',
+            layoutDirection: TextDirection.ltr,
+            creationParamsCodec: const StandardMessageCodec(),
+            onPlatformViewCreated: created,
+          )
+        : const Center(
+            child: Text('Open the Android app for the native preview.'),
+          ),
+  );
 }

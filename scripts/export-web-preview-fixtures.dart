@@ -1,6 +1,7 @@
 // Produce exactly the document used by the Android preview, without a web server.
 import 'dart:io';
 import '../mobile/lib/features/code/web_project.dart';
+import '../mobile/lib/generated/academy_extensions.dart';
 
 void main(List<String> args) {
   if (args.length != 1)
@@ -36,5 +37,23 @@ void main(List<String> args) {
     javascript: 'throw new Error("academy-test-error");',
   );
   File('${folder.path}/error.html').writeAsStringSync(error.previewDocument());
-  stdout.writeln('Exported 3 preview fixtures');
+  for (final lesson in academyExtensions.where((q) => q.track == 'web')) {
+    for (final entry in {
+      'code': lesson.code,
+      'solution': lesson.answer,
+    }.entries) {
+      File(
+        '${folder.path}/lesson-${lesson.id}-${entry.key}.html',
+      ).writeAsStringSync(
+        WebProject(
+          html: entry.value,
+          css: '',
+          javascript: '',
+        ).previewDocument(),
+      );
+    }
+  }
+  stdout.writeln(
+    'Exported 3 isolation fixtures and 40 authored lesson previews',
+  );
 }

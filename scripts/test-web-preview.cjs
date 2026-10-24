@@ -44,5 +44,29 @@ const { chromium } = require('playwright');
     for (let i = 0; errors.length === 0 && i < 20; i++) await new Promise(resolve => setTimeout(resolve, 50));
     assert(errors.some(message => message.includes('academy-test-error')));
     console.log('PASS: JavaScript runtime errors are observable');
+    errors.length = 0;
+    const lessons = (await fs.readdir(directory)).filter(name => name.startsWith('lesson-'));
+    assert.equal(lessons.length, 40);
+    for (const name of lessons) {
+      await load(name);
+      await page.frameLocator('iframe').locator('body').waitFor();
+      assert.deepEqual(errors, [], `Lesson preview error in ${name}`);
+    }
+    const counter = await load('lesson-web-17-code.html');
+    await counter.locator('#add').click();
+    assert.equal(await counter.locator('#count').textContent(), '1');
+    const calculator = await load('lesson-web-18-code.html');
+    await calculator.locator('#calc').click();
+    assert.equal(await calculator.locator('#total').textContent(), 'Total: 10');
+    const text = await load('lesson-web-19-code.html');
+    await text.locator('#show').click();
+    assert.equal(await text.locator('#out').textContent(), '<b>hello</b>');
+    assert.equal(await text.locator('#out b').count(), 0);
+    const checklist = await load('lesson-web-20-code.html');
+    await checklist.locator('input').first().check();
+    assert.equal(await checklist.locator('#summary').textContent(), '1 / 3 complete');
+    assert.deepEqual(network, []);
+    console.log('PASS: 40 authored HTML previews, counter, calculator, literal text and checklist');
+
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

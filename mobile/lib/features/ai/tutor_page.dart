@@ -268,7 +268,8 @@ class _TutorPageState extends State<TutorPage> {
                           : (v) => setState(() => mode = v!),
                     ),
                   ),
-                  TextButton.icon(
+                  IconButton(
+                    tooltip: l.provider,
                     onPressed: sending
                         ? null
                         : () => Navigator.push(
@@ -279,7 +280,6 @@ class _TutorPageState extends State<TutorPage> {
                             ),
                           ),
                     icon: const Icon(Icons.tune),
-                    label: Text(l.provider),
                   ),
                   IconButton(
                     tooltip: l.clearChat,
@@ -314,7 +314,61 @@ class _TutorPageState extends State<TutorPage> {
                           return Card(
                             child: Padding(
                               padding: const EdgeInsets.all(16),
-                              child: Text(l.tutorWelcome),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.auto_awesome_outlined,
+                                    size: 30,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    Localizations.localeOf(
+                                              context,
+                                            ).languageCode ==
+                                            'en'
+                                        ? 'Learn with a question'
+                                        : 'မေးခွန်းတစ်ခုမှ စလေ့လာပါ',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleLarge,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    Localizations.localeOf(
+                                              context,
+                                            ).languageCode ==
+                                            'en'
+                                        ? 'Ask for an explanation, debug help, or a small practice task.'
+                                        : 'ရှင်းပြချက်၊ error ဖြေရှင်းနည်း သို့မဟုတ် လေ့ကျင့်ခန်း မေးနိုင်သည်။',
+                                  ),
+                                  const SizedBox(height: 12),
+                                  OutlinedButton.icon(
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (_) => ProviderPage(
+                                          account: widget.account,
+                                        ),
+                                      ),
+                                    ),
+                                    icon: const Icon(Icons.key_outlined),
+                                    label: Text(l.provider),
+                                  ),
+                                  ExpansionTile(
+                                    tilePadding: EdgeInsets.zero,
+                                    title: Text(
+                                      Localizations.localeOf(
+                                                context,
+                                              ).languageCode ==
+                                              'en'
+                                          ? 'Setup help'
+                                          : 'စတင်ချိတ်ဆက်နည်း',
+                                    ),
+                                    children: [Text(l.tutorWelcome)],
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }
