@@ -45,10 +45,25 @@ void main() {
         }
         expect(guide.correct, inInclusiveRange(0, guide.enOptions.length - 1));
         expect(guide.myOptions.length, guide.enOptions.length);
+        final reference = Uri.parse(guide.reference);
+        expect(reference.scheme, 'https');
+        expect(reference.userInfo, isEmpty);
         expect(
-          guide.reference.startsWith('https://docs.python.org/3/') ||
-              guide.reference.startsWith('https://git-scm.com/docs/'),
-          isTrue,
+          const {
+            'docs.python.org',
+            'git-scm.com',
+            'developer.mozilla.org',
+            'www.kali.org',
+            'www.sqlite.org',
+            'www.gnu.org',
+            'man7.org',
+            'nmap.org',
+            'curl.se',
+            'www.wireshark.org',
+            'cheatsheetseries.owasp.org',
+          },
+          contains(reference.host),
+          reason: guide.reference,
         );
       }
     },
